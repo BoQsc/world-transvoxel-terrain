@@ -2,9 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A4 phase 1 terrain profile, edit, storage, and recovery resource
-semantics complete. Next phase is A4 phase 2 bridge edit submission and storage
-fixture.
+Current phase: A4 phase 2 bridge edit submission and storage fixture complete.
+Next phase is A4 phase 3 public `WtTerrainWorld` lifecycle ownership.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -218,6 +217,8 @@ A4 - Terrain profile, edit, storage, and recovery implementation.
   storage profile, recovery policy, and terrain-world summary;
 - phase 2 submits edit batches through the `world-transvoxel` bridge and proves
   a deterministic storage fixture;
+- phase 3 moves from bridge fixture evidence to public `WtTerrainWorld`
+  lifecycle ownership;
 - support the 2048 x 2048 x 64 reference profile;
 - support carve, construct, fill, paint, and restore-to-base;
 - persist edits through save/restart;
@@ -304,3 +305,23 @@ A4 phase 1 is complete when:
   engines;
 - no backend edit submission or persistence claim is made yet;
 - the next finite task is A4 phase 2 bridge edit submission and storage fixture.
+
+## Definition of done for A4 phase 2
+
+A4 phase 2 is complete when:
+
+- `docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE2.md` records the bridge/storage
+  fixture boundary;
+- `WtTerrainEditBridge` converts a validated `WtTerrainEditBatch` into a real
+  `WorldTransvoxelEditTransaction`;
+- the bridge submits carve, construct, fill, paint, and restore-to-base
+  operation resources through official backend edit methods;
+- the Godot smoke starts the official backend lifecycle fixture, commits the
+  terrain edit batch, verifies a native `world.wtedit` journal, restarts, and
+  verifies journal replay;
+- `python tools/validate_a4_phase2.py` passes;
+- `python tools/a4_phase2_bridge_storage_smoke.py` passes on discovered local
+  Godot engines;
+- no `world-transvoxel`, sandbox implementation, or MIT Transvoxel topology data
+  is committed into this repository;
+- the next finite task is A4 phase 3 public `WtTerrainWorld` lifecycle ownership.

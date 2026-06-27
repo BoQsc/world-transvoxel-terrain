@@ -53,7 +53,8 @@ Exit:
 
 ## A4 - Terrain profile, edit, storage, and recovery
 
-Status: active. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`.
+Status: active. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`; phase 2
+complete by `WT_TERRAIN_A4_PHASE2_SMOKE_PASS`.
 
 Phase 1 exit:
 
@@ -70,6 +71,20 @@ Phase 2 next:
 - submit edit batches through the `world-transvoxel` bridge;
 - add a deterministic storage fixture that writes, reloads, and verifies an edit
   journal.
+
+Phase 2 exit:
+
+- `WtTerrainEditBridge` submits edit batches into real
+  `WorldTransvoxelEditTransaction` objects;
+- a temporary fixture starts the official backend production lifecycle world,
+  commits edits, verifies `world.wtedit`, restarts, and verifies journal replay;
+- the implementation boundary is `bridge_storage_fixture`.
+
+Phase 3 next:
+
+- make public `WtTerrainWorld` own backend lifecycle configuration/start/stop;
+- keep the next step focused on terrain-world ownership, not game repository or
+  optional systems.
 
 Exit:
 

@@ -12,3 +12,7 @@ Current A4 phase 1 resources:
 - `WtTerrainRecoveryPolicy` defines manual recovery targets while automatic
   regeneration, smoothing, structural collapse, and fluid equilibrium remain
   disabled by default.
+
+A4 phase 2 verifies the official backend writes and replays a native
+`world.wtedit` journal through a temporary fixture. Production storage ownership
+inside `WtTerrainWorld` remains a later A4 phase.

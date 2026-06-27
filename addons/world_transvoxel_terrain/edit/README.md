@@ -11,3 +11,7 @@ Current A4 phase 1 resources:
 - `WtTerrainEditOperation` defines carve, construct, fill, paint, and
   restore-to-base command semantics;
 - `WtTerrainEditBatch` groups validated edit commands before bridge submission.
+
+A4 phase 2 maps these command resources to the official backend transaction API.
+Restore-to-base is explicit snapshot replay: callers supply the exact density
+and material to restore.

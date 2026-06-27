@@ -12,6 +12,7 @@ enum BrushShape { SPHERE, BOX, CAPSULE, PLANE }
 @export var box_extents: Vector3 = Vector3.ONE
 @export_range(0, 65535, 1) var material_id: int = 1
 @export_range(0.0, 1.0, 0.01) var strength: float = 1.0
+@export var density_value: float = 1.0
 @export var author_id: int = 0
 @export var command_id: int = 0
 
@@ -67,6 +68,10 @@ func get_validation_error() -> String:
 		return "edit operation radius must be positive"
 	if strength <= 0.0 or strength > 1.0:
 		return "edit operation strength must be in the range (0, 1]"
+	if is_nan(density_value) or is_inf(density_value):
+		return "edit operation density_value must be finite"
+	if mode != Mode.RESTORE_TO_BASE and density_value == 0.0:
+		return "non-restore edit operation density_value must not be zero"
 	if requires_material() and material_id <= 0:
 		return "construct, fill, and paint operations require a positive material_id"
 	if brush_shape == BrushShape.BOX or brush_shape == BrushShape.CAPSULE:
@@ -101,6 +106,7 @@ func to_bridge_command() -> Dictionary:
 		"box_extents": box_extents,
 		"material_id": material_id,
 		"strength": strength,
+		"density_value": density_value,
 		"author_id": author_id,
 		"command_id": command_id,
 		"affected_aabb": affected,
