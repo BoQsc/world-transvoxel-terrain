@@ -1,0 +1,12 @@
+.godot/
+.import/
+artifacts/
+references/downloaded/
+__pycache__/
+*.py[cod]
+*.pdb
+*.dll
+*.so
+*.dylib
+*.exe
+*.log
