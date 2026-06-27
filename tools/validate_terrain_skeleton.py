@@ -28,7 +28,7 @@ REQUIRED_FILES = (
 REQUIRED_PHRASES = {
     "README.md": (
         "Reusable Godot terrain addon built above `world-transvoxel`",
-        "Status: A1 contract complete",
+        "Status: A2 smoke harness complete",
         "It does not vendor or copy",
         "no separate game repository yet",
         "no large GDScript terrain hot paths",
@@ -36,7 +36,7 @@ REQUIRED_PHRASES = {
     ),
     "IMPLEMENTATION_CHARTER.md": (
         "Status: canonical project direction for the terrain addon",
-        "Current phase: A1 public API/source-layout contract complete",
+        "Current phase: A2 addon-local smoke harness complete",
         "Use the official MIT-backed `world-transvoxel` backend first",
         "The independent 0BSD Transvoxel backend is deferred",
         "GDScript is not allowed for",
@@ -90,6 +90,8 @@ def iter_repo_files() -> list[Path]:
         if ".git" in relative.parts:
             continue
         if "__pycache__" in relative.parts:
+            continue
+        if relative.as_posix().startswith("artifacts/"):
             continue
         if relative.as_posix().startswith("references/downloaded/"):
             continue

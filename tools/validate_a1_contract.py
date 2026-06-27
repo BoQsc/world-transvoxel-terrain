@@ -90,6 +90,8 @@ def iter_repo_files() -> list[Path]:
             continue
         if "__pycache__" in relative.parts:
             continue
+        if relative.as_posix().startswith("artifacts/"):
+            continue
         if relative.as_posix().startswith("references/downloaded/"):
             continue
         if path.is_file():

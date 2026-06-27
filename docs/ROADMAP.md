@@ -32,7 +32,7 @@ Exit:
 
 ## A2 - Addon-local smoke harness
 
-Status: next.
+Status: complete by `WT_TERRAIN_A2_SMOKE_PASS`.
 
 Exit:
 
@@ -43,7 +43,7 @@ Exit:
 
 ## A3 - world-transvoxel bridge
 
-Status: deferred until A2 exits.
+Status: next.
 
 Exit:
 

@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A1 public API/source-layout contract complete. Next phase is A2
-addon-local smoke harness.
+Current phase: A2 addon-local smoke harness complete. Next phase is A3
+`world-transvoxel` bridge.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -251,3 +251,16 @@ A1 is complete when:
 - required source-layout directories exist with ownership placeholders;
 - `python tools/validate_a1_contract.py` passes;
 - the next finite task is A2 addon-local smoke harness.
+
+## Definition of done for A2
+
+A2 is complete when:
+
+- `docs/A2_ADDON_SMOKE_HARNESS.md` records the smoke boundary;
+- dependency detection reports whether `world-transvoxel` is installed without
+  vendoring it;
+- placeholder `WtTerrainWorld`, `WtTerrainProfile`, and
+  `WtTerrainGenerationProfile` scripts load in Godot;
+- `python tools/validate_a2_smoke.py` passes;
+- `python tools/a2_addon_smoke.py` passes on discovered local Godot engines;
+- the next finite task is A3 `world-transvoxel` bridge.
