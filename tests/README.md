@@ -11,3 +11,9 @@ A2 smoke entry point:
 ```console
 python tools/a2_addon_smoke.py
 ```
+
+A3 bridge smoke entry point:
+
+```console
+python tools/a3_bridge_smoke.py
+```

@@ -2,10 +2,10 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A2 smoke harness complete. This repository defines the addon boundary,
-public API shape, source layout, dependency detection, and local smoke validation
-before backend bridge implementation. It is not a game repository and does not
-yet claim game-ready terrain.
+Status: A3 bridge complete. This repository defines the addon boundary, public
+API shape, source layout, dependency detection, local smoke validation, and
+official `world-transvoxel` bridge before terrain implementation. It is not a
+game repository and does not yet claim game-ready terrain.
 
 ## Role
 
@@ -54,7 +54,9 @@ implementation order, and definition of done.
 python tools/validate_terrain_skeleton.py
 python tools/validate_a1_contract.py
 python tools/validate_a2_smoke.py
+python tools/validate_a3_bridge.py
 python tools/a2_addon_smoke.py
+python tools/a3_bridge_smoke.py
 ```
 
 Expected marker:
@@ -64,6 +66,8 @@ WT_TERRAIN_SKELETON_PASS addon=world-transvoxel-terrain implementation=deferred 
 WT_TERRAIN_A1_CONTRACT_PASS next=a2_addon_local_smoke_harness implementation=contract_only
 WT_TERRAIN_A2_CONTRACT_PASS next=a3_world_transvoxel_bridge implementation=smoke_only
 WT_TERRAIN_A2_SMOKE_PASS engines=2 report=artifacts/a2_addon_smoke/a2_addon_smoke_report.json
+WT_TERRAIN_A3_CONTRACT_PASS next=a4_terrain_profile_edit_storage_recovery implementation=bridge_only
+WT_TERRAIN_A3_BRIDGE_PASS engines=2 report=artifacts/a3_bridge_smoke/a3_bridge_smoke_report.json
 ```
 
 ## License

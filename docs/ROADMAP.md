@@ -43,7 +43,7 @@ Exit:
 
 ## A3 - world-transvoxel bridge
 
-Status: next.
+Status: complete by `WT_TERRAIN_A3_BRIDGE_PASS`.
 
 Exit:
 
@@ -53,7 +53,7 @@ Exit:
 
 ## A4 - Terrain profile, edit, storage, and recovery
 
-Status: deferred until A3 exits.
+Status: next.
 
 Exit:
 

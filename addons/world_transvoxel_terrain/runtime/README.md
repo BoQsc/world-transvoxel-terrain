@@ -8,3 +8,6 @@ chunk manager.
 
 A2 adds `WtTerrainWorld` as a placeholder scene entry point with dependency
 status reporting only.
+
+A3 adds `WtWorldTransvoxelBridge`, a narrow `ClassDB` adapter that can read
+official `world-transvoxel` identity/config status without starting terrain.

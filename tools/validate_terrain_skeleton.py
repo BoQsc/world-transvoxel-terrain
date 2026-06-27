@@ -28,7 +28,7 @@ REQUIRED_FILES = (
 REQUIRED_PHRASES = {
     "README.md": (
         "Reusable Godot terrain addon built above `world-transvoxel`",
-        "Status: A2 smoke harness complete",
+        "Status: A3 bridge complete",
         "It does not vendor or copy",
         "no separate game repository yet",
         "no large GDScript terrain hot paths",
@@ -36,7 +36,7 @@ REQUIRED_PHRASES = {
     ),
     "IMPLEMENTATION_CHARTER.md": (
         "Status: canonical project direction for the terrain addon",
-        "Current phase: A2 addon-local smoke harness complete",
+        "Current phase: A3 `world-transvoxel` bridge complete",
         "Use the official MIT-backed `world-transvoxel` backend first",
         "The independent 0BSD Transvoxel backend is deferred",
         "GDScript is not allowed for",

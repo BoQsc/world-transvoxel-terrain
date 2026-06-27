@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A2 addon-local smoke harness complete. Next phase is A3
-`world-transvoxel` bridge.
+Current phase: A3 `world-transvoxel` bridge complete. Next phase is A4 terrain
+profile, edit, storage, and recovery implementation.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -264,3 +264,19 @@ A2 is complete when:
 - `python tools/validate_a2_smoke.py` passes;
 - `python tools/a2_addon_smoke.py` passes on discovered local Godot engines;
 - the next finite task is A3 `world-transvoxel` bridge.
+
+## Definition of done for A3
+
+A3 is complete when:
+
+- `docs/A3_WORLD_TRANSVOXEL_BRIDGE.md` records the bridge boundary;
+- `WtWorldTransvoxelBridge` detects `WorldTransvoxelTerrain` and
+  `WorldTransvoxelConfig` through Godot `ClassDB`;
+- the bridge reads backend identity and default config validity without starting
+  a world;
+- `python tools/validate_a3_bridge.py` passes;
+- `python tools/a3_bridge_smoke.py` passes on discovered local Godot engines
+  using an ignored temporary fixture;
+- no `addons/world_transvoxel/`, sandbox implementation, or MIT Transvoxel
+  topology data is committed;
+- the next finite task is A4 terrain profile, edit, storage, and recovery.
