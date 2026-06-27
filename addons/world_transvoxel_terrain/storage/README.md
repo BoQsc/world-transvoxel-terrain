@@ -4,3 +4,11 @@ World manifest, edit journal, save/load/reopen, migration, and persistence
 boundary code belongs here.
 
 Storage formats must be deterministic and versioned before game use.
+
+Current A4 phase 1 resources:
+
+- `WtTerrainStorageProfile` defines manifest, edit journal, and snapshot write
+  targets;
+- `WtTerrainRecoveryPolicy` defines manual recovery targets while automatic
+  regeneration, smoothing, structural collapse, and fluid equilibrium remain
+  disabled by default.

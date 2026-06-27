@@ -55,7 +55,7 @@ REQUIRED_PHRASES = {
     "addons/world_transvoxel_terrain/runtime/wt_terrain_world.gd": (
         "class_name WtTerrainWorld",
         "get_dependency_status",
-        "placeholder_contract_only",
+        "get_contract_summary",
     ),
     "tests/a2_addon_smoke.gd": (
         "WT_TERRAIN_A2_GODOT_SMOKE_PASS",

@@ -2,10 +2,11 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A3 bridge complete. This repository defines the addon boundary, public
-API shape, source layout, dependency detection, local smoke validation, and
-official `world-transvoxel` bridge before terrain implementation. It is not a
-game repository and does not yet claim game-ready terrain.
+Status: A4 phase 1 resource semantics complete. This repository defines the
+addon boundary, public API shape, source layout, dependency detection, local
+smoke validation, official `world-transvoxel` bridge, and the first
+terrain/edit/storage/recovery resource contract. It is not a game repository and
+does not yet claim game-ready terrain.
 
 ## Role
 
@@ -55,8 +56,10 @@ python tools/validate_terrain_skeleton.py
 python tools/validate_a1_contract.py
 python tools/validate_a2_smoke.py
 python tools/validate_a3_bridge.py
+python tools/validate_a4_phase1.py
 python tools/a2_addon_smoke.py
 python tools/a3_bridge_smoke.py
+python tools/a4_phase1_resources_smoke.py
 ```
 
 Expected marker:
@@ -68,6 +71,8 @@ WT_TERRAIN_A2_CONTRACT_PASS next=a3_world_transvoxel_bridge implementation=smoke
 WT_TERRAIN_A2_SMOKE_PASS engines=2 report=artifacts/a2_addon_smoke/a2_addon_smoke_report.json
 WT_TERRAIN_A3_CONTRACT_PASS next=a4_terrain_profile_edit_storage_recovery implementation=bridge_only
 WT_TERRAIN_A3_BRIDGE_PASS engines=2 report=artifacts/a3_bridge_smoke/a3_bridge_smoke_report.json
+WT_TERRAIN_A4_PHASE1_CONTRACT_PASS next=a4_phase2_bridge_edit_submission implementation=resource_semantics_only
+WT_TERRAIN_A4_PHASE1_SMOKE_PASS engines=2 report=artifacts/a4_phase1_resources/a4_phase1_resources_report.json
 ```
 
 ## License

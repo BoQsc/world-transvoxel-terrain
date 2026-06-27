@@ -2,8 +2,9 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A3 `world-transvoxel` bridge complete. Next phase is A4 terrain
-profile, edit, storage, and recovery implementation.
+Current phase: A4 phase 1 terrain profile, edit, storage, and recovery resource
+semantics complete. Next phase is A4 phase 2 bridge edit submission and storage
+fixture.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -213,6 +214,10 @@ A3 - `world-transvoxel` bridge.
 
 A4 - Terrain profile, edit, storage, and recovery implementation.
 
+- phase 1 defines resource semantics for the reference profile, edit commands,
+  storage profile, recovery policy, and terrain-world summary;
+- phase 2 submits edit batches through the `world-transvoxel` bridge and proves
+  a deterministic storage fixture;
 - support the 2048 x 2048 x 64 reference profile;
 - support carve, construct, fill, paint, and restore-to-base;
 - persist edits through save/restart;
@@ -280,3 +285,22 @@ A3 is complete when:
 - no `addons/world_transvoxel/`, sandbox implementation, or MIT Transvoxel
   topology data is committed;
 - the next finite task is A4 terrain profile, edit, storage, and recovery.
+
+## Definition of done for A4 phase 1
+
+A4 phase 1 is complete when:
+
+- `docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE1.md` records the resource
+  semantics boundary;
+- `WtTerrainEditOperation` defines carve, construct, fill, paint, and
+  restore-to-base command resources;
+- `WtTerrainEditBatch` validates grouped edit commands;
+- `WtTerrainStorageProfile` defines deterministic manifest, journal, and
+  snapshot write targets;
+- `WtTerrainRecoveryPolicy` defaults to manual recovery and cold idle behavior;
+- `WtTerrainWorld` reports terrain, generation, storage, and recovery summaries;
+- `python tools/validate_a4_phase1.py` passes;
+- `python tools/a4_phase1_resources_smoke.py` passes on discovered local Godot
+  engines;
+- no backend edit submission or persistence claim is made yet;
+- the next finite task is A4 phase 2 bridge edit submission and storage fixture.

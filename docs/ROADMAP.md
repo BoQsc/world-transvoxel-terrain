@@ -53,7 +53,23 @@ Exit:
 
 ## A4 - Terrain profile, edit, storage, and recovery
 
-Status: next.
+Status: active. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`.
+
+Phase 1 exit:
+
+- reference terrain profile, edit operation, edit batch, storage profile, and
+  recovery policy resources exist;
+- carve, construct, fill, paint, and restore-to-base are represented as
+  validated commands;
+- storage and recovery defaults preserve deterministic write targets and cold
+  idle behavior;
+- the implementation boundary is `resource_semantics_only`.
+
+Phase 2 next:
+
+- submit edit batches through the `world-transvoxel` bridge;
+- add a deterministic storage fixture that writes, reloads, and verifies an edit
+  journal.
 
 Exit:
 
