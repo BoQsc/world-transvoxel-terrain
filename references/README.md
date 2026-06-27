@@ -12,3 +12,7 @@ non-reconstructive notes in the repository.
 
 Before substantial implementation, A1 must pin the required references and
 inspect the old marching-cubes project for maintainability failures.
+
+Tracked reference metadata lives in
+[`MANIFEST.md`](MANIFEST.md). Downloaded files stay untracked under
+`references/downloaded/`.

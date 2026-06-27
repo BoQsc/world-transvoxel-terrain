@@ -2,7 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A0 skeleton.
+Current phase: A1 public API/source-layout contract complete. Next phase is A2
+addon-local smoke harness.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -238,3 +239,15 @@ A0 is complete when:
 - license scope is explicit;
 - no `addons/world_transvoxel/` or MIT Transvoxel source is present;
 - the next finite task is A1 public API and source-layout contract.
+
+## Definition of done for A1
+
+A1 is complete when:
+
+- `docs/A1_PUBLIC_API_SOURCE_LAYOUT_CONTRACT.md` defines the public API shape;
+- `docs/A1_MARCHING_CUBES_AUDIT.md` records the old marching-cubes
+  maintainability failures;
+- `references/MANIFEST.md` records pinned/downloaded primary references;
+- required source-layout directories exist with ownership placeholders;
+- `python tools/validate_a1_contract.py` passes;
+- the next finite task is A2 addon-local smoke harness.

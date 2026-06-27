@@ -2,9 +2,9 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A0 skeleton. This repository defines the addon boundary and validation
-rules before implementation. It is not a game repository and does not yet claim
-game-ready terrain.
+Status: A1 contract complete. This repository defines the addon boundary, public
+API shape, source layout, and validation rules before implementation. It is not a
+game repository and does not yet claim game-ready terrain.
 
 ## Role
 
@@ -51,12 +51,14 @@ implementation order, and definition of done.
 
 ```console
 python tools/validate_terrain_skeleton.py
+python tools/validate_a1_contract.py
 ```
 
 Expected marker:
 
 ```text
 WT_TERRAIN_SKELETON_PASS addon=world-transvoxel-terrain implementation=deferred game_repository=deferred
+WT_TERRAIN_A1_CONTRACT_PASS next=a2_addon_local_smoke_harness implementation=contract_only
 ```
 
 ## License

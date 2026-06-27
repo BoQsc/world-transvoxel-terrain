@@ -6,7 +6,7 @@ that milestone with explicit exit criteria.
 
 ## A0 - Repository skeleton and contract
 
-Status: active.
+Status: complete.
 
 Exit:
 
@@ -19,7 +19,7 @@ Exit:
 
 ## A1 - Public API and source-layout contract
 
-Status: next.
+Status: complete by `WT_TERRAIN_A1_CONTRACT_PASS`.
 
 Exit:
 
@@ -32,7 +32,7 @@ Exit:
 
 ## A2 - Addon-local smoke harness
 
-Status: deferred until A1 exits.
+Status: next.
 
 Exit:
 

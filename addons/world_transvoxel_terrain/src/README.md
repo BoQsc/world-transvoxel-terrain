@@ -16,3 +16,7 @@ When implementation begins, keep source ownership separated by subsystem:
 - addon-local smoke tests.
 
 Do not create a single large mixed-purpose terrain source file.
+
+A1 now uses explicit subsystem directories next to this placeholder. Keep this
+`src/` directory empty unless a later native/build layout contract assigns it a
+specific purpose.

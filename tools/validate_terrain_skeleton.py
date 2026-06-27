@@ -28,7 +28,7 @@ REQUIRED_FILES = (
 REQUIRED_PHRASES = {
     "README.md": (
         "Reusable Godot terrain addon built above `world-transvoxel`",
-        "Status: A0 skeleton",
+        "Status: A1 contract complete",
         "It does not vendor or copy",
         "no separate game repository yet",
         "no large GDScript terrain hot paths",
@@ -36,7 +36,7 @@ REQUIRED_PHRASES = {
     ),
     "IMPLEMENTATION_CHARTER.md": (
         "Status: canonical project direction for the terrain addon",
-        "Current phase: A0 skeleton",
+        "Current phase: A1 public API/source-layout contract complete",
         "Use the official MIT-backed `world-transvoxel` backend first",
         "The independent 0BSD Transvoxel backend is deferred",
         "GDScript is not allowed for",
@@ -86,10 +86,15 @@ def has_phrase(text: str, phrase: str) -> bool:
 def iter_repo_files() -> list[Path]:
     files: list[Path] = []
     for path in ROOT.rglob("*"):
-        if ".git" in path.parts:
+        relative = path.relative_to(ROOT)
+        if ".git" in relative.parts:
+            continue
+        if "__pycache__" in relative.parts:
+            continue
+        if relative.as_posix().startswith("references/downloaded/"):
             continue
         if path.is_file():
-            files.append(path.relative_to(ROOT))
+            files.append(relative)
     return files
 
 
