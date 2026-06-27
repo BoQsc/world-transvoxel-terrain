@@ -15,3 +15,6 @@ official `world-transvoxel` identity/config status without starting terrain.
 A4 phase 2 adds `WtTerrainEditBridge`, which maps terrain edit batches into
 official `WorldTransvoxelEditTransaction` backend calls. Public
 `WtTerrainWorld` lifecycle ownership remains the next A4 phase.
+
+A4 phase 3 makes `WtTerrainWorld` own backend terrain/config instantiation,
+start/stop, and edit-batch submission through the existing bridge classes.

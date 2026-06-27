@@ -54,7 +54,8 @@ Exit:
 ## A4 - Terrain profile, edit, storage, and recovery
 
 Status: active. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`; phase 2
-complete by `WT_TERRAIN_A4_PHASE2_SMOKE_PASS`.
+complete by `WT_TERRAIN_A4_PHASE2_SMOKE_PASS`; phase 3 complete by
+`WT_TERRAIN_A4_PHASE3_SMOKE_PASS`.
 
 Phase 1 exit:
 
@@ -85,6 +86,19 @@ Phase 3 next:
 - make public `WtTerrainWorld` own backend lifecycle configuration/start/stop;
 - keep the next step focused on terrain-world ownership, not game repository or
   optional systems.
+
+Phase 3 exit:
+
+- `WtTerrainWorld` owns backend terrain/config lifecycle through the bridge;
+- public `WtTerrainWorld` start/stop and edit submission are smoke-tested;
+- journal replay is verified through terrain-world-owned backend restart;
+- the implementation boundary is `terrain_world_lifecycle`.
+
+Phase 4 next:
+
+- validate reference-profile runtime/cold-idle behavior through public
+  `WtTerrainWorld`;
+- keep the step focused on A4 exit evidence, not optional systems.
 
 Exit:
 

@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A4 phase 2 bridge edit submission and storage fixture complete.
-Next phase is A4 phase 3 public `WtTerrainWorld` lifecycle ownership.
+Current phase: A4 phase 3 public `WtTerrainWorld` lifecycle ownership complete.
+Next phase is A4 phase 4 reference-profile runtime/cold-idle validation.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -219,6 +219,8 @@ A4 - Terrain profile, edit, storage, and recovery implementation.
   a deterministic storage fixture;
 - phase 3 moves from bridge fixture evidence to public `WtTerrainWorld`
   lifecycle ownership;
+- phase 4 validates the reference profile runtime/cold-idle path through the
+  public terrain-world API;
 - support the 2048 x 2048 x 64 reference profile;
 - support carve, construct, fill, paint, and restore-to-base;
 - persist edits through save/restart;
@@ -325,3 +327,25 @@ A4 phase 2 is complete when:
 - no `world-transvoxel`, sandbox implementation, or MIT Transvoxel topology data
   is committed into this repository;
 - the next finite task is A4 phase 3 public `WtTerrainWorld` lifecycle ownership.
+
+## Definition of done for A4 phase 3
+
+A4 phase 3 is complete when:
+
+- `docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE3.md` records the terrain-world
+  lifecycle boundary;
+- `WtTerrainWorld` instantiates and owns the backend terrain/config through
+  `WtWorldTransvoxelBridge`;
+- `WtTerrainWorld.start_backend_world()` and `stop_backend_world()` control the
+  backend lifecycle from `WtTerrainStorageProfile`;
+- `WtTerrainWorld.submit_edit_batch()` submits terrain edit batches through
+  `WtTerrainEditBridge`;
+- the Godot smoke starts, edits, verifies native `world.wtedit`, stops,
+  restarts, and verifies journal replay through the public terrain-world node;
+- `python tools/validate_a4_phase3.py` passes;
+- `python tools/a4_phase3_terrain_world_lifecycle_smoke.py` passes on
+  discovered local Godot engines;
+- no `world-transvoxel`, sandbox implementation, or MIT Transvoxel topology data
+  is committed into this repository;
+- the next finite task is A4 phase 4 reference-profile runtime/cold-idle
+  validation.

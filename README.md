@@ -2,12 +2,12 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A4 phase 2 bridge/storage fixture complete. This repository defines the
+Status: A4 phase 3 terrain-world lifecycle complete. This repository defines the
 addon boundary, public API shape, source layout, dependency detection, local
 smoke validation, official `world-transvoxel` bridge, and the first
 terrain/edit/storage/recovery resource contract plus backend edit transaction
-and journal replay evidence. It is not a game repository and does not yet claim
-game-ready terrain.
+and journal replay evidence through public `WtTerrainWorld` lifecycle ownership.
+It is not a game repository and does not yet claim game-ready terrain.
 
 ## Role
 
@@ -59,10 +59,12 @@ python tools/validate_a2_smoke.py
 python tools/validate_a3_bridge.py
 python tools/validate_a4_phase1.py
 python tools/validate_a4_phase2.py
+python tools/validate_a4_phase3.py
 python tools/a2_addon_smoke.py
 python tools/a3_bridge_smoke.py
 python tools/a4_phase1_resources_smoke.py
 python tools/a4_phase2_bridge_storage_smoke.py
+python tools/a4_phase3_terrain_world_lifecycle_smoke.py
 ```
 
 Expected marker:
@@ -78,6 +80,8 @@ WT_TERRAIN_A4_PHASE1_CONTRACT_PASS next=a4_phase2_bridge_edit_submission impleme
 WT_TERRAIN_A4_PHASE1_SMOKE_PASS engines=2 report=artifacts/a4_phase1_resources/a4_phase1_resources_report.json
 WT_TERRAIN_A4_PHASE2_CONTRACT_PASS next=a4_phase3_public_terrain_world_lifecycle implementation=bridge_storage_fixture
 WT_TERRAIN_A4_PHASE2_SMOKE_PASS engines=2 report=artifacts/a4_phase2_bridge_storage/a4_phase2_bridge_storage_report.json
+WT_TERRAIN_A4_PHASE3_CONTRACT_PASS next=a4_phase4_reference_profile_runtime_cold_idle implementation=terrain_world_lifecycle
+WT_TERRAIN_A4_PHASE3_SMOKE_PASS engines=2 report=artifacts/a4_phase3_terrain_world_lifecycle/a4_phase3_terrain_world_lifecycle_report.json
 ```
 
 ## License
