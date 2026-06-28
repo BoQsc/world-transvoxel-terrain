@@ -7,9 +7,11 @@ const GenerationProfile := preload("res://addons/world_transvoxel_terrain/genera
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
 const RecoveryPolicy := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_recovery_policy.gd")
 const DebugSnapshot := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd")
+const DebugOverlayFormatter := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_overlay_formatter.gd")
 
 const IMPLEMENTATION := "local_reference_scene_scaffold"
 const RUNTIME_IMPLEMENTATION := "backend_reference_scene_runtime_smoke"
+const OVERLAY_IMPLEMENTATION := "debug_overlay_category_rendering"
 
 @export var terrain_world_path: NodePath = ^"TerrainWorld"
 @export var status_label_path: NodePath = ^"DebugOverlay/Panel/StatusLabel"
@@ -143,22 +145,14 @@ func get_reference_runtime_summary() -> Dictionary:
 
 
 func get_debug_status_text() -> String:
-	var snapshot := _last_debug_snapshot
-	var profile := Dictionary(snapshot.get("terrain_profile", {}))
-	var world := Dictionary(snapshot.get("world", {}))
-	var budget := Dictionary(snapshot.get("budget", {}))
-	return "\n".join([
-		"World Transvoxel Terrain Reference Scene",
-		"profile=%sx%s" % [
-			str(profile.get("horizontal_cells", 0)),
-			str(profile.get("vertical_cells", 0)),
-		],
-		"backend_state=%s" % str(world.get("backend_state", "stopped")),
-		"cold_idle=%s" % str(budget.get("cold_idle", false)).to_lower(),
-		"render_resources=%s" % str(budget.get("render_resources", 0)),
-		"collision_resources=%s" % str(budget.get("collision_resources", 0)),
-		"implementation=%s" % IMPLEMENTATION,
-	])
+	return "%s\nimplementation=%s" % [
+		DebugOverlayFormatter.format_snapshot(_last_debug_snapshot),
+		IMPLEMENTATION,
+	]
+
+
+func get_debug_overlay_categories() -> Array[String]:
+	return DebugOverlayFormatter.get_rendered_categories(_last_debug_snapshot)
 
 
 func _update_status_label() -> void:

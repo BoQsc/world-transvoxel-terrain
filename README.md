@@ -2,15 +2,17 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A5 phase 3 backend reference-scene runtime smoke complete. This
-repository defines the addon boundary, public API shape, source layout,
-dependency detection, local smoke validation, official `world-transvoxel` bridge,
+Status: A5 phase 4 debug overlay category rendering complete. This repository
+defines the addon boundary, public API shape, source layout, dependency
+detection, local smoke validation, official `world-transvoxel` bridge,
 terrain/edit/storage/recovery resource contracts, backend edit transactions,
 journal replay, public `WtTerrainWorld` lifecycle ownership, viewer streaming,
 ready chunk query, runtime metrics, cold-idle stability, and a debug snapshot
 data contract plus an addon-local reference scene scaffold that can run against
-the official backend fixture. A5 phase 4 debug overlay category rendering is
-next. This is not a game repository and does not yet claim game-ready terrain.
+the official backend fixture. The reference scene now renders explicit debug
+overlay sections for world/profile/storage/budget/collision/streaming/edit and
+material state. A5 phase 5 exit review is next. This is not a game repository
+and does not yet claim game-ready terrain.
 
 ## Role
 
@@ -68,6 +70,7 @@ python tools/validate_a4_phase5.py
 python tools/validate_a5_phase1.py
 python tools/validate_a5_phase2.py
 python tools/validate_a5_phase3.py
+python tools/validate_a5_phase4.py
 python tools/a2_addon_smoke.py
 python tools/a3_bridge_smoke.py
 python tools/a4_phase1_resources_smoke.py
@@ -78,6 +81,7 @@ python tools/a4_phase5_exit_review.py
 python tools/a5_phase1_debug_snapshot_smoke.py
 python tools/a5_phase2_reference_scene_scaffold_smoke.py
 python tools/a5_phase3_reference_scene_runtime_smoke.py
+python tools/a5_phase4_debug_overlay_categories_smoke.py
 ```
 
 Expected marker:
@@ -105,6 +109,8 @@ WT_TERRAIN_A5_PHASE2_CONTRACT_PASS next=a5_phase3_backend_reference_scene_runtim
 WT_TERRAIN_A5_PHASE2_SMOKE_PASS engines=2 report=artifacts/a5_phase2_reference_scene_scaffold/a5_phase2_reference_scene_scaffold_report.json
 WT_TERRAIN_A5_PHASE3_CONTRACT_PASS next=a5_phase4_debug_overlay_category_rendering implementation=backend_reference_scene_runtime_smoke
 WT_TERRAIN_A5_PHASE3_SMOKE_PASS engines=2 report=artifacts/a5_phase3_reference_scene_runtime/a5_phase3_reference_scene_runtime_report.json
+WT_TERRAIN_A5_PHASE4_CONTRACT_PASS next=a5_phase5_a5_exit_review implementation=debug_overlay_category_rendering
+WT_TERRAIN_A5_PHASE4_SMOKE_PASS engines=2 report=artifacts/a5_phase4_debug_overlay_categories/a5_phase4_debug_overlay_categories_report.json
 ```
 
 ## License

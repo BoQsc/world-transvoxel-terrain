@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A5 phase 3 backend reference-scene runtime smoke complete. Next
-phase is A5 phase 4 debug overlay category rendering.
+Current phase: A5 phase 4 debug overlay category rendering complete. Next phase
+is A5 phase 5 A5 exit review.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -234,6 +234,7 @@ A5 - Local reference scene and debug UI.
   recovery, budget, collision, streaming, edit, and material state;
 - phase 2 provides a small addon-local inspection scene scaffold;
 - phase 3 runs the reference scene against the official backend fixture;
+- phase 4 renders debug snapshot categories into explicit overlay sections;
 - show terrain budget, collision, streaming, edit, material, and storage state;
 - keep this as addon smoke evidence, not game-repository validation.
 
@@ -445,3 +446,22 @@ A5 phase 3 is complete when:
 - `python tools/a5_phase3_reference_scene_runtime_smoke.py` passes on
   discovered local Godot engines;
 - the next finite task is A5 phase 4 debug overlay category rendering.
+
+## Definition of done for A5 phase 4
+
+A5 phase 4 is complete when:
+
+- `docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE4.md` records the overlay section
+  rendering boundary;
+- `WtTerrainDebugOverlayFormatter` renders world, terrain profile, generation
+  profile, storage profile, recovery policy, budget, collision, streaming, edit,
+  and material sections;
+- `WtTerrainReferenceScene` uses the formatter for its debug label and exposes
+  rendered category names;
+- the backend-backed smoke verifies live backend state, cold-idle state, queue
+  state, render resources, collision resources, and material placeholder state
+  in overlay text;
+- `python tools/validate_a5_phase4.py` passes;
+- `python tools/a5_phase4_debug_overlay_categories_smoke.py` passes on
+  discovered local Godot engines;
+- the next finite task is A5 phase 5 A5 exit review.

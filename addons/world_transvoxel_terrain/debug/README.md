@@ -14,3 +14,6 @@ A5 phase 2 adds `wt_terrain_reference_scene.tscn` and
 
 A5 phase 3 makes the reference scene run its owned terrain world against the
 official backend fixture and report live runtime status in the debug label.
+
+A5 phase 4 adds `WtTerrainDebugOverlayFormatter`, which renders debug snapshot
+categories into explicit overlay sections for the reference scene label.

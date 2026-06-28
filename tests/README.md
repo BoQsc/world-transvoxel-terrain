@@ -29,4 +29,5 @@ python tools/a4_phase5_exit_review.py
 python tools/a5_phase1_debug_snapshot_smoke.py
 python tools/a5_phase2_reference_scene_scaffold_smoke.py
 python tools/a5_phase3_reference_scene_runtime_smoke.py
+python tools/a5_phase4_debug_overlay_categories_smoke.py
 ```

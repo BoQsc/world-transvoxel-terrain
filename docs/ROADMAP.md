@@ -137,7 +137,8 @@ Exit:
 
 Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`; phase 2
 complete by `WT_TERRAIN_A5_PHASE2_SMOKE_PASS`; phase 3 complete by
-`WT_TERRAIN_A5_PHASE3_SMOKE_PASS`.
+`WT_TERRAIN_A5_PHASE3_SMOKE_PASS`; phase 4 complete by
+`WT_TERRAIN_A5_PHASE4_SMOKE_PASS`.
 
 Phase 1 exit:
 
@@ -163,11 +164,16 @@ Phase 3 exit:
   collision resources while live;
 - the implementation boundary is `backend_reference_scene_runtime_smoke`.
 
-Phase 4 next:
+Phase 4 exit:
 
 - render the debug snapshot categories into explicit overlay sections;
-- expose readable terrain/debug status for budget, collision, streaming, edit,
-  material, and storage state;
+- debug overlay text exposes world/profile/storage/budget/collision/streaming/
+  edit/material state;
+- the implementation boundary is `debug_overlay_category_rendering`.
+
+Phase 5 next:
+
+- perform the A5 exit review;
 - keep the scene as addon smoke evidence, not game-repository validation.
 
 Exit:
