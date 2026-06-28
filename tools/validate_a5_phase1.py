@@ -8,46 +8,64 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = (
-    "docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE5_EXIT_REVIEW.md",
-    "tools/a4_phase5_exit_review.py",
-    "tools/validate_a4_phase5.py",
+    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE1.md",
+    "addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd",
+    "addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd.uid",
+    "tests/a5_phase1_debug_snapshot_smoke.gd",
+    "tests/a5_phase1_debug_snapshot_smoke.gd.uid",
+    "tools/a5_phase1_debug_snapshot_smoke.py",
+    "tools/validate_a5_phase1.py",
 )
 
 REQUIRED_PHRASES = {
-    "docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE5_EXIT_REVIEW.md": (
+    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE1.md": (
         "Status: complete",
-        "WT_TERRAIN_A4_PHASE5_CONTRACT_PASS",
-        "WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS",
-        "A4 closes at the terrain-addon API",
-        "next valid milestone is A5",
-        "2048 x 2048 x 64 reference profile",
-        "carve, construct, fill, paint, and restore-to-base",
-        "edit persistence is verified",
-        "cold idle",
-        "A5 owns the local reference scene and debug UI",
+        "WT_TERRAIN_A5_PHASE1_CONTRACT_PASS",
+        "WT_TERRAIN_A5_PHASE1_GODOT_PASS",
+        "WT_TERRAIN_A5_PHASE1_SMOKE_PASS",
+        "debug_snapshot_contract",
+        "A5 is not complete",
+        "Next valid action is A5 phase 2",
+    ),
+    "addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd": (
+        "class_name WtTerrainDebugSnapshot",
+        "debug_snapshot_contract",
+        "terrain_profile",
+        "generation_profile",
+        "storage_profile",
+        "recovery_policy",
+        "budget",
+        "collision",
+        "streaming",
+        "edit",
+        "material",
+    ),
+    "tests/a5_phase1_debug_snapshot_smoke.gd": (
+        "WT_TERRAIN_A5_PHASE1_GODOT_PASS",
+        "DebugSnapshot.capture",
+        "categories=%d",
+        "profile=2048x64",
+        "a5_phase1_material_policy_not_configured",
+    ),
+    "tools/a5_phase1_debug_snapshot_smoke.py": (
+        "WT_TERRAIN_A5_PHASE1_SMOKE_PASS",
+        "WT_TERRAIN_A5_PHASE1_GODOT_PASS",
+        "a5_phase1_debug_snapshot_report.json",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Definition of done for A4 phase 5",
-        "A4 is complete",
-        "WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS",
+        "Current phase: A5 phase 1 debug snapshot contract complete",
+        "Next phase is A5 phase 2 local reference scene scaffold",
+        "Definition of done for A5 phase 1",
     ),
     "docs/ROADMAP.md": (
-        "## A4 - Terrain profile, edit, storage, and recovery",
-        "Status: complete",
-        "Phase 5 exit",
-        "## A5 - Local reference scene and debug UI",
-        "Status: active",
+        "Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`",
+        "Phase 1 exit",
+        "Phase 2 next",
     ),
     "README.md": (
-        "WT_TERRAIN_A4_PHASE5_CONTRACT_PASS",
-        "WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS",
-        "python tools/a4_phase5_exit_review.py",
-    ),
-    "tools/a4_phase5_exit_review.py": (
-        "WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS",
-        "WT_TERRAIN_A4_PHASE5_CONTRACT_PASS",
-        "WT_TERRAIN_A4_PHASE4_SMOKE_PASS",
-        "a5_local_reference_scene_debug_ui",
+        "Status: A5 phase 1 debug snapshot contract complete",
+        "WT_TERRAIN_A5_PHASE1_CONTRACT_PASS",
+        "WT_TERRAIN_A5_PHASE1_SMOKE_PASS",
     ),
 }
 
@@ -84,7 +102,7 @@ def main() -> None:
 
     for relative in REQUIRED_FILES:
         if not (ROOT / relative).is_file():
-            errors.append(f"missing A4 phase 5 file: {relative}")
+            errors.append(f"missing A5 phase 1 file: {relative}")
 
     for relative, phrases in REQUIRED_PHRASES.items():
         path = ROOT / relative
@@ -108,7 +126,7 @@ def main() -> None:
                 encoding="utf-8", errors="replace"
             ).splitlines()
             if len(lines) > 300:
-                errors.append(f"source file exceeds A4 phase 5 limit: {rel}")
+                errors.append(f"source file exceeds A5 phase 1 limit: {rel}")
 
     for error in errors:
         print(f"ERROR: {error}")
@@ -116,8 +134,8 @@ def main() -> None:
         raise SystemExit(1)
 
     print(
-        "WT_TERRAIN_A4_PHASE5_CONTRACT_PASS "
-        "next=a5_local_reference_scene_debug_ui implementation=a4_exit_review"
+        "WT_TERRAIN_A5_PHASE1_CONTRACT_PASS "
+        "next=a5_phase2_local_reference_scene_scaffold implementation=debug_snapshot_contract"
     )
 
 

@@ -135,9 +135,17 @@ Exit:
 
 ## A5 - Local reference scene and debug UI
 
-Status: active.
+Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`.
 
-Next:
+Phase 1 exit:
+
+- `WtTerrainDebugSnapshot` exposes world, terrain profile, generation profile,
+  storage profile, recovery policy, budget, collision, streaming, edit, and
+  material categories;
+- default snapshot capture does not start backend work;
+- the implementation boundary is `debug_snapshot_contract`.
+
+Phase 2 next:
 
 - create an addon-local inspection scene;
 - expose readable terrain/debug status for budget, collision, streaming, edit,
