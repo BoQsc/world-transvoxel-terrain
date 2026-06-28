@@ -164,3 +164,14 @@ crosshair, an overview camera mode for automated capture, and the
 `WT_VALIDATION_PLAYABLE_WORLD_TARGET_PASS` contract gate. The accepted run kept
 `WT_VALIDATION_G1_SMOKE_PASS` and `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS`
 green on Godot 4.6.3 and Godot 4.7.
+
+G2 first-person flat baseline commit:
+
+```text
+1f839f3 Complete first-person flat baseline gate
+```
+
+This commit adds `docs/G2_FIRST_PERSON_PLAYABLE_BASELINE.md`,
+`WT_VALIDATION_G2_CONTRACT_PASS`, and `WT_VALIDATION_G2_SMOKE_PASS`. The
+accepted run proves `generation=FLAT`, `terrain_triangles=512`,
+`walk_motion=2.800`, and `jump_height=1.080` on Godot 4.6.3 and Godot 4.7.
