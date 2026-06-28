@@ -229,13 +229,15 @@ validation-game milestone is G6 profile-selectable playable world.
 G6 profile-selectable playable-world commit:
 
 ```text
-cf12e61 Add profile selectable playable world gate
+6417d34 Stabilize material reapply during edits
 ```
 
 This commit adds `WT_VALIDATION_G6_CONTRACT_PASS` and
-`WT_VALIDATION_G6_SMOKE_PASS`. The accepted windowed run bakes/copies the large
-flat and mountain fixtures, loads both through the generated playable scene,
-submits 16 viewer positions, verifies first-person player/crosshair, applies
-materials, performs automated carve and construct/place with human input
-disabled, and saves first-person plus overview captures on Godot 4.6.3 and
-Godot 4.7. The next boundary is human visual verification.
+`WT_VALIDATION_G6_SMOKE_PASS`. The accepted windowed run bakes/copies the small
+multi-chunk flat and mountain fixtures, loads both through the generated
+playable scene, submits 16 viewer positions, verifies first-person
+player/crosshair, applies materials, performs automated carve and
+construct/place with human input disabled, and saves first-person plus overview
+captures on Godot 4.6.3 and Godot 4.7. Follow-up human feedback confirmed the
+fixture is small, performance cannot be judged from this scale, and edit/place
+white blink was addressed by continuous material reapply.
