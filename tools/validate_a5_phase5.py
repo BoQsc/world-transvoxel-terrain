@@ -26,20 +26,18 @@ REQUIRED_PHRASES = {
         "A6 owns the decision",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Current phase: A5 complete",
-        "Next phase is A6 game repository readiness decision",
         "Definition of done for A5 phase 5",
         "A5 is complete",
+        "Definition of done for A6",
     ),
     "docs/ROADMAP.md": (
         "## A5 - Local reference scene and debug UI",
         "Status: complete",
         "Phase 5 exit",
         "## A6 - Game repository readiness decision",
-        "Status: active",
+        "WT_TERRAIN_A6_READINESS_DECISION_PASS",
     ),
     "README.md": (
-        "Status: A5 complete",
         "WT_TERRAIN_A5_PHASE5_CONTRACT_PASS",
         "WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS",
         "python tools/a5_phase5_exit_review.py",

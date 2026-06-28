@@ -188,10 +188,14 @@ Exit:
 
 ## A6 - Game repository readiness decision
 
-Status: active.
+Status: complete by `WT_TERRAIN_A6_READINESS_DECISION_PASS`.
 
 Exit:
 
-- decide whether the separate game repository can be created;
-- game repository remains deferred until this addon has a stable package
-  boundary and local smoke tests.
+- decision: `approve_validation_game_repository`;
+- package boundary, local smoke evidence, and stable minimal API are accepted as
+  sufficient for creating a separate validation game repository when the user
+  explicitly asks;
+- this does not claim production-ready terrain or final gameplay validation;
+- next valid action is a separate validation game repository when the user
+  explicitly asks for it.

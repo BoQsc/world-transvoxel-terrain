@@ -36,7 +36,7 @@ REQUIRED_PHRASES = {
         "Status: complete",
         "Phase 5 exit",
         "## A5 - Local reference scene and debug UI",
-        "Status: active",
+        "WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS",
     ),
     "README.md": (
         "WT_TERRAIN_A4_PHASE5_CONTRACT_PASS",

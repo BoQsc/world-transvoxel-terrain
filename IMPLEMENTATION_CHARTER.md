@@ -2,7 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A5 complete. Next phase is A6 game repository readiness decision.
+Current phase: A6 complete. A separate validation game repository is approved
+only when the user explicitly asks for it.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -243,6 +244,8 @@ A6 - Game repository readiness decision.
 
 - create the separate game repository only after this addon has package
   boundaries, local smoke tests, and a stable minimal API.
+- A6 decides whether those prerequisites are satisfied. It does not claim
+  production-ready terrain.
 
 ## Definition of done for A0
 
@@ -483,3 +486,24 @@ A5 phase 5 is complete when:
 A5 is complete by `WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS`. The A5 closure is
 addon-local reference scene and debug UI evidence. Gameplay validation remains
 the responsibility of a later separate game repository only if A6 approves it.
+
+## Definition of done for A6
+
+A6 is complete when:
+
+- `docs/A6_GAME_REPOSITORY_READINESS_DECISION.md` records whether the separate
+  validation game repository may be created;
+- the decision checks package boundary, local smoke evidence, and stable minimal
+  API;
+- the decision states whether the game repository remains deferred or is
+  approved for creation only when the user explicitly asks for it;
+- the decision keeps production game readiness, broad gameplay validation, GPU
+  compute, fluids, planets, vegetation, structural stability, and 0BSD backend
+  replacement out of scope;
+- `python tools/validate_a6_readiness_decision.py` passes;
+- `python tools/a6_readiness_decision.py` passes.
+
+A6 is complete by `WT_TERRAIN_A6_READINESS_DECISION_PASS`. The recorded decision
+is `approve_validation_game_repository`, which means a separate validation game
+repository may be created when the user asks, but production-ready terrain is not
+claimed here.

@@ -3,14 +3,15 @@
 This directory is the installable Godot addon boundary for
 `world-transvoxel-terrain`.
 
-Current status: A5 complete. The addon has public terrain/profile/edit/storage
+Current status: A6 complete. The addon has public terrain/profile/edit/storage
 resources, a bridge to the official `world-transvoxel` backend, terrain-world
 lifecycle/edit submission, and a bounded reference runtime/cold-idle smoke
 through `WtTerrainWorld`. It now also has the debug snapshot data contract for
 the local reference scene plus an addon-local reference scene scaffold that can
 run against the official backend fixture and render explicit debug overlay
-sections. A6 game repository readiness decision is next. It is not yet a
-game-ready terrain package.
+sections. The A6 decision is `approve_validation_game_repository`, meaning a
+separate validation game repository may be created when the user explicitly asks
+for it. It is not yet a production-ready terrain package.
 
 Allowed GDScript here is limited to editor glue, scene scaffolding, input
 routing, debug UI, and small smoke-test harnesses. Terrain generation, meshing,
