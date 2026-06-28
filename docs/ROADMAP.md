@@ -199,11 +199,12 @@ Exit:
 - this does not claim production-ready terrain or final gameplay validation;
 - `world-transvoxel-validation-game` exists with G0 install/run validation
   complete;
-- `world-transvoxel-validation-game` commit `9aa7018` adds the root-safe notice
+- `world-transvoxel-validation-game` commit `3d5df31` adds the root-safe notice
   project, playable-world target contract, G2 first-person flat baseline gate,
-  G3 flat/mountain generation modes, first-person camera/crosshair, overview
-  capture mode, flat generation profile evidence, 4 by 4 baked page sets,
-  nonzero terrain triangle evidence, terrain collision settling, scripted player
-  movement, scripted jump, and visible captures after the first gray-rectangle-only
-  human run;
+  G3 flat/mountain generation modes, G4 terrain edit interaction,
+  first-person camera/crosshair, overview capture mode, flat generation profile
+  evidence, 4 by 4 baked page sets, nonzero terrain triangle evidence, terrain
+  collision settling, scripted player movement, scripted jump, carve/place edit
+  commits, replacement evidence, and visible captures after the first
+  gray-rectangle-only human run;
 - next validation-game action is human rerun confirmation.

@@ -188,3 +188,17 @@ accepted run bakes `flat_large` and `mountain_large` through the standard dense
 bake path with 16 pages per profile, then loads both in Godot with
 `flat_triangles=4096`, `mountain_triangles=5436`, and `mountain_span=7.862` on
 Godot 4.6.3 and Godot 4.7.
+
+G4 terrain edit interaction commit:
+
+```text
+3d5df31 Add first-person terrain edit interaction gate
+```
+
+This commit adds `docs/G4_TERRAIN_EDIT_INTERACTION.md`,
+`ValidationTerrainInteractor`, `WT_VALIDATION_G4_CONTRACT_PASS`, and
+`WT_VALIDATION_G4_SMOKE_PASS`. The accepted run verifies left-click carve and
+right-click construct/place affordances, submits automated carve/place through
+the same interactor with human input disabled, checks authoritative sample
+updates and collision resources, and reports edit replacement evidence on Godot
+4.6.3 and Godot 4.7.
