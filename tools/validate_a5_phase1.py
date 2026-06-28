@@ -57,7 +57,7 @@ REQUIRED_PHRASES = {
         "the next finite task is A5 phase 2",
     ),
     "docs/ROADMAP.md": (
-        "Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`",
+        "Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`",
         "Phase 1 exit",
         "Phase 2 next",
     ),

@@ -8,67 +8,47 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = (
-    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE4.md",
-    "addons/world_transvoxel_terrain/debug/wt_terrain_debug_overlay_formatter.gd",
-    "addons/world_transvoxel_terrain/debug/wt_terrain_debug_overlay_formatter.gd.uid",
-    "tests/a5_phase4_debug_overlay_categories_smoke.gd",
-    "tests/a5_phase4_debug_overlay_categories_smoke.gd.uid",
-    "tools/a5_phase4_debug_overlay_categories_smoke.py",
-    "tools/validate_a5_phase4.py",
+    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE5_EXIT_REVIEW.md",
+    "tools/a5_phase5_exit_review.py",
+    "tools/validate_a5_phase5.py",
 )
 
 REQUIRED_PHRASES = {
-    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE4.md": (
+    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE5_EXIT_REVIEW.md": (
         "Status: complete",
-        "WT_TERRAIN_A5_PHASE4_CONTRACT_PASS",
-        "WT_TERRAIN_A5_PHASE4_GODOT_PASS",
-        "WT_TERRAIN_A5_PHASE4_SMOKE_PASS",
-        "debug_overlay_category_rendering",
-        "Next valid action is A5 phase 5",
-    ),
-    "addons/world_transvoxel_terrain/debug/wt_terrain_debug_overlay_formatter.gd": (
-        "class_name WtTerrainDebugOverlayFormatter",
-        "debug_overlay_category_rendering",
-        "CATEGORY_ORDER",
-        "world",
-        "terrain_profile",
-        "storage_profile",
-        "budget",
-        "collision",
-        "streaming",
-        "edit",
-        "material",
-    ),
-    "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.gd": (
-        "DebugOverlayFormatter",
-        "get_debug_overlay_categories",
-        "debug_overlay_category_rendering",
-    ),
-    "tests/a5_phase4_debug_overlay_categories_smoke.gd": (
-        "WT_TERRAIN_A5_PHASE4_GODOT_PASS",
-        "REQUIRED_SECTIONS",
-        "render_resources=1",
-        "collision_resources=1",
-        "overlay_implementation=debug_overlay_category_rendering",
-    ),
-    "tools/a5_phase4_debug_overlay_categories_smoke.py": (
-        "WT_TERRAIN_A5_PHASE4_SMOKE_PASS",
-        "WT_TERRAIN_A5_PHASE4_GODOT_PASS",
-        "production-lifecycle-fixture",
-        "a5_phase4_debug_overlay_categories_report.json",
+        "WT_TERRAIN_A5_PHASE5_CONTRACT_PASS",
+        "WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS",
+        "A5 closes at the addon-local reference scene",
+        "next valid milestone is A6",
+        "WtTerrainDebugSnapshot",
+        "wt_terrain_reference_scene.tscn",
+        "does not vendor `world-transvoxel`",
+        "A6 owns the decision",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Definition of done for A5 phase 4",
-        "the next finite task is A5 phase 5",
+        "Current phase: A5 complete",
+        "Next phase is A6 game repository readiness decision",
+        "Definition of done for A5 phase 5",
+        "A5 is complete",
     ),
     "docs/ROADMAP.md": (
-        "phase 4 complete by `WT_TERRAIN_A5_PHASE4_SMOKE_PASS`",
-        "Phase 4 exit",
-        "Phase 5 next",
+        "## A5 - Local reference scene and debug UI",
+        "Status: complete",
+        "Phase 5 exit",
+        "## A6 - Game repository readiness decision",
+        "Status: active",
     ),
     "README.md": (
-        "WT_TERRAIN_A5_PHASE4_CONTRACT_PASS",
+        "Status: A5 complete",
+        "WT_TERRAIN_A5_PHASE5_CONTRACT_PASS",
+        "WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS",
+        "python tools/a5_phase5_exit_review.py",
+    ),
+    "tools/a5_phase5_exit_review.py": (
+        "WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS",
+        "WT_TERRAIN_A5_PHASE5_CONTRACT_PASS",
         "WT_TERRAIN_A5_PHASE4_SMOKE_PASS",
+        "a6_game_repository_readiness_decision",
     ),
 }
 
@@ -105,7 +85,7 @@ def main() -> None:
 
     for relative in REQUIRED_FILES:
         if not (ROOT / relative).is_file():
-            errors.append(f"missing A5 phase 4 file: {relative}")
+            errors.append(f"missing A5 phase 5 file: {relative}")
 
     for relative, phrases in REQUIRED_PHRASES.items():
         path = ROOT / relative
@@ -129,7 +109,7 @@ def main() -> None:
                 encoding="utf-8", errors="replace"
             ).splitlines()
             if len(lines) > 300:
-                errors.append(f"source file exceeds A5 phase 4 limit: {rel}")
+                errors.append(f"source file exceeds A5 phase 5 limit: {rel}")
 
     for error in errors:
         print(f"ERROR: {error}")
@@ -137,8 +117,8 @@ def main() -> None:
         raise SystemExit(1)
 
     print(
-        "WT_TERRAIN_A5_PHASE4_CONTRACT_PASS "
-        "next=a5_phase5_a5_exit_review implementation=debug_overlay_category_rendering"
+        "WT_TERRAIN_A5_PHASE5_CONTRACT_PASS "
+        "next=a6_game_repository_readiness_decision implementation=a5_exit_review"
     )
 
 

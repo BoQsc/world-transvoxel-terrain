@@ -2,8 +2,7 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A5 phase 4 debug overlay category rendering complete. Next phase
-is A5 phase 5 A5 exit review.
+Current phase: A5 complete. Next phase is A6 game repository readiness decision.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -235,6 +234,8 @@ A5 - Local reference scene and debug UI.
 - phase 2 provides a small addon-local inspection scene scaffold;
 - phase 3 runs the reference scene against the official backend fixture;
 - phase 4 renders debug snapshot categories into explicit overlay sections;
+- phase 5 performs the A5 exit review and closes the addon-local reference scene
+  and debug UI milestone;
 - show terrain budget, collision, streaming, edit, material, and storage state;
 - keep this as addon smoke evidence, not game-repository validation.
 
@@ -465,3 +466,20 @@ A5 phase 4 is complete when:
 - `python tools/a5_phase4_debug_overlay_categories_smoke.py` passes on
   discovered local Godot engines;
 - the next finite task is A5 phase 5 A5 exit review.
+
+## Definition of done for A5 phase 5
+
+A5 phase 5 is complete when:
+
+- `docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE5_EXIT_REVIEW.md` records the A5
+  exit decision;
+- every A5 phase 1 through phase 4 validator and smoke passes in one documented
+  run;
+- the A5 exit review states that A5 closes or names the exact remaining A5
+  implementation slice;
+- the roadmap is updated to move to A6 game repository readiness decision;
+- no game repository is created before A6 records the readiness decision.
+
+A5 is complete by `WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS`. The A5 closure is
+addon-local reference scene and debug UI evidence. Gameplay validation remains
+the responsibility of a later separate game repository only if A6 approves it.

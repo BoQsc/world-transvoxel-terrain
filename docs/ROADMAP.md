@@ -135,10 +135,11 @@ Exit:
 
 ## A5 - Local reference scene and debug UI
 
-Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`; phase 2
+Status: complete. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`; phase 2
 complete by `WT_TERRAIN_A5_PHASE2_SMOKE_PASS`; phase 3 complete by
 `WT_TERRAIN_A5_PHASE3_SMOKE_PASS`; phase 4 complete by
-`WT_TERRAIN_A5_PHASE4_SMOKE_PASS`.
+`WT_TERRAIN_A5_PHASE4_SMOKE_PASS`; phase 5 complete by
+`WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS`.
 
 Phase 1 exit:
 
@@ -171,9 +172,11 @@ Phase 4 exit:
   edit/material state;
 - the implementation boundary is `debug_overlay_category_rendering`.
 
-Phase 5 next:
+Phase 5 exit:
 
 - perform the A5 exit review;
+- close A5 or name the exact remaining A5 implementation slice;
+- next milestone is A6 game repository readiness decision;
 - keep the scene as addon smoke evidence, not game-repository validation.
 
 Exit:
@@ -185,7 +188,7 @@ Exit:
 
 ## A6 - Game repository readiness decision
 
-Status: deferred until A5 exits.
+Status: active.
 
 Exit:
 
