@@ -8,65 +8,62 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = (
-    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE2.md",
-    "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.gd",
-    "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.gd.uid",
-    "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.tscn",
-    "tests/a5_phase2_reference_scene_scaffold_smoke.gd",
-    "tests/a5_phase2_reference_scene_scaffold_smoke.gd.uid",
-    "tools/a5_phase2_reference_scene_scaffold_smoke.py",
-    "tools/validate_a5_phase2.py",
+    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE3.md",
+    "tests/a5_phase3_reference_scene_runtime_smoke.gd",
+    "tests/a5_phase3_reference_scene_runtime_smoke.gd.uid",
+    "tools/a5_phase3_reference_scene_runtime_smoke.py",
+    "tools/validate_a5_phase3.py",
 )
 
 REQUIRED_PHRASES = {
-    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE2.md": (
+    "docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE3.md": (
         "Status: complete",
-        "WT_TERRAIN_A5_PHASE2_CONTRACT_PASS",
-        "WT_TERRAIN_A5_PHASE2_GODOT_PASS",
-        "WT_TERRAIN_A5_PHASE2_SMOKE_PASS",
-        "local_reference_scene_scaffold",
+        "WT_TERRAIN_A5_PHASE3_CONTRACT_PASS",
+        "WT_TERRAIN_A5_PHASE3_GODOT_PASS",
+        "WT_TERRAIN_A5_PHASE3_SMOKE_PASS",
+        "backend_reference_scene_runtime_smoke",
         "A5 is not complete",
-        "Next valid action is A5 phase 3",
+        "Next valid action is A5 phase 4",
     ),
     "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.gd": (
-        "class_name WtTerrainReferenceScene",
-        "local_reference_scene_scaffold",
-        "refresh_debug_snapshot",
-        "get_reference_scene_summary",
-        "get_debug_status_text",
-        "DebugSnapshot",
+        "start_reference_backend_world",
+        "stop_reference_backend_world",
+        "update_reference_viewer",
+        "remove_reference_viewer",
+        "get_reference_runtime_summary",
+        "backend_reference_scene_runtime_smoke",
+        "render_resources",
+        "collision_resources",
     ),
-    "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.tscn": (
-        "WtTerrainReferenceScene",
-        "TerrainWorld",
-        "DebugOverlay",
-        "StatusLabel",
-        "wt_terrain_reference_scene.gd",
-    ),
-    "tests/a5_phase2_reference_scene_scaffold_smoke.gd": (
-        "WT_TERRAIN_A5_PHASE2_GODOT_PASS",
+    "tests/a5_phase3_reference_scene_runtime_smoke.gd": (
+        "WT_TERRAIN_A5_PHASE3_GODOT_PASS",
         "wt_terrain_reference_scene.tscn",
-        "refresh_debug_snapshot",
-        "profile=2048x64",
-        "local_reference_scene_scaffold",
+        "start_reference_backend_world",
+        "update_reference_viewer",
+        "remove_reference_viewer",
+        "backend_reference_scene_runtime_smoke",
+        "render_resources=1",
     ),
-    "tools/a5_phase2_reference_scene_scaffold_smoke.py": (
-        "WT_TERRAIN_A5_PHASE2_SMOKE_PASS",
-        "WT_TERRAIN_A5_PHASE2_GODOT_PASS",
-        "a5_phase2_reference_scene_scaffold_report.json",
+    "tools/a5_phase3_reference_scene_runtime_smoke.py": (
+        "WT_TERRAIN_A5_PHASE3_SMOKE_PASS",
+        "WT_TERRAIN_A5_PHASE3_GODOT_PASS",
+        "production-lifecycle-fixture",
+        "a5_phase3_reference_scene_runtime_report.json",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Definition of done for A5 phase 2",
-        "the next finite task is A5 phase 3",
+        "Current phase: A5 phase 3 backend reference-scene runtime smoke complete",
+        "Next phase is A5 phase 4 debug overlay category rendering",
+        "Definition of done for A5 phase 3",
     ),
     "docs/ROADMAP.md": (
-        "phase 2 complete by `WT_TERRAIN_A5_PHASE2_SMOKE_PASS`",
-        "Phase 2 exit",
-        "Phase 3 next",
+        "phase 3 complete by `WT_TERRAIN_A5_PHASE3_SMOKE_PASS`",
+        "Phase 3 exit",
+        "Phase 4 next",
     ),
     "README.md": (
-        "WT_TERRAIN_A5_PHASE2_CONTRACT_PASS",
-        "WT_TERRAIN_A5_PHASE2_SMOKE_PASS",
+        "Status: A5 phase 3 backend reference-scene runtime smoke complete",
+        "WT_TERRAIN_A5_PHASE3_CONTRACT_PASS",
+        "WT_TERRAIN_A5_PHASE3_SMOKE_PASS",
     ),
 }
 
@@ -103,7 +100,7 @@ def main() -> None:
 
     for relative in REQUIRED_FILES:
         if not (ROOT / relative).is_file():
-            errors.append(f"missing A5 phase 2 file: {relative}")
+            errors.append(f"missing A5 phase 3 file: {relative}")
 
     for relative, phrases in REQUIRED_PHRASES.items():
         path = ROOT / relative
@@ -127,7 +124,7 @@ def main() -> None:
                 encoding="utf-8", errors="replace"
             ).splitlines()
             if len(lines) > 300:
-                errors.append(f"source file exceeds A5 phase 2 limit: {rel}")
+                errors.append(f"source file exceeds A5 phase 3 limit: {rel}")
 
     for error in errors:
         print(f"ERROR: {error}")
@@ -135,9 +132,9 @@ def main() -> None:
         raise SystemExit(1)
 
     print(
-        "WT_TERRAIN_A5_PHASE2_CONTRACT_PASS "
-        "next=a5_phase3_backend_reference_scene_runtime_smoke "
-        "implementation=local_reference_scene_scaffold"
+        "WT_TERRAIN_A5_PHASE3_CONTRACT_PASS "
+        "next=a5_phase4_debug_overlay_category_rendering "
+        "implementation=backend_reference_scene_runtime_smoke"
     )
 
 

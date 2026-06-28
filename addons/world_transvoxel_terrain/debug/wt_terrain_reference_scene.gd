@@ -9,6 +9,7 @@ const RecoveryPolicy := preload("res://addons/world_transvoxel_terrain/storage/w
 const DebugSnapshot := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd")
 
 const IMPLEMENTATION := "local_reference_scene_scaffold"
+const RUNTIME_IMPLEMENTATION := "backend_reference_scene_runtime_smoke"
 
 @export var terrain_world_path: NodePath = ^"TerrainWorld"
 @export var status_label_path: NodePath = ^"DebugOverlay/Panel/StatusLabel"
@@ -50,6 +51,7 @@ func refresh_debug_snapshot() -> Dictionary:
 		return _last_debug_snapshot
 	_last_debug_snapshot = DebugSnapshot.capture(get_terrain_world())
 	_last_debug_snapshot["reference_scene"] = get_reference_scene_summary(false)
+	_last_debug_snapshot["reference_runtime"] = get_reference_runtime_summary()
 	_update_status_label()
 	return _last_debug_snapshot
 
@@ -70,6 +72,76 @@ func get_reference_scene_summary(include_snapshot: bool = true) -> Dictionary:
 	return summary
 
 
+func start_reference_backend_world() -> bool:
+	if not ensure_reference_defaults():
+		return false
+	var terrain_world := get_terrain_world()
+	if not terrain_world.has_method("start_backend_world"):
+		return false
+	var accepted := bool(terrain_world.call("start_backend_world"))
+	refresh_debug_snapshot()
+	return accepted
+
+
+func stop_reference_backend_world() -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null or not terrain_world.has_method("stop_backend_world"):
+		return false
+	var accepted := bool(terrain_world.call("stop_backend_world"))
+	refresh_debug_snapshot()
+	return accepted
+
+
+func update_reference_viewer(
+	viewer_id: int,
+	revision: int,
+	position: Vector3,
+	radius_chunks: int,
+	maximum_lod: int = 0
+) -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null or not terrain_world.has_method("update_viewer"):
+		return false
+	var accepted := bool(terrain_world.call(
+		"update_viewer", viewer_id, revision, position, radius_chunks, maximum_lod
+	))
+	refresh_debug_snapshot()
+	return accepted
+
+
+func remove_reference_viewer(viewer_id: int, revision: int) -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null or not terrain_world.has_method("remove_viewer"):
+		return false
+	var accepted := bool(terrain_world.call("remove_viewer", viewer_id, revision))
+	refresh_debug_snapshot()
+	return accepted
+
+
+func is_reference_cold_idle() -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null or not terrain_world.has_method("is_cold_idle"):
+		return false
+	return bool(terrain_world.call("is_cold_idle"))
+
+
+func get_reference_runtime_summary() -> Dictionary:
+	var snapshot := _last_debug_snapshot
+	var world := Dictionary(snapshot.get("world", {}))
+	var budget := Dictionary(snapshot.get("budget", {}))
+	var streaming := Dictionary(snapshot.get("streaming", {}))
+	return {
+		"backend_state": str(world.get("backend_state", "stopped")),
+		"backend_running": bool(world.get("backend_running", false)),
+		"cold_idle": bool(budget.get("cold_idle", false)),
+		"render_resources": int(budget.get("render_resources", 0)),
+		"collision_resources": int(budget.get("collision_resources", 0)),
+		"viewer_updates": int(streaming.get("viewer_updates", 0)),
+		"viewer_removals": int(streaming.get("viewer_removals", 0)),
+		"implementation": RUNTIME_IMPLEMENTATION,
+	}
+
+
 func get_debug_status_text() -> String:
 	var snapshot := _last_debug_snapshot
 	var profile := Dictionary(snapshot.get("terrain_profile", {}))
@@ -83,6 +155,8 @@ func get_debug_status_text() -> String:
 		],
 		"backend_state=%s" % str(world.get("backend_state", "stopped")),
 		"cold_idle=%s" % str(budget.get("cold_idle", false)).to_lower(),
+		"render_resources=%s" % str(budget.get("render_resources", 0)),
+		"collision_resources=%s" % str(budget.get("collision_resources", 0)),
 		"implementation=%s" % IMPLEMENTATION,
 	])
 

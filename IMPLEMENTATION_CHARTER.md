@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A5 phase 2 local reference scene scaffold complete. Next phase
-is A5 phase 3 backend reference-scene runtime smoke.
+Current phase: A5 phase 3 backend reference-scene runtime smoke complete. Next
+phase is A5 phase 4 debug overlay category rendering.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -233,6 +233,7 @@ A5 - Local reference scene and debug UI.
 - phase 1 defines the debug snapshot data contract for world, profile, storage,
   recovery, budget, collision, streaming, edit, and material state;
 - phase 2 provides a small addon-local inspection scene scaffold;
+- phase 3 runs the reference scene against the official backend fixture;
 - show terrain budget, collision, streaming, edit, material, and storage state;
 - keep this as addon smoke evidence, not game-repository validation.
 
@@ -426,3 +427,21 @@ A5 phase 2 is complete when:
 - `python tools/a5_phase2_reference_scene_scaffold_smoke.py` passes on
   discovered local Godot engines;
 - the next finite task is A5 phase 3 backend reference-scene runtime smoke.
+
+## Definition of done for A5 phase 3
+
+A5 phase 3 is complete when:
+
+- `docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE3.md` records the backend-backed
+  reference-scene runtime boundary;
+- `WtTerrainReferenceScene` exposes scene-level start/stop and viewer
+  update/removal methods for its owned `WtTerrainWorld`;
+- the scene runs against the official backend lifecycle fixture without copying
+  `world-transvoxel` into this repository;
+- the debug snapshot and status text report running backend state, cold-idle
+  state, render resources, and collision resources while live;
+- viewer removal returns the scene to zero render/collision resources;
+- `python tools/validate_a5_phase3.py` passes;
+- `python tools/a5_phase3_reference_scene_runtime_smoke.py` passes on
+  discovered local Godot engines;
+- the next finite task is A5 phase 4 debug overlay category rendering.

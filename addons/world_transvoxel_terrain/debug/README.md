@@ -11,3 +11,6 @@ for the later local reference scene and debug UI.
 A5 phase 2 adds `wt_terrain_reference_scene.tscn` and
 `WtTerrainReferenceScene`, a minimal addon-local scene scaffold with a
 `WtTerrainWorld` child and debug status label.
+
+A5 phase 3 makes the reference scene run its owned terrain world against the
+official backend fixture and report live runtime status in the debug label.
