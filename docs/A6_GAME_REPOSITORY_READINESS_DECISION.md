@@ -141,3 +141,14 @@ Hardened G1 terrain-geometry evidence commit:
 This commit makes the G1 guard and visual capture require nonzero terrain
 triangle geometry and centered terrain-bright image samples. The accepted run
 reported `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7.
+
+Playable-character validation commit:
+
+```text
+d9eb31e Add playable G1 validation character
+```
+
+This commit adds a small `CharacterBody3D` player, terrain-collision settling,
+scripted autonomous movement with human input disabled in tests, and visible
+player capture. The accepted run reported `player_motion=2.800` and
+`player_cyan_samples=432` on Godot 4.6.3 and Godot 4.7.
