@@ -13,6 +13,7 @@ const BACKEND_TERRAIN_NODE_NAME := "WT_BackendTerrain"
 @export var generation_profile: Resource
 @export var storage_profile: Resource
 @export var recovery_policy: Resource
+@export var material_profile: Resource
 @export var auto_report_dependency_status: bool = false
 
 var _backend_terrain: Node
@@ -182,6 +183,7 @@ func get_contract_summary() -> Dictionary:
 		"has_generation_profile": generation_profile != null,
 		"has_storage_profile": storage_profile != null,
 		"has_recovery_policy": recovery_policy != null,
+		"has_material_profile": material_profile != null,
 		"dependency": get_dependency_status(),
 		"bridge": get_bridge_status(),
 		"backend_world_state": get_backend_world_state_name(),
@@ -200,6 +202,7 @@ func get_a4_phase1_summary() -> Dictionary:
 		"generation_profile": _resource_summary(generation_profile),
 		"storage_profile": _resource_summary(storage_profile),
 		"recovery_policy": _resource_summary(recovery_policy),
+		"material_profile": _resource_summary(material_profile),
 		"backend_identity": get_backend_identity(),
 		"implementation": "resource_semantics_only",
 	}

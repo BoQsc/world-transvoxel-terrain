@@ -4,6 +4,7 @@ class_name WtTerrainReferenceScene
 
 const TerrainProfile := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_profile.gd")
 const GenerationProfile := preload("res://addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd")
+const MaterialProfile := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_material_profile.gd")
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
 const RecoveryPolicy := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_recovery_policy.gd")
 const DebugSnapshot := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd")
@@ -41,6 +42,8 @@ func ensure_reference_defaults() -> bool:
 		terrain_world.set("storage_profile", StorageProfile.new())
 	if terrain_world.get("recovery_policy") == null:
 		terrain_world.set("recovery_policy", RecoveryPolicy.new())
+	if terrain_world.get("material_profile") == null:
+		terrain_world.set("material_profile", MaterialProfile.new())
 	return true
 
 

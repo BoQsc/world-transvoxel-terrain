@@ -4,6 +4,7 @@ const MARKER := "WT_TERRAIN_A5_PHASE1_GODOT_PASS"
 const TerrainWorld := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_world.gd")
 const TerrainProfile := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_profile.gd")
 const GenerationProfile := preload("res://addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd")
+const MaterialProfile := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_material_profile.gd")
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
 const RecoveryPolicy := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_recovery_policy.gd")
 const DebugSnapshot := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd")
@@ -29,6 +30,7 @@ func _init() -> void:
 	world.generation_profile = GenerationProfile.new()
 	world.storage_profile = StorageProfile.new()
 	world.recovery_policy = RecoveryPolicy.new()
+	world.material_profile = MaterialProfile.new()
 
 	var snapshot: Dictionary = DebugSnapshot.capture(world)
 	for category in REQUIRED_CATEGORIES:
@@ -54,9 +56,10 @@ func _init() -> void:
 			int(budget.get("queued_collision", -1)) != 0:
 		errors.append("debug snapshot cold default budget drifted")
 	var material := Dictionary(snapshot.get("material", {}))
-	if bool(material.get("configured", true)) or \
-			str(material.get("status", "")) != "a5_phase1_material_policy_not_configured":
-		errors.append("debug snapshot material placeholder drifted")
+	if not bool(material.get("configured", false)) or \
+			str(material.get("status", "")) != "material_profile_configured" or \
+			str(material.get("profile_id", "")) != "debug_checker_palette":
+		errors.append("debug snapshot material profile drifted")
 
 	world.free()
 	if not errors.is_empty():

@@ -18,7 +18,7 @@ static func capture(terrain_world: Node) -> Dictionary:
 		"collision": _collision_summary(metrics),
 		"streaming": _streaming_summary(metrics),
 		"edit": _edit_summary(terrain_world, metrics),
-		"material": _material_summary(),
+		"material": _material_summary(terrain_world),
 		"implementation": IMPLEMENTATION,
 	}
 
@@ -74,11 +74,14 @@ static func _edit_summary(terrain_world: Node, metrics: Dictionary) -> Dictionar
 	}
 
 
-static func _material_summary() -> Dictionary:
-	return {
-		"configured": false,
-		"status": "a5_phase1_material_policy_not_configured",
-	}
+static func _material_summary(terrain_world: Node) -> Dictionary:
+	var profile := _get_property(terrain_world, "material_profile")
+	if profile is Object and profile.has_method("get_contract_summary"):
+		var summary := Dictionary(profile.call("get_contract_summary"))
+		summary["configured"] = true
+		summary["status"] = "material_profile_configured"
+		return summary
+	return {"configured": false, "status": "material_profile_not_assigned"}
 
 
 static func _resource_summary(resource: Variant) -> Dictionary:

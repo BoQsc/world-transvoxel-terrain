@@ -68,7 +68,9 @@ func _run_test() -> void:
 		"queued_collision=0",
 		"render_resources=1",
 		"collision_resources=1",
-		"configured=false",
+		"configured=true",
+		"profile_id=debug_checker_palette",
+		"shader_mode=uv2_material_id_checker",
 		"overlay_implementation=debug_overlay_category_rendering",
 	]:
 		if not text.contains(required_line):

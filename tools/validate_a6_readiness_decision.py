@@ -77,6 +77,11 @@ REQUIRED_API = {
         "class_name WtTerrainGenerationProfile",
         "supports_underground_volume: bool = true",
     ),
+    "addons/world_transvoxel_terrain/material/wt_terrain_material_profile.gd": (
+        "class_name WtTerrainMaterialProfile",
+        "texture_resolution",
+        "shader_mode",
+    ),
     "addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd": (
         "class_name WtTerrainStorageProfile",
         "edit_journal_path",

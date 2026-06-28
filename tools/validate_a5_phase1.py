@@ -45,7 +45,7 @@ REQUIRED_PHRASES = {
         "DebugSnapshot.capture",
         "categories=%d",
         "profile=2048x64",
-        "a5_phase1_material_policy_not_configured",
+        "material_profile_configured",
     ),
     "tools/a5_phase1_debug_snapshot_smoke.py": (
         "WT_TERRAIN_A5_PHASE1_SMOKE_PASS",

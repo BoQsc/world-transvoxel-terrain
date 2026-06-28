@@ -56,7 +56,14 @@ const CATEGORY_KEYS := {
 		"fully_ready_chunk_records",
 	],
 	"edit": ["edit_commits", "edit_rejections", "edit_replacements"],
-	"material": ["configured", "status"],
+	"material": [
+		"configured",
+		"status",
+		"profile_id",
+		"texture_resolution",
+		"shader_mode",
+		"material_count",
+	],
 }
 
 
