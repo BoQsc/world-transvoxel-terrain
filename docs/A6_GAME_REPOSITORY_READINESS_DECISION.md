@@ -152,3 +152,15 @@ This commit adds a small `CharacterBody3D` player, terrain-collision settling,
 scripted autonomous movement with human input disabled in tests, and visible
 player capture. The accepted run reported `player_motion=2.800` and
 `player_cyan_samples=432` on Godot 4.6.3 and Godot 4.7.
+
+First-person playable-world target commit:
+
+```text
+d7848dc Add playable world target and first-person baseline
+```
+
+This commit adds `docs/PLAYABLE_WORLD_TARGET.md`, first-person camera mode,
+crosshair, an overview camera mode for automated capture, and the
+`WT_VALIDATION_PLAYABLE_WORLD_TARGET_PASS` contract gate. The accepted run kept
+`WT_VALIDATION_G1_SMOKE_PASS` and `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS`
+green on Godot 4.6.3 and Godot 4.7.
