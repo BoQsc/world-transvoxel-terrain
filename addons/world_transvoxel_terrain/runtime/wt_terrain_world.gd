@@ -5,6 +5,7 @@ class_name WtTerrainWorld
 const DependencyStatus := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd")
 const BackendBridge := preload("res://addons/world_transvoxel_terrain/runtime/wt_world_transvoxel_bridge.gd")
 const EditBridge := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_edit_bridge.gd")
+const RuntimeAudit := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_audit.gd")
 
 const BACKEND_TERRAIN_NODE_NAME := "WT_BackendTerrain"
 
@@ -119,6 +120,61 @@ func get_last_edit_submission_summary() -> Dictionary:
 	return _last_edit_submission_summary
 
 
+func update_viewer(
+	viewer_id: int,
+	revision: int,
+	position: Vector3,
+	radius_chunks: int,
+	maximum_lod: int = 0
+) -> bool:
+	if not is_backend_world_running():
+		_last_error = "backend world must be running before viewer updates"
+		return false
+	if not _backend_terrain.has_method("update_viewer"):
+		_last_error = "backend terrain cannot update viewers"
+		return false
+	if not bool(_backend_terrain.call(
+		"update_viewer", viewer_id, revision, position, radius_chunks, maximum_lod
+	)):
+		_last_error = get_backend_world_error()
+		return false
+	_last_error = "ok"
+	return true
+
+
+func remove_viewer(viewer_id: int, revision: int) -> bool:
+	if not is_backend_world_running():
+		_last_error = "backend world must be running before viewer removal"
+		return false
+	if not _backend_terrain.has_method("remove_viewer"):
+		_last_error = "backend terrain cannot remove viewers"
+		return false
+	if not bool(_backend_terrain.call("remove_viewer", viewer_id, revision)):
+		_last_error = get_backend_world_error()
+		return false
+	_last_error = "ok"
+	return true
+
+
+func query_chunk_state(chunk_coordinate: Vector3i, lod: int) -> RefCounted:
+	if _backend_terrain == null or not _backend_terrain.has_method("query_chunk_state"):
+		_last_error = "backend terrain cannot query chunk state"
+		return null
+	return _backend_terrain.call("query_chunk_state", chunk_coordinate, lod)
+
+
+func get_runtime_metrics() -> Dictionary:
+	return RuntimeAudit.get_runtime_metrics(_backend_terrain)
+
+
+func is_cold_idle() -> bool:
+	return RuntimeAudit.is_cold_idle(get_runtime_metrics())
+
+
+func get_cold_idle_summary() -> Dictionary:
+	return RuntimeAudit.get_cold_idle_summary(get_runtime_metrics())
+
+
 func get_contract_summary() -> Dictionary:
 	return {
 		"terrain_world": "WtTerrainWorld",
@@ -129,8 +185,12 @@ func get_contract_summary() -> Dictionary:
 		"dependency": get_dependency_status(),
 		"bridge": get_bridge_status(),
 		"backend_world_state": get_backend_world_state_name(),
-		"implementation": "a4_phase3_terrain_world_lifecycle",
-		"phase_history": ["a4_phase1_resource_semantics_only"],
+		"cold_idle": is_cold_idle(),
+		"implementation": "a4_phase4_reference_profile_runtime_cold_idle",
+		"phase_history": [
+			"a4_phase1_resource_semantics_only",
+			"terrain_world_lifecycle",
+		],
 	}
 
 
@@ -155,6 +215,18 @@ func get_a4_phase3_summary() -> Dictionary:
 		"last_error": _last_error,
 		"last_edit_submission": _last_edit_submission_summary,
 		"implementation": "terrain_world_lifecycle",
+	}
+
+
+func get_a4_phase4_summary() -> Dictionary:
+	return {
+		"terrain_profile": _resource_summary(terrain_profile),
+		"storage_profile": _resource_summary(storage_profile),
+		"backend_world_state": get_backend_world_state_name(),
+		"backend_world_revision": get_backend_world_revision(),
+		"runtime_metrics": get_runtime_metrics(),
+		"cold_idle": get_cold_idle_summary(),
+		"implementation": "reference_profile_runtime_cold_idle",
 	}
 
 

@@ -18,3 +18,8 @@ official `WorldTransvoxelEditTransaction` backend calls. Public
 
 A4 phase 3 makes `WtTerrainWorld` own backend terrain/config instantiation,
 start/stop, and edit-batch submission through the existing bridge classes.
+
+A4 phase 4 adds public viewer update/removal, chunk query, runtime metrics, and
+cold-idle summaries through `WtTerrainWorld`. `WtTerrainRuntimeAudit` owns the
+focused cold-idle metric interpretation so the terrain-world node does not
+become a monolithic runtime manager.

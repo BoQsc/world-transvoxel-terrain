@@ -55,7 +55,8 @@ Exit:
 
 Status: active. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`; phase 2
 complete by `WT_TERRAIN_A4_PHASE2_SMOKE_PASS`; phase 3 complete by
-`WT_TERRAIN_A4_PHASE3_SMOKE_PASS`.
+`WT_TERRAIN_A4_PHASE3_SMOKE_PASS`; phase 4 complete by
+`WT_TERRAIN_A4_PHASE4_SMOKE_PASS`.
 
 Phase 1 exit:
 
@@ -99,6 +100,22 @@ Phase 4 next:
 - validate reference-profile runtime/cold-idle behavior through public
   `WtTerrainWorld`;
 - keep the step focused on A4 exit evidence, not optional systems.
+
+Phase 4 exit:
+
+- `WtTerrainWorld` exposes viewer update/removal, chunk query, runtime metrics,
+  and cold-idle summary APIs;
+- the reference profile defaults are verified as 2048 x 2048 x 64 with `+Y` up
+  and finite closed boundaries;
+- one public terrain-world viewer streams to ready render/collision state,
+  remains cold-idle with selected counters stable, removes cleanly, and stops;
+- the implementation boundary is `reference_profile_runtime_cold_idle`.
+
+Phase 5 next:
+
+- perform the A4 exit review;
+- either close A4 with evidence or record the exact remaining A4 slice before
+  A5 can begin.
 
 Exit:
 

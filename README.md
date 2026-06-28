@@ -2,12 +2,14 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A4 phase 3 terrain-world lifecycle complete. This repository defines the
+Status: A4 phase 4 reference runtime/cold-idle validation complete. This repository defines the
 addon boundary, public API shape, source layout, dependency detection, local
 smoke validation, official `world-transvoxel` bridge, and the first
 terrain/edit/storage/recovery resource contract plus backend edit transaction
 and journal replay evidence through public `WtTerrainWorld` lifecycle ownership.
-It is not a game repository and does not yet claim game-ready terrain.
+It now also validates viewer streaming, ready chunk query, runtime metrics, and
+cold-idle stability through `WtTerrainWorld` against the official backend
+fixture. It is not a game repository and does not yet claim game-ready terrain.
 
 ## Role
 
@@ -60,11 +62,13 @@ python tools/validate_a3_bridge.py
 python tools/validate_a4_phase1.py
 python tools/validate_a4_phase2.py
 python tools/validate_a4_phase3.py
+python tools/validate_a4_phase4.py
 python tools/a2_addon_smoke.py
 python tools/a3_bridge_smoke.py
 python tools/a4_phase1_resources_smoke.py
 python tools/a4_phase2_bridge_storage_smoke.py
 python tools/a4_phase3_terrain_world_lifecycle_smoke.py
+python tools/a4_phase4_reference_runtime_cold_idle_smoke.py
 ```
 
 Expected marker:
@@ -82,6 +86,8 @@ WT_TERRAIN_A4_PHASE2_CONTRACT_PASS next=a4_phase3_public_terrain_world_lifecycle
 WT_TERRAIN_A4_PHASE2_SMOKE_PASS engines=2 report=artifacts/a4_phase2_bridge_storage/a4_phase2_bridge_storage_report.json
 WT_TERRAIN_A4_PHASE3_CONTRACT_PASS next=a4_phase4_reference_profile_runtime_cold_idle implementation=terrain_world_lifecycle
 WT_TERRAIN_A4_PHASE3_SMOKE_PASS engines=2 report=artifacts/a4_phase3_terrain_world_lifecycle/a4_phase3_terrain_world_lifecycle_report.json
+WT_TERRAIN_A4_PHASE4_CONTRACT_PASS next=a4_phase5_a4_exit_review implementation=reference_profile_runtime_cold_idle
+WT_TERRAIN_A4_PHASE4_SMOKE_PASS engines=2 report=artifacts/a4_phase4_reference_runtime_cold_idle/a4_phase4_reference_runtime_cold_idle_report.json
 ```
 
 ## License

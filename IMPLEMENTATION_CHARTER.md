@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A4 phase 3 public `WtTerrainWorld` lifecycle ownership complete.
-Next phase is A4 phase 4 reference-profile runtime/cold-idle validation.
+Current phase: A4 phase 4 reference-profile runtime/cold-idle validation
+complete. Next phase is A4 phase 5 A4 exit review.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -221,6 +221,8 @@ A4 - Terrain profile, edit, storage, and recovery implementation.
   lifecycle ownership;
 - phase 4 validates the reference profile runtime/cold-idle path through the
   public terrain-world API;
+- phase 5 performs the A4 exit review and either closes A4 or records the exact
+  remaining A4 slice;
 - support the 2048 x 2048 x 64 reference profile;
 - support carve, construct, fill, paint, and restore-to-base;
 - persist edits through save/restart;
@@ -349,3 +351,38 @@ A4 phase 3 is complete when:
   is committed into this repository;
 - the next finite task is A4 phase 4 reference-profile runtime/cold-idle
   validation.
+
+## Definition of done for A4 phase 4
+
+A4 phase 4 is complete when:
+
+- `docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE4.md` records the
+  runtime/cold-idle boundary;
+- `WtTerrainWorld` exposes public viewer update/removal, chunk query, runtime
+  metrics, and cold-idle summary methods;
+- cold-idle interpretation lives in focused runtime helper code, not a growing
+  monolithic terrain-world script;
+- the default `WtTerrainProfile` is verified as the 2048 x 2048 x 64 `+Y` up
+  finite reference profile;
+- the Godot smoke starts the official lifecycle fixture through
+  `WtTerrainWorld`, streams one viewer, verifies ready render/collision state,
+  queries the ready origin chunk, holds selected runtime counters stable while
+  cold idle, removes the viewer, and stops cleanly;
+- `python tools/validate_a4_phase4.py` passes;
+- `python tools/a4_phase4_reference_runtime_cold_idle_smoke.py` passes on
+  discovered local Godot engines;
+- no `world-transvoxel`, sandbox implementation, or MIT Transvoxel topology data
+  is committed;
+- the next finite task is A4 phase 5 A4 exit review.
+
+## Definition of done for A4 phase 5
+
+A4 phase 5 is complete when:
+
+- every A4 phase 1 through phase 4 validator and smoke passes in one
+  documented run;
+- the A4 exit review states whether A4 closes or names the exact remaining A4
+  implementation slice;
+- the roadmap is updated to either move to A5 local reference scene/debug UI or
+  keep A4 active with a single named next phase;
+- no later milestone starts before the A4 status is explicit.
