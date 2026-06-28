@@ -108,3 +108,14 @@ G0 completed the install/run validation smoke against `world-transvoxel` commit
 `a84256e` and `world-transvoxel-terrain` commit `2219a0f` on Godot 4.6.3 and
 Godot 4.7. The next validation-game step is G1 human-visible playtest
 confirmation.
+
+G1 visible-playtest guard commit:
+
+```text
+06e7956 Add G1 visible playtest guard
+```
+
+The guard fixes the first gray-rectangle-only human result by aiming the camera
+at the generated terrain chunk, adding status text and orientation markers, and
+failing if no terrain `MeshInstance3D` is present. Human rerun confirmation is
+still pending.

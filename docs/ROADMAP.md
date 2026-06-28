@@ -199,4 +199,6 @@ Exit:
 - this does not claim production-ready terrain or final gameplay validation;
 - `world-transvoxel-validation-game` exists at commit `8923f6e` with G0
   install/run validation complete;
-- next validation-game action is G1 human-visible playtest confirmation.
+- `world-transvoxel-validation-game` commit `06e7956` adds the G1 visible
+  playtest guard after the first gray-rectangle-only human run;
+- next validation-game action is human rerun confirmation.

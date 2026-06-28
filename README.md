@@ -13,8 +13,9 @@ the official backend fixture. The reference scene now renders explicit debug
 overlay sections for world/profile/storage/budget/collision/streaming/edit and
 material state. A6 approved creating a separate validation game repository when
 explicitly requested; `world-transvoxel-validation-game` now exists with G0
-install/run validation complete at commit `8923f6e`. This is not a game
-repository and does not yet claim production-ready terrain.
+install/run validation complete at commit `8923f6e` and a G1 visible-playtest
+guard at commit `06e7956`. Human-visible rerun confirmation remains pending.
+This is not a game repository and does not yet claim production-ready terrain.
 
 ## Role
 
