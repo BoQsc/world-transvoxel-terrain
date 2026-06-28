@@ -53,10 +53,11 @@ Exit:
 
 ## A4 - Terrain profile, edit, storage, and recovery
 
-Status: active. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`; phase 2
-complete by `WT_TERRAIN_A4_PHASE2_SMOKE_PASS`; phase 3 complete by
+Status: complete. Phase 1 complete by `WT_TERRAIN_A4_PHASE1_SMOKE_PASS`; phase
+2 complete by `WT_TERRAIN_A4_PHASE2_SMOKE_PASS`; phase 3 complete by
 `WT_TERRAIN_A4_PHASE3_SMOKE_PASS`; phase 4 complete by
-`WT_TERRAIN_A4_PHASE4_SMOKE_PASS`.
+`WT_TERRAIN_A4_PHASE4_SMOKE_PASS`; phase 5 complete by
+`WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS`.
 
 Phase 1 exit:
 
@@ -117,6 +118,14 @@ Phase 5 next:
 - either close A4 with evidence or record the exact remaining A4 slice before
   A5 can begin.
 
+Phase 5 exit:
+
+- A4 closes at the terrain-addon API, profile, edit, storage, recovery, and
+  runtime-control level;
+- one documented run executes A4 phase 1 through phase 4 validators and smokes;
+- the implementation boundary is `a4_exit_review`;
+- next milestone is A5 local reference scene and debug UI.
+
 Exit:
 
 - 2048 x 2048 x 64 reference profile works through the terrain addon;
@@ -126,7 +135,14 @@ Exit:
 
 ## A5 - Local reference scene and debug UI
 
-Status: deferred until A4 exits.
+Status: active.
+
+Next:
+
+- create an addon-local inspection scene;
+- expose readable terrain/debug status for budget, collision, streaming, edit,
+  material, and storage state;
+- keep the scene as addon smoke evidence, not game-repository validation.
 
 Exit:
 

@@ -2,8 +2,7 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A4 phase 4 reference-profile runtime/cold-idle validation
-complete. Next phase is A4 phase 5 A4 exit review.
+Current phase: A4 complete. Next phase is A5 local reference scene and debug UI.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -386,3 +385,8 @@ A4 phase 5 is complete when:
 - the roadmap is updated to either move to A5 local reference scene/debug UI or
   keep A4 active with a single named next phase;
 - no later milestone starts before the A4 status is explicit.
+
+A4 is complete by `WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS`. The A4 closure is
+terrain-addon API/control-plane closure. Full generated 2048 x 2048 x 64
+gameplay-scene acceptance, broad motion/LOD/seam/visual acceptance, debug UI,
+and game-repository validation remain later milestones.

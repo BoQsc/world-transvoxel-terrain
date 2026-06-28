@@ -25,4 +25,5 @@ python tools/a4_phase1_resources_smoke.py
 python tools/a4_phase2_bridge_storage_smoke.py
 python tools/a4_phase3_terrain_world_lifecycle_smoke.py
 python tools/a4_phase4_reference_runtime_cold_idle_smoke.py
+python tools/a4_phase5_exit_review.py
 ```

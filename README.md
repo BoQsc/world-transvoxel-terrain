@@ -2,14 +2,14 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A4 phase 4 reference runtime/cold-idle validation complete. This repository defines the
-addon boundary, public API shape, source layout, dependency detection, local
-smoke validation, official `world-transvoxel` bridge, and the first
-terrain/edit/storage/recovery resource contract plus backend edit transaction
-and journal replay evidence through public `WtTerrainWorld` lifecycle ownership.
-It now also validates viewer streaming, ready chunk query, runtime metrics, and
-cold-idle stability through `WtTerrainWorld` against the official backend
-fixture. It is not a game repository and does not yet claim game-ready terrain.
+Status: A4 complete. This repository defines the addon boundary, public API
+shape, source layout, dependency detection, local smoke validation, official
+`world-transvoxel` bridge, terrain/edit/storage/recovery resource contracts,
+backend edit transactions, journal replay, public `WtTerrainWorld` lifecycle
+ownership, viewer streaming, ready chunk query, runtime metrics, and cold-idle
+stability against the official backend fixture. A5 local reference scene and
+debug UI is next. This is not a game repository and does not yet claim
+game-ready terrain.
 
 ## Role
 
@@ -63,12 +63,14 @@ python tools/validate_a4_phase1.py
 python tools/validate_a4_phase2.py
 python tools/validate_a4_phase3.py
 python tools/validate_a4_phase4.py
+python tools/validate_a4_phase5.py
 python tools/a2_addon_smoke.py
 python tools/a3_bridge_smoke.py
 python tools/a4_phase1_resources_smoke.py
 python tools/a4_phase2_bridge_storage_smoke.py
 python tools/a4_phase3_terrain_world_lifecycle_smoke.py
 python tools/a4_phase4_reference_runtime_cold_idle_smoke.py
+python tools/a4_phase5_exit_review.py
 ```
 
 Expected marker:
@@ -88,6 +90,8 @@ WT_TERRAIN_A4_PHASE3_CONTRACT_PASS next=a4_phase4_reference_profile_runtime_cold
 WT_TERRAIN_A4_PHASE3_SMOKE_PASS engines=2 report=artifacts/a4_phase3_terrain_world_lifecycle/a4_phase3_terrain_world_lifecycle_report.json
 WT_TERRAIN_A4_PHASE4_CONTRACT_PASS next=a4_phase5_a4_exit_review implementation=reference_profile_runtime_cold_idle
 WT_TERRAIN_A4_PHASE4_SMOKE_PASS engines=2 report=artifacts/a4_phase4_reference_runtime_cold_idle/a4_phase4_reference_runtime_cold_idle_report.json
+WT_TERRAIN_A4_PHASE5_CONTRACT_PASS next=a5_local_reference_scene_debug_ui implementation=a4_exit_review
+WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS validators=9 smokes=6 report=artifacts/a4_phase5_exit_review/a4_phase5_exit_review_report.json next=a5_local_reference_scene_debug_ui
 ```
 
 ## License
