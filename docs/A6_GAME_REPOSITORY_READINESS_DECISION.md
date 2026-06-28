@@ -175,3 +175,16 @@ This commit adds `docs/G2_FIRST_PERSON_PLAYABLE_BASELINE.md`,
 `WT_VALIDATION_G2_CONTRACT_PASS`, and `WT_VALIDATION_G2_SMOKE_PASS`. The
 accepted run proves `generation=FLAT`, `terrain_triangles=512`,
 `walk_motion=2.800`, and `jump_height=1.080` on Godot 4.6.3 and Godot 4.7.
+
+G3 flat/mountain generation modes commit:
+
+```text
+9aa7018 Add flat and mountain generation mode gate
+```
+
+This commit adds `docs/G3_TERRAIN_GENERATION_MODES.md`,
+`WT_VALIDATION_G3_CONTRACT_PASS`, and `WT_VALIDATION_G3_SMOKE_PASS`. The
+accepted run bakes `flat_large` and `mountain_large` through the standard dense
+bake path with 16 pages per profile, then loads both in Godot with
+`flat_triangles=4096`, `mountain_triangles=5436`, and `mountain_span=7.862` on
+Godot 4.6.3 and Godot 4.7.
