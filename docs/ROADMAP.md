@@ -197,8 +197,8 @@ Exit:
   sufficient for creating a separate validation game repository when the user
   explicitly asks;
 - this does not claim production-ready terrain or final gameplay validation;
-- `world-transvoxel-validation-game` exists at commit `8923f6e` with G0
-  install/run validation complete;
-- `world-transvoxel-validation-game` commit `06e7956` adds the G1 visible
-  playtest guard after the first gray-rectangle-only human run;
+- `world-transvoxel-validation-game` exists with G0 install/run validation
+  complete;
+- `world-transvoxel-validation-game` commit `5a47a8d` adds the root-safe notice
+  project plus G1 visual capture after the first gray-rectangle-only human run;
 - next validation-game action is human rerun confirmation.

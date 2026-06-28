@@ -119,3 +119,15 @@ The guard fixes the first gray-rectangle-only human result by aiming the camera
 at the generated terrain chunk, adding status text and orientation markers, and
 failing if no terrain `MeshInstance3D` is present. Human rerun confirmation is
 still pending.
+
+Root-safe visual-capture validation commit:
+
+```text
+5a47a8d Add root-safe validation visual capture
+```
+
+This commit makes the repository-root `project.godot` a notice-only project,
+keeps addon-enabled playtests in generated artifact projects, adds
+`WT_VALIDATION_ROOT_PROJECT_SAFE_IMPORT_PASS`, and adds
+`WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS` screenshot evidence. Human-visible
+rerun confirmation is still pending.
