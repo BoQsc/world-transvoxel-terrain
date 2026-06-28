@@ -2,8 +2,8 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A5 phase 1 debug snapshot contract complete. Next phase is A5
-phase 2 local reference scene scaffold.
+Current phase: A5 phase 2 local reference scene scaffold complete. Next phase
+is A5 phase 3 backend reference-scene runtime smoke.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -232,7 +232,7 @@ A5 - Local reference scene and debug UI.
 
 - phase 1 defines the debug snapshot data contract for world, profile, storage,
   recovery, budget, collision, streaming, edit, and material state;
-- provide a small addon-local inspection scene;
+- phase 2 provides a small addon-local inspection scene scaffold;
 - show terrain budget, collision, streaming, edit, material, and storage state;
 - keep this as addon smoke evidence, not game-repository validation.
 
@@ -410,3 +410,19 @@ A5 phase 1 is complete when:
 - `python tools/a5_phase1_debug_snapshot_smoke.py` passes on discovered local
   Godot engines;
 - the next finite task is A5 phase 2 local reference scene scaffold.
+
+## Definition of done for A5 phase 2
+
+A5 phase 2 is complete when:
+
+- `docs/A5_LOCAL_REFERENCE_SCENE_DEBUG_UI_PHASE2.md` records the local reference
+  scene scaffold boundary;
+- `wt_terrain_reference_scene.tscn` exists inside the addon boundary;
+- the scene owns a `WtTerrainWorld` child and a minimal debug overlay label;
+- `WtTerrainReferenceScene` refreshes through `WtTerrainDebugSnapshot`;
+- the scene assigns default terrain, generation, storage, and recovery
+  resources without starting backend work;
+- `python tools/validate_a5_phase2.py` passes;
+- `python tools/a5_phase2_reference_scene_scaffold_smoke.py` passes on
+  discovered local Godot engines;
+- the next finite task is A5 phase 3 backend reference-scene runtime smoke.

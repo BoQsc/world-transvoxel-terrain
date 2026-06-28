@@ -1,0 +1,93 @@
+@tool
+extends Node3D
+class_name WtTerrainReferenceScene
+
+const TerrainProfile := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_profile.gd")
+const GenerationProfile := preload("res://addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd")
+const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
+const RecoveryPolicy := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_recovery_policy.gd")
+const DebugSnapshot := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd")
+
+const IMPLEMENTATION := "local_reference_scene_scaffold"
+
+@export var terrain_world_path: NodePath = ^"TerrainWorld"
+@export var status_label_path: NodePath = ^"DebugOverlay/Panel/StatusLabel"
+@export var refresh_on_ready: bool = true
+
+var _last_debug_snapshot: Dictionary = {}
+
+
+func _ready() -> void:
+	if refresh_on_ready:
+		refresh_debug_snapshot()
+
+
+func get_terrain_world() -> Node:
+	return get_node_or_null(terrain_world_path)
+
+
+func ensure_reference_defaults() -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null:
+		return false
+	if terrain_world.get("terrain_profile") == null:
+		terrain_world.set("terrain_profile", TerrainProfile.new())
+	if terrain_world.get("generation_profile") == null:
+		terrain_world.set("generation_profile", GenerationProfile.new())
+	if terrain_world.get("storage_profile") == null:
+		terrain_world.set("storage_profile", StorageProfile.new())
+	if terrain_world.get("recovery_policy") == null:
+		terrain_world.set("recovery_policy", RecoveryPolicy.new())
+	return true
+
+
+func refresh_debug_snapshot() -> Dictionary:
+	if not ensure_reference_defaults():
+		_last_debug_snapshot = {
+			"implementation": IMPLEMENTATION,
+			"error": "terrain world missing",
+		}
+		return _last_debug_snapshot
+	_last_debug_snapshot = DebugSnapshot.capture(get_terrain_world())
+	_last_debug_snapshot["reference_scene"] = get_reference_scene_summary(false)
+	_update_status_label()
+	return _last_debug_snapshot
+
+
+func get_last_debug_snapshot() -> Dictionary:
+	return _last_debug_snapshot
+
+
+func get_reference_scene_summary(include_snapshot: bool = true) -> Dictionary:
+	var summary := {
+		"scene": "WtTerrainReferenceScene",
+		"has_terrain_world": get_terrain_world() != null,
+		"has_debug_overlay": get_node_or_null(status_label_path) != null,
+		"implementation": IMPLEMENTATION,
+	}
+	if include_snapshot:
+		summary["debug_snapshot"] = _last_debug_snapshot
+	return summary
+
+
+func get_debug_status_text() -> String:
+	var snapshot := _last_debug_snapshot
+	var profile := Dictionary(snapshot.get("terrain_profile", {}))
+	var world := Dictionary(snapshot.get("world", {}))
+	var budget := Dictionary(snapshot.get("budget", {}))
+	return "\n".join([
+		"World Transvoxel Terrain Reference Scene",
+		"profile=%sx%s" % [
+			str(profile.get("horizontal_cells", 0)),
+			str(profile.get("vertical_cells", 0)),
+		],
+		"backend_state=%s" % str(world.get("backend_state", "stopped")),
+		"cold_idle=%s" % str(budget.get("cold_idle", false)).to_lower(),
+		"implementation=%s" % IMPLEMENTATION,
+	])
+
+
+func _update_status_label() -> void:
+	var label := get_node_or_null(status_label_path)
+	if label != null:
+		label.set("text", get_debug_status_text())

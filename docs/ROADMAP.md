@@ -135,7 +135,8 @@ Exit:
 
 ## A5 - Local reference scene and debug UI
 
-Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`.
+Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`; phase 2
+complete by `WT_TERRAIN_A5_PHASE2_SMOKE_PASS`.
 
 Phase 1 exit:
 
@@ -145,9 +146,17 @@ Phase 1 exit:
 - default snapshot capture does not start backend work;
 - the implementation boundary is `debug_snapshot_contract`.
 
-Phase 2 next:
+Phase 2 exit:
 
-- create an addon-local inspection scene;
+- addon-local inspection scene scaffold exists;
+- the scene owns a `WtTerrainWorld` child and minimal debug overlay label;
+- the scene refreshes through `WtTerrainDebugSnapshot`;
+- default scene inspection does not start backend work;
+- the implementation boundary is `local_reference_scene_scaffold`.
+
+Phase 3 next:
+
+- run the local reference scene against the official backend fixture;
 - expose readable terrain/debug status for budget, collision, streaming, edit,
   material, and storage state;
 - keep the scene as addon smoke evidence, not game-repository validation.

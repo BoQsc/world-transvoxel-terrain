@@ -53,9 +53,8 @@ REQUIRED_PHRASES = {
         "a5_phase1_debug_snapshot_report.json",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Current phase: A5 phase 1 debug snapshot contract complete",
-        "Next phase is A5 phase 2 local reference scene scaffold",
         "Definition of done for A5 phase 1",
+        "the next finite task is A5 phase 2",
     ),
     "docs/ROADMAP.md": (
         "Status: active. Phase 1 complete by `WT_TERRAIN_A5_PHASE1_SMOKE_PASS`",
@@ -63,7 +62,6 @@ REQUIRED_PHRASES = {
         "Phase 2 next",
     ),
     "README.md": (
-        "Status: A5 phase 1 debug snapshot contract complete",
         "WT_TERRAIN_A5_PHASE1_CONTRACT_PASS",
         "WT_TERRAIN_A5_PHASE1_SMOKE_PASS",
     ),
