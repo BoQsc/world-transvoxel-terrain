@@ -12,10 +12,12 @@ enum SourceMode {
 @export var seed: int = 1
 @export var default_solid_material: int = 1
 @export var supports_underground_volume: bool = true
+@export var profile_id: StringName = &"deterministic_reference"
 
 
 func get_contract_summary() -> Dictionary:
 	return {
+		"profile_id": str(profile_id),
 		"source_mode": SourceMode.keys()[source_mode],
 		"seed": seed,
 		"default_solid_material": default_solid_material,

@@ -61,6 +61,8 @@ func _run_test() -> void:
 	for required_line in [
 		"profile=2048x64",
 		"backend_state=running",
+		"source_mode=DETERMINISTIC_REFERENCE",
+		"seed=1",
 		"cold_idle=true",
 		"queued_render=0",
 		"queued_collision=0",

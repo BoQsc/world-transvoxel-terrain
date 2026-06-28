@@ -25,7 +25,12 @@ const CATEGORY_KEYS := {
 		"plus_y_is_up",
 		"finite_closed_boundary",
 	],
-	"generation_profile": ["profile_id", "supports_underground_volume"],
+	"generation_profile": [
+		"profile_id",
+		"source_mode",
+		"seed",
+		"supports_underground_volume",
+	],
 	"storage_profile": ["profile_id", "world_manifest_path", "object_root_path"],
 	"recovery_policy": ["profile_id", "restore_mode", "cold_idle_after_recovery"],
 	"budget": [

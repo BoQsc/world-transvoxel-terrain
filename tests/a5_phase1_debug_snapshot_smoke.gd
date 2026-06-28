@@ -41,6 +41,10 @@ func _init() -> void:
 	if int(terrain_profile.get("horizontal_cells", 0)) != 2048 or \
 			int(terrain_profile.get("vertical_cells", 0)) != 64:
 		errors.append("debug snapshot reference profile drifted")
+	var generation_profile := Dictionary(snapshot.get("generation_profile", {}))
+	if str(generation_profile.get("profile_id", "")) != "deterministic_reference" or \
+			str(generation_profile.get("source_mode", "")) != "DETERMINISTIC_REFERENCE":
+		errors.append("debug snapshot generation profile drifted")
 	var world_summary := Dictionary(snapshot.get("world", {}))
 	if bool(world_summary.get("backend_running", true)):
 		errors.append("debug snapshot should not start backend work")
