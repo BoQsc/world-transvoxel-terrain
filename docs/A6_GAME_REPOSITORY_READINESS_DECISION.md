@@ -225,3 +225,17 @@ accepted windowed run applies material overrides to backend terrain meshes,
 saves visual captures, samples GPU watts through `nvidia-smi`, and reports
 `avg_gpu_power_watts=24.41` across Godot 4.6.3 and Godot 4.7. The next
 validation-game milestone is G6 profile-selectable playable world.
+
+G6 profile-selectable playable-world commit:
+
+```text
+cf12e61 Add profile selectable playable world gate
+```
+
+This commit adds `WT_VALIDATION_G6_CONTRACT_PASS` and
+`WT_VALIDATION_G6_SMOKE_PASS`. The accepted windowed run bakes/copies the large
+flat and mountain fixtures, loads both through the generated playable scene,
+submits 16 viewer positions, verifies first-person player/crosshair, applies
+materials, performs automated carve and construct/place with human input
+disabled, and saves first-person plus overview captures on Godot 4.6.3 and
+Godot 4.7. The next boundary is human visual verification.
