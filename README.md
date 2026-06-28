@@ -14,14 +14,15 @@ overlay sections for world/profile/storage/budget/collision/streaming/edit and
 material state. A6 approved creating a separate validation game repository when
 explicitly requested; `world-transvoxel-validation-game` now exists with G0
 install/run validation complete, first-person playable-world target evidence,
-G2 first-person flat baseline evidence, and G3 flat/mountain generation evidence
-plus G4 terrain edit interaction evidence through commit `3d5df31`, including
-4 by 4 baked page sets, flat and mountain captures, terrain triangles, terrain
-collision, scripted player motion, scripted jump, crosshair, visible player
-capture, first-person carve/place affordance, edit commits, replacement metrics,
-and the larger playable-world target contract. Human-visible rerun confirmation
-remains pending. This is not a game repository and does not yet claim
-production-ready terrain.
+G2 first-person flat baseline evidence, G3 flat/mountain generation evidence,
+G4 terrain edit interaction evidence, and G5 material/performance baseline
+evidence through commit `c7da4bb`, including 4 by 4 baked page sets, flat and
+mountain captures, terrain triangles, terrain collision, scripted player motion,
+scripted jump, crosshair, visible player capture, first-person carve/place
+affordance, edit commits, replacement metrics, materialized checker terrain,
+GPU watt sampling, and the larger playable-world target contract. The next
+validation-game milestone is G6 profile-selectable playable world. This is not
+a game repository and does not yet claim production-ready terrain.
 
 ## Role
 

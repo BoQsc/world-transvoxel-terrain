@@ -19,7 +19,8 @@ A5 phase 4 renders the debug snapshot into explicit overlay sections:
   and material sections;
 - `WtTerrainReferenceScene` uses the formatter for its debug label;
 - live backend state, cold-idle state, render resources, collision resources,
-  queue state, and material placeholder state are visible in overlay text;
+  queue state, and configured material profile state are visible in overlay
+  text;
 - the smoke runs the reference scene against the official backend fixture and
   verifies the rendered section names and live values.
 

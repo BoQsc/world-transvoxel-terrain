@@ -202,3 +202,26 @@ right-click construct/place affordances, submits automated carve/place through
 the same interactor with human input disabled, checks authoritative sample
 updates and collision resources, and reports edit replacement evidence on Godot
 4.6.3 and Godot 4.7.
+
+Terrain material profile commit:
+
+```text
+67649c6 Add terrain material profile
+```
+
+This commit adds `WtTerrainMaterialProfile`, assigns it in the addon-local
+reference scene defaults, and exposes `material_profile_configured` through the
+debug snapshot and overlay contract.
+
+G5 material/performance baseline commit:
+
+```text
+c7da4bb Add material performance baseline gate
+```
+
+This commit adds the validation-game checker terrain material path,
+`WT_VALIDATION_G5_CONTRACT_PASS`, and `WT_VALIDATION_G5_SMOKE_PASS`. The
+accepted windowed run applies material overrides to backend terrain meshes,
+saves visual captures, samples GPU watts through `nvidia-smi`, and reports
+`avg_gpu_power_watts=24.41` across Godot 4.6.3 and Godot 4.7. The next
+validation-game milestone is G6 profile-selectable playable world.

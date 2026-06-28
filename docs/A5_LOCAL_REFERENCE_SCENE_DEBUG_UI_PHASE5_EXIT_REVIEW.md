@@ -32,7 +32,7 @@ A5 is closed by the combined evidence from phases 1 through 4:
   methods;
 - live debug snapshots and overlay text report backend state, cold-idle state,
   queue state, render resources, collision resources, streaming, edit, and
-  material placeholder state;
+  configured material profile state;
 - all reference-scene backend evidence uses ignored copied fixture data and does
   not vendor `world-transvoxel`.
 

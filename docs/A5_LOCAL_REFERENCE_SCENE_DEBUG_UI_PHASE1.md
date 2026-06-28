@@ -20,12 +20,12 @@ debug UI will consume:
   policy, budget, collision, streaming, edit, and material categories;
 - the snapshot reads public `WtTerrainWorld` state and resource summaries;
 - default snapshot capture does not start backend work;
-- the material category is explicit about not being configured yet instead of
-  hiding missing material policy.
+- the material category is explicit about the configured debug material profile
+  instead of hiding material policy state.
 
 ## Boundary
 
 A5 is not complete. This phase does not add the reference scene, visual overlay,
-interactive inspector, material preview, or backend-backed debug capture.
+interactive inspector, visual material preview, or backend-backed debug capture.
 
 Next valid action is A5 phase 2: local reference scene scaffold.
