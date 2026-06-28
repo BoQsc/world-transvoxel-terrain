@@ -92,3 +92,19 @@ working.
 
 A6 answers whether the separate validation game repository may be created. It
 does not replace the need for that game repository to validate real gameplay.
+
+## Downstream repository
+
+The A6-approved downstream repository now exists as
+`world-transvoxel-validation-game`.
+
+Initial validation-game commit:
+
+```text
+8923f6e Create validation game G0 install run scaffold
+```
+
+G0 completed the install/run validation smoke against `world-transvoxel` commit
+`a84256e` and `world-transvoxel-terrain` commit `2219a0f` on Godot 4.6.3 and
+Godot 4.7. The next validation-game step is G1 human-visible playtest
+confirmation.

@@ -11,9 +11,10 @@ ready chunk query, runtime metrics, cold-idle stability, and a debug snapshot
 data contract plus an addon-local reference scene scaffold that can run against
 the official backend fixture. The reference scene now renders explicit debug
 overlay sections for world/profile/storage/budget/collision/streaming/edit and
-material state. A6 approves creating a separate validation game repository when
-the user explicitly asks for it. This is not a game repository and does not yet
-claim production-ready terrain.
+material state. A6 approved creating a separate validation game repository when
+explicitly requested; `world-transvoxel-validation-game` now exists with G0
+install/run validation complete at commit `8923f6e`. This is not a game
+repository and does not yet claim production-ready terrain.
 
 ## Role
 
