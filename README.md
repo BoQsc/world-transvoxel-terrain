@@ -14,8 +14,9 @@ overlay sections for world/profile/storage/budget/collision/streaming/edit and
 material state. A6 approved creating a separate validation game repository when
 explicitly requested; `world-transvoxel-validation-game` now exists with G0
 install/run validation complete and G1 root-safe visual capture evidence through
-commit `5a47a8d`. Human-visible rerun confirmation remains pending. This is not
-a game repository and does not yet claim production-ready terrain.
+commit `3c521b0`, including nonzero terrain triangle checks. Human-visible rerun
+confirmation remains pending. This is not a game repository and does not yet
+claim production-ready terrain.
 
 ## Role
 

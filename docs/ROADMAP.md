@@ -199,6 +199,7 @@ Exit:
 - this does not claim production-ready terrain or final gameplay validation;
 - `world-transvoxel-validation-game` exists with G0 install/run validation
   complete;
-- `world-transvoxel-validation-game` commit `5a47a8d` adds the root-safe notice
-  project plus G1 visual capture after the first gray-rectangle-only human run;
+- `world-transvoxel-validation-game` commit `3c521b0` adds the root-safe notice
+  project plus G1 visual capture and nonzero terrain triangle evidence after the
+  first gray-rectangle-only human run;
 - next validation-game action is human rerun confirmation.

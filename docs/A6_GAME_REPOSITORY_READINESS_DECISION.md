@@ -131,3 +131,13 @@ keeps addon-enabled playtests in generated artifact projects, adds
 `WT_VALIDATION_ROOT_PROJECT_SAFE_IMPORT_PASS`, and adds
 `WT_VALIDATION_G1_VISUAL_CAPTURE_RUN_PASS` screenshot evidence. Human-visible
 rerun confirmation is still pending.
+
+Hardened G1 terrain-geometry evidence commit:
+
+```text
+3c521b0 Harden G1 terrain visual evidence
+```
+
+This commit makes the G1 guard and visual capture require nonzero terrain
+triangle geometry and centered terrain-bright image samples. The accepted run
+reported `terrain_triangles=512` on Godot 4.6.3 and Godot 4.7.
