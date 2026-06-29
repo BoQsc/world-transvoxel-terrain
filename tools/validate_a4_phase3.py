@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = (
     "docs/A4_PROFILE_EDIT_STORAGE_RECOVERY_PHASE3.md",
+    "addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd",
+    "addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd.uid",
     "tests/a4_phase3_terrain_world_lifecycle_smoke.gd",
     "tests/a4_phase3_terrain_world_lifecycle_smoke.gd.uid",
     "tools/a4_phase3_terrain_world_lifecycle_smoke.py",
@@ -28,11 +30,19 @@ REQUIRED_PHRASES = {
     "addons/world_transvoxel_terrain/runtime/wt_terrain_world.gd": (
         "class_name WtTerrainWorld",
         "start_backend_world",
+        "GenerationBackend.start_backend_world",
         "stop_backend_world",
         "submit_edit_batch",
         "get_backend_terrain",
         "get_backend_world_state_name",
         "terrain_world_lifecycle",
+    ),
+    "addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd": (
+        "start_backend_world",
+        "start_procedural_world",
+        "DETERMINISTIC_REFERENCE",
+        "world_chunk_count_x",
+        "source_revision",
     ),
     "addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd": (
         "object_root_path",

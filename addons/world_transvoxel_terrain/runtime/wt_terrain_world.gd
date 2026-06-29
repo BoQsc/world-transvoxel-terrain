@@ -5,6 +5,7 @@ class_name WtTerrainWorld
 const DependencyStatus := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd")
 const BackendBridge := preload("res://addons/world_transvoxel_terrain/runtime/wt_world_transvoxel_bridge.gd")
 const EditBridge := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_edit_bridge.gd")
+const GenerationBackend := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd")
 const RuntimeAudit := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_audit.gd")
 
 const BACKEND_TERRAIN_NODE_NAME := "WT_BackendTerrain"
@@ -82,8 +83,11 @@ func start_backend_world() -> bool:
 		return false
 	var manifest_path := str(storage_profile.get("world_manifest_path"))
 	var object_root := str(storage_profile.get("object_root_path"))
-	if not bool(_backend_terrain.call("start_world", manifest_path, object_root)):
-		_last_error = get_backend_world_error()
+	var start_result := GenerationBackend.start_backend_world(_backend_terrain, generation_profile, manifest_path, object_root)
+	if not bool(start_result.get("started", false)):
+		_last_error = str(start_result.get("error", ""))
+		if _last_error.is_empty():
+			_last_error = get_backend_world_error()
 		return false
 	_last_error = "ok"
 	return true

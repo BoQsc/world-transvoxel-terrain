@@ -17,6 +17,8 @@ public `WtTerrainWorld` node:
 
 - `WtTerrainWorld.start_backend_world()` instantiates the official backend
   terrain and config through `WtWorldTransvoxelBridge`;
+- `WtTerrainGenerationBackend` chooses manifest-backed startup or
+  `start_procedural_world()` for `DETERMINISTIC_REFERENCE` generation profiles;
 - the backend node is owned as a child named `WT_BackendTerrain`;
 - `WtTerrainStorageProfile` supplies the world manifest and object-root paths;
 - `WtTerrainWorld.stop_backend_world()` controls backend shutdown;
