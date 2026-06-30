@@ -44,6 +44,8 @@ The current minimal game-facing API is centered on `WtTerrainWorld`:
 `request_authoritative_samples`, `request_world_compaction`,
 `request_world_migration`, `get_runtime_metrics`, `get_cold_idle_summary`,
 `get_debug_snapshot`, and `get_terrain_api_contract_summary`.
+Debug terrain material application belongs to addon-local
+`WtTerrainMaterialApplicator`, not to validation-game scripts.
 
 It depends on `world-transvoxel`. It does not vendor or copy
 `world-transvoxel-sandbox`, and it does not contain Eric Lengyel's MIT

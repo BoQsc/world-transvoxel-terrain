@@ -17,3 +17,7 @@ official backend fixture and report live runtime status in the debug label.
 
 A5 phase 4 adds `WtTerrainDebugOverlayFormatter`, which renders debug snapshot
 categories into explicit overlay sections for the reference scene label.
+
+`WtTerrainMeshStats` owns debug mesh counting for validation and integration
+smoke tests. Game repositories should not carry their own backend mesh traversal
+helper just to prove terrain has drawable mesh instances.
