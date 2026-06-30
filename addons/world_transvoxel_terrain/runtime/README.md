@@ -23,3 +23,11 @@ A4 phase 4 adds public viewer update/removal, chunk query, runtime metrics, and
 cold-idle summaries through `WtTerrainWorld`. `WtTerrainRuntimeAudit` owns the
 focused cold-idle metric interpretation so the terrain-world node does not
 become a monolithic runtime manager.
+
+The downstream G46 terrain-addon API contract adds stable public aliases and
+introspection on `WtTerrainWorld`: `start_world`, `stop_world`,
+`is_world_running`, `get_world_state_name`, `get_world_revision`,
+`get_world_source_revision`, `get_world_page_count`, profile summaries,
+authoritative sample request methods/signals, storage snapshot request wrappers,
+runtime telemetry, debug snapshot capture, and
+`get_terrain_api_contract_summary`.

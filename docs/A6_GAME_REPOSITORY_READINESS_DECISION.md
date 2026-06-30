@@ -66,11 +66,15 @@ The validation game can start with this minimal API:
 
 - create or instance `WtTerrainWorld`;
 - assign terrain, generation, storage, and recovery resources;
-- start and stop the backend world;
+- start and stop the world through `start_world` and `stop_world`;
 - submit edit batches;
 - update and remove viewers;
 - query ready chunk state;
-- read runtime metrics, cold-idle state, dependency status, and debug snapshots.
+- request authoritative samples through public terrain-world methods/signals;
+- request storage compaction/migration snapshots through public terrain-world
+  methods/signals;
+- read runtime metrics, cold-idle state, dependency status, profile summaries,
+  the G46 API contract summary, and debug snapshots.
 
 ## Required first scope for the future game repository
 

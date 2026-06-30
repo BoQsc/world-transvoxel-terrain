@@ -11,7 +11,11 @@ ready chunk query, runtime metrics, cold-idle stability, and a debug snapshot
 data contract plus an addon-local reference scene scaffold that can run against
 the official backend fixture. The reference scene now renders explicit debug
 overlay sections for world/profile/storage/budget/collision/streaming/edit and
-material state. A6 approved creating a separate validation game repository when
+material state. The downstream G46 validation gate locks a minimal public
+`WtTerrainWorld` API contract with stable lifecycle aliases, profile summaries,
+authoritative sample query methods/signals, storage snapshot request wrappers,
+runtime telemetry, and debug snapshot access. A6 approved creating a separate
+validation game repository when
 explicitly requested; `world-transvoxel-validation-game` now exists with G0
 install/run validation complete, first-person playable-world target evidence,
 G2 first-person flat baseline evidence, G3 flat/mountain generation evidence,
@@ -31,6 +35,15 @@ not a game repository and does not yet claim production-ready terrain.
 `world-transvoxel-terrain` packages proven terrain patterns into game-facing
 APIs, resources, presets, debug tools, save/load hooks, and edit/recovery
 conventions.
+
+The current minimal game-facing API is centered on `WtTerrainWorld`:
+`start_world`, `stop_world`, `is_world_running`, `get_world_state_name`,
+`get_world_revision`, `get_world_source_revision`, `get_world_page_count`,
+`get_profile_summaries`, `update_viewer`, `remove_viewer`, `query_chunk_state`,
+`submit_edit_batch`, `request_authoritative_sample`,
+`request_authoritative_samples`, `request_world_compaction`,
+`request_world_migration`, `get_runtime_metrics`, `get_cold_idle_summary`,
+`get_debug_snapshot`, and `get_terrain_api_contract_summary`.
 
 It depends on `world-transvoxel`. It does not vendor or copy
 `world-transvoxel-sandbox`, and it does not contain Eric Lengyel's MIT
