@@ -8,6 +8,10 @@ enum SourceMode {
 	BAKED_WORLD,
 }
 
+const UNDERGROUND_MODEL := "density_volume_vertical_strata_v1"
+const UNDERGROUND_STRATA_MATERIAL_IDS: Array[int] = [1, 7, 4]
+const UNDERGROUND_DEPTH_BANDS := "deep>=8:1,mid>=3:7,shallow>=1:4"
+
 @export var source_mode: SourceMode = SourceMode.DETERMINISTIC_REFERENCE
 @export var seed: int = 1
 @export var default_solid_material: int = 1
@@ -25,6 +29,10 @@ func get_contract_summary() -> Dictionary:
 		"seed": seed,
 		"default_solid_material": default_solid_material,
 		"supports_underground_volume": supports_underground_volume,
+		"underground_model": UNDERGROUND_MODEL,
+		"underground_strata_material_ids": UNDERGROUND_STRATA_MATERIAL_IDS,
+		"underground_depth_bands": UNDERGROUND_DEPTH_BANDS,
+		"flat_world_underground_contract": "same density/material volume semantics as procedural profiles",
 		"world_chunk_count_x": world_chunk_count_x,
 		"world_chunk_count_z": world_chunk_count_z,
 		"source_revision": source_revision,

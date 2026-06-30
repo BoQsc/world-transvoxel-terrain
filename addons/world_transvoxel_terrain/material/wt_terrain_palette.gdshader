@@ -2,11 +2,11 @@ shader_type spatial;
 render_mode diffuse_burley, cull_back;
 
 uniform sampler2D checker_texture : source_color, repeat_enable;
-uniform vec4 material_1_color : source_color = vec4(0.32, 0.70, 0.26, 1.0);
+uniform vec4 material_1_color : source_color = vec4(0.22, 0.24, 0.27, 1.0);
 uniform vec4 material_2_color : source_color = vec4(0.54, 0.76, 0.34, 1.0);
 uniform vec4 material_3_color : source_color = vec4(0.42, 0.37, 0.31, 1.0);
 uniform vec4 material_4_color : source_color = vec4(0.52, 0.44, 0.32, 1.0);
-uniform vec4 material_7_color : source_color = vec4(0.43, 0.67, 0.30, 1.0);
+uniform vec4 material_7_color : source_color = vec4(0.42, 0.43, 0.42, 1.0);
 
 varying vec3 world_position;
 
