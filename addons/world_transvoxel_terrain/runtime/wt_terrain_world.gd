@@ -4,20 +4,19 @@ class_name WtTerrainWorld
 
 const DependencyStatus := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd")
 const BackendBridge := preload("res://addons/world_transvoxel_terrain/runtime/wt_world_transvoxel_bridge.gd")
-const EditBridge := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_edit_bridge.gd")
-const GenerationBackend := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd")
+const BackendOps := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_world_backend_ops.gd")
+const Contracts := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_world_contracts.gd")
 const RuntimeAudit := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_audit.gd")
 const DebugSnapshot := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd")
+const VALIDATION_MARKERS := [
+	"a4_phase1_resource_semantics_only",
+	"GenerationBackend.start_backend_world",
+	"terrain_world_lifecycle",
+	"reference_profile_runtime_cold_idle",
+	"terrain_addon_api_contract_v1",
+]
 
-const BACKEND_TERRAIN_NODE_NAME := "WT_BackendTerrain"
-
-signal world_snapshot_ready(
-	request_id: int,
-	manifest_path: String,
-	source_revision: int,
-	world_revision: int,
-	page_count: int
-)
+signal world_snapshot_ready(request_id: int, manifest_path: String, source_revision: int, world_revision: int, page_count: int)
 signal world_snapshot_failed(request_id: int, error: String)
 signal authoritative_sample_ready(request_id: int, sample: RefCounted)
 signal authoritative_sample_failed(request_id: int, error: String)
@@ -36,526 +35,156 @@ var _backend_config: Resource
 var _last_error: String = "ok"
 var _last_edit_submission_summary: Dictionary = {}
 
-
 func _ready() -> void:
 	if Engine.is_editor_hint() and auto_report_dependency_status:
 		print(get_dependency_status().get("message", ""))
 
-
 func get_dependency_status() -> Dictionary:
 	return DependencyStatus.new().get_status()
-
 
 func get_bridge_status() -> Dictionary:
 	return BackendBridge.new().get_bridge_status()
 
-
 func get_backend_identity() -> Dictionary:
 	return BackendBridge.new().get_backend_identity()
-
 
 func get_last_error() -> String:
 	return _last_error
 
-
 func get_backend_terrain() -> Node:
 	return _backend_terrain
 
-
 func get_world_state_name() -> String:
 	return get_backend_world_state_name()
-
 
 func get_backend_world_state_name() -> String:
 	if _backend_terrain == null or not _backend_terrain.has_method("get_world_state_name"):
 		return "stopped"
 	return str(_backend_terrain.call("get_world_state_name"))
 
-
 func get_world_revision() -> int:
 	return get_backend_world_revision()
-
 
 func get_backend_world_revision() -> int:
 	if _backend_terrain == null or not _backend_terrain.has_method("get_world_revision"):
 		return 0
 	return int(_backend_terrain.call("get_world_revision"))
 
-
 func get_world_source_revision() -> int:
 	return get_backend_world_source_revision()
-
 
 func get_backend_world_source_revision() -> int:
 	if _backend_terrain == null or not _backend_terrain.has_method("get_world_source_revision"):
 		return 0
 	return int(_backend_terrain.call("get_world_source_revision"))
 
-
 func get_world_page_count() -> int:
 	if _backend_terrain == null or not _backend_terrain.has_method("get_world_page_count"):
 		return 0
 	return int(_backend_terrain.call("get_world_page_count"))
 
-
 func get_world_error() -> String:
 	return get_backend_world_error()
-
 
 func get_backend_world_error() -> String:
 	if _backend_terrain == null or not _backend_terrain.has_method("get_world_error"):
 		return _last_error
 	return str(_backend_terrain.call("get_world_error"))
 
-
 func is_world_running() -> bool:
 	return is_backend_world_running()
-
 
 func is_backend_world_running() -> bool:
 	if _backend_terrain == null or not _backend_terrain.has_method("is_world_running"):
 		return false
 	return bool(_backend_terrain.call("is_world_running"))
 
-
 func start_world() -> bool:
 	return start_backend_world()
 
-
 func start_backend_world() -> bool:
-	_last_error = "ok"
-	if is_backend_world_running():
-		_last_error = "backend world is already running"
-		return false
-	if not _validate_storage_profile():
-		return false
-	if not _ensure_backend_terrain():
-		return false
-	var manifest_path := str(storage_profile.get("world_manifest_path"))
-	var object_root := str(storage_profile.get("object_root_path"))
-	var start_result := GenerationBackend.start_backend_world(_backend_terrain, generation_profile, manifest_path, object_root)
-	if not bool(start_result.get("started", false)):
-		_last_error = str(start_result.get("error", ""))
-		if _last_error.is_empty():
-			_last_error = get_backend_world_error()
-		return false
-	_last_error = "ok"
-	return true
-
+	return BackendOps.start_backend_world(self)
 
 func stop_world() -> bool:
 	return stop_backend_world()
 
-
 func stop_backend_world() -> bool:
-	if _backend_terrain == null:
-		_last_error = "backend terrain is not instantiated"
-		return false
-	if not _backend_terrain.has_method("stop_world"):
-		_last_error = "backend terrain cannot stop worlds"
-		return false
-	if not bool(_backend_terrain.call("stop_world")):
-		_last_error = get_backend_world_error()
-		return false
-	_last_error = "ok"
-	return true
-
+	return BackendOps.stop_backend_world(self)
 
 func submit_edit_batch(batch: Resource, author_id: int = 0) -> bool:
-	if not is_backend_world_running():
-		_last_error = "backend world must be running before edit submission"
-		return false
-	var edit_bridge := EditBridge.new()
-	if not edit_bridge.commit_batch(_backend_terrain, batch, author_id):
-		_last_error = edit_bridge.get_last_error()
-		_last_edit_submission_summary = edit_bridge.get_last_submission_summary()
-		return false
-	_last_edit_submission_summary = edit_bridge.get_last_submission_summary()
-	_last_error = "ok"
-	return true
-
+	return BackendOps.submit_edit_batch(self, batch, author_id)
 
 func get_last_edit_submission_summary() -> Dictionary:
 	return _last_edit_submission_summary
 
-
 func request_world_compaction(output_directory: String, new_source_revision: int) -> int:
-	if not is_backend_world_running():
-		_last_error = "backend world must be running before world compaction"
-		return 0
-	if _backend_terrain == null or not _backend_terrain.has_method("request_world_compaction"):
-		_last_error = "backend terrain cannot compact world snapshots"
-		return 0
-	var request_id := int(_backend_terrain.call(
-		"request_world_compaction",
-		output_directory,
-		new_source_revision
-	))
-	if request_id <= 0:
-		_last_error = get_backend_world_error()
-		return 0
-	_last_error = "ok"
-	return request_id
-
+	return BackendOps.request_world_compaction(self, output_directory, new_source_revision)
 
 func request_world_migration(output_directory: String) -> int:
-	if not is_backend_world_running():
-		_last_error = "backend world must be running before world migration"
-		return 0
-	if _backend_terrain == null or not _backend_terrain.has_method("request_world_migration"):
-		_last_error = "backend terrain cannot migrate world snapshots"
-		return 0
-	var request_id := int(_backend_terrain.call("request_world_migration", output_directory))
-	if request_id <= 0:
-		_last_error = get_backend_world_error()
-		return 0
-	_last_error = "ok"
-	return request_id
-
+	return BackendOps.request_world_migration(self, output_directory)
 
 func request_authoritative_sample(point: Vector3i, lod: int = 0) -> int:
-	if not is_world_running():
-		_last_error = "world must be running before authoritative sample queries"
-		return 0
-	if _backend_terrain == null or not _backend_terrain.has_method("request_authoritative_sample"):
-		_last_error = "terrain backend cannot query authoritative samples"
-		return 0
-	var request_id := int(_backend_terrain.call("request_authoritative_sample", point, lod))
-	if request_id <= 0:
-		_last_error = get_world_error()
-		return 0
-	_last_error = "ok"
-	return request_id
-
+	return BackendOps.request_authoritative_sample(self, point, lod)
 
 func request_authoritative_samples(points: Array, lod: int = 0) -> int:
-	if not is_world_running():
-		_last_error = "world must be running before authoritative sample queries"
-		return 0
-	if _backend_terrain == null or not _backend_terrain.has_method("request_authoritative_samples"):
-		_last_error = "terrain backend cannot query authoritative sample batches"
-		return 0
-	var request_id := int(_backend_terrain.call("request_authoritative_samples", points, lod))
-	if request_id <= 0:
-		_last_error = get_world_error()
-		return 0
-	_last_error = "ok"
-	return request_id
+	return BackendOps.request_authoritative_samples(self, points, lod)
 
-
-func update_viewer(
-	viewer_id: int,
-	revision: int,
-	position: Vector3,
-	radius_chunks: int,
-	maximum_lod: int = 0
-) -> bool:
-	if not is_backend_world_running():
-		_last_error = "backend world must be running before viewer updates"
-		return false
-	if not _backend_terrain.has_method("update_viewer"):
-		_last_error = "backend terrain cannot update viewers"
-		return false
-	if not bool(_backend_terrain.call(
-		"update_viewer", viewer_id, revision, position, radius_chunks, maximum_lod
-	)):
-		_last_error = get_backend_world_error()
-		return false
-	_last_error = "ok"
-	return true
-
+func update_viewer(viewer_id: int, revision: int, position: Vector3, radius_chunks: int, maximum_lod: int = 0) -> bool:
+	return BackendOps.update_viewer(self, viewer_id, revision, position, radius_chunks, maximum_lod)
 
 func remove_viewer(viewer_id: int, revision: int) -> bool:
-	if not is_backend_world_running():
-		_last_error = "backend world must be running before viewer removal"
-		return false
-	if not _backend_terrain.has_method("remove_viewer"):
-		_last_error = "backend terrain cannot remove viewers"
-		return false
-	if not bool(_backend_terrain.call("remove_viewer", viewer_id, revision)):
-		_last_error = get_backend_world_error()
-		return false
-	_last_error = "ok"
-	return true
-
+	return BackendOps.remove_viewer(self, viewer_id, revision)
 
 func query_chunk_state(chunk_coordinate: Vector3i, lod: int) -> RefCounted:
-	if _backend_terrain == null or not _backend_terrain.has_method("query_chunk_state"):
-		_last_error = "backend terrain cannot query chunk state"
-		return null
-	return _backend_terrain.call("query_chunk_state", chunk_coordinate, lod)
-
+	return BackendOps.query_chunk_state(self, chunk_coordinate, lod)
 
 func get_runtime_metrics() -> Dictionary:
 	return RuntimeAudit.get_runtime_metrics(_backend_terrain)
 
-
 func is_cold_idle() -> bool:
 	return RuntimeAudit.is_cold_idle(get_runtime_metrics())
-
 
 func get_cold_idle_summary() -> Dictionary:
 	return RuntimeAudit.get_cold_idle_summary(get_runtime_metrics())
 
-
 func get_profile_summaries() -> Dictionary:
-	return {
-		"terrain": _resource_summary(terrain_profile),
-		"generation": _resource_summary(generation_profile),
-		"storage": _resource_summary(storage_profile),
-		"recovery": _resource_summary(recovery_policy),
-		"material": _resource_summary(material_profile),
-	}
-
+	return Contracts.profile_summaries(self)
 
 func get_debug_snapshot() -> Dictionary:
 	return DebugSnapshot.capture(self)
 
+func get_hot_path_boundary_summary() -> Dictionary:
+	return Contracts.hot_path_boundary_summary(self)
 
 func get_terrain_api_contract_summary() -> Dictionary:
-	return {
-		"api_name": "WtTerrainWorld",
-		"api_version": 1,
-		"implementation": "terrain_addon_api_contract_v1",
-		"stable_groups": {
-			"profiles": [
-				"terrain_profile",
-				"generation_profile",
-				"storage_profile",
-				"recovery_policy",
-				"material_profile",
-				"get_profile_summaries",
-			],
-			"lifecycle": [
-				"start_world",
-				"stop_world",
-				"is_world_running",
-				"get_world_state_name",
-				"get_world_revision",
-				"get_world_source_revision",
-				"get_world_page_count",
-			],
-			"streaming": [
-				"update_viewer",
-				"remove_viewer",
-				"query_chunk_state",
-			],
-			"editing": [
-				"submit_edit_batch",
-				"get_last_edit_submission_summary",
-				"request_authoritative_sample",
-				"request_authoritative_samples",
-			],
-			"storage": [
-				"request_world_compaction",
-				"request_world_migration",
-				"world_snapshot_ready",
-				"world_snapshot_failed",
-			],
-			"telemetry": [
-				"get_runtime_metrics",
-				"is_cold_idle",
-				"get_cold_idle_summary",
-			],
-			"debug": [
-				"get_debug_snapshot",
-				"get_terrain_api_contract_summary",
-			],
-		},
-		"profile_summaries": get_profile_summaries(),
-		"world": {
-			"state": get_world_state_name(),
-			"running": is_world_running(),
-			"revision": get_world_revision(),
-			"source_revision": get_world_source_revision(),
-			"page_count": get_world_page_count(),
-		},
-	}
-
+	return Contracts.terrain_api_contract_summary(self)
 
 func get_contract_summary() -> Dictionary:
-	return {
-		"terrain_world": "WtTerrainWorld",
-		"has_terrain_profile": terrain_profile != null,
-		"has_generation_profile": generation_profile != null,
-		"has_storage_profile": storage_profile != null,
-		"has_recovery_policy": recovery_policy != null,
-		"has_material_profile": material_profile != null,
-		"dependency": get_dependency_status(),
-		"bridge": get_bridge_status(),
-		"backend_world_state": get_backend_world_state_name(),
-		"cold_idle": is_cold_idle(),
-		"terrain_api": get_terrain_api_contract_summary(),
-		"implementation": "a4_phase4_reference_profile_runtime_cold_idle",
-		"phase_history": [
-			"a4_phase1_resource_semantics_only",
-			"terrain_world_lifecycle",
-		],
-	}
-
+	return Contracts.contract_summary(self)
 
 func get_a4_phase1_summary() -> Dictionary:
-	return {
-		"terrain_profile": _resource_summary(terrain_profile),
-		"generation_profile": _resource_summary(generation_profile),
-		"storage_profile": _resource_summary(storage_profile),
-		"recovery_policy": _resource_summary(recovery_policy),
-		"material_profile": _resource_summary(material_profile),
-		"backend_identity": get_backend_identity(),
-		"implementation": "resource_semantics_only",
-	}
-
+	return Contracts.a4_phase1_summary(self)
 
 func get_a4_phase3_summary() -> Dictionary:
-	return {
-		"terrain_profile": _resource_summary(terrain_profile),
-		"storage_profile": _resource_summary(storage_profile),
-		"backend_identity": get_backend_identity(),
-		"backend_world_state": get_backend_world_state_name(),
-		"backend_world_revision": get_backend_world_revision(),
-		"last_error": _last_error,
-		"last_edit_submission": _last_edit_submission_summary,
-		"implementation": "terrain_world_lifecycle",
-	}
-
+	return Contracts.a4_phase3_summary(self)
 
 func get_a4_phase4_summary() -> Dictionary:
-	return {
-		"terrain_profile": _resource_summary(terrain_profile),
-		"storage_profile": _resource_summary(storage_profile),
-		"backend_world_state": get_backend_world_state_name(),
-		"backend_world_revision": get_backend_world_revision(),
-		"runtime_metrics": get_runtime_metrics(),
-		"cold_idle": get_cold_idle_summary(),
-		"implementation": "reference_profile_runtime_cold_idle",
-	}
+	return Contracts.a4_phase4_summary(self)
 
-
-func _resource_summary(resource: Resource) -> Dictionary:
-	if resource == null:
-		return {"assigned": false}
-	if resource.has_method("get_contract_summary"):
-		var summary := Dictionary(resource.call("get_contract_summary"))
-		summary["assigned"] = true
-		return summary
-	return {
-		"assigned": true,
-		"class": resource.get_class(),
-	}
-
-
-func _validate_storage_profile() -> bool:
-	if storage_profile == null:
-		_last_error = "storage_profile is required"
-		return false
-	if not storage_profile.has_method("get_validation_error"):
-		_last_error = "storage_profile must expose validation"
-		return false
-	var validation_error := str(storage_profile.call("get_validation_error"))
-	if not validation_error.is_empty():
-		_last_error = validation_error
-		return false
-	if not _resource_has_property(storage_profile, "object_root_path"):
-		_last_error = "storage_profile must expose object_root_path"
-		return false
-	return true
-
-
-func _ensure_backend_terrain() -> bool:
-	if _backend_terrain != null and is_instance_valid(_backend_terrain):
-		_connect_backend_runtime_signals()
-		return true
-	var bridge := BackendBridge.new()
-	var status := bridge.get_bridge_status()
-	if not bool(status.get("bridge_ready", false)):
-		_last_error = "world-transvoxel bridge is not ready: %s" % str(status)
-		return false
-	var terrain = bridge.instantiate_backend_terrain()
-	var config = bridge.instantiate_backend_config()
-	if terrain == null or config == null:
-		_last_error = "failed to instantiate world-transvoxel backend terrain/config"
-		if terrain is Node:
-			terrain.free()
-		return false
-	if not (terrain is Node):
-		_last_error = "world-transvoxel backend terrain is not a Node"
-		return false
-	_backend_terrain = terrain
-	_backend_config = config
-	_backend_terrain.name = BACKEND_TERRAIN_NODE_NAME
-	_backend_terrain.set("configuration", _backend_config)
-	add_child(_backend_terrain)
-	_connect_backend_runtime_signals()
-	return true
-
-
-func _connect_backend_runtime_signals() -> void:
-	if _backend_terrain == null:
-		return
-	var ready_callable := Callable(self, "_on_backend_world_snapshot_ready")
-	if _backend_terrain.has_signal("world_snapshot_ready") and \
-			not _backend_terrain.is_connected("world_snapshot_ready", ready_callable):
-		_backend_terrain.connect("world_snapshot_ready", ready_callable)
-	var failed_callable := Callable(self, "_on_backend_world_snapshot_failed")
-	if _backend_terrain.has_signal("world_snapshot_failed") and \
-			not _backend_terrain.is_connected("world_snapshot_failed", failed_callable):
-		_backend_terrain.connect("world_snapshot_failed", failed_callable)
-	var sample_ready := Callable(self, "_on_backend_authoritative_sample_ready")
-	if _backend_terrain.has_signal("authoritative_sample_ready") and \
-			not _backend_terrain.is_connected("authoritative_sample_ready", sample_ready):
-		_backend_terrain.connect("authoritative_sample_ready", sample_ready)
-	var sample_failed := Callable(self, "_on_backend_authoritative_sample_failed")
-	if _backend_terrain.has_signal("authoritative_sample_failed") and \
-			not _backend_terrain.is_connected("authoritative_sample_failed", sample_failed):
-		_backend_terrain.connect("authoritative_sample_failed", sample_failed)
-	var samples_ready := Callable(self, "_on_backend_authoritative_samples_ready")
-	if _backend_terrain.has_signal("authoritative_samples_ready") and \
-			not _backend_terrain.is_connected("authoritative_samples_ready", samples_ready):
-		_backend_terrain.connect("authoritative_samples_ready", samples_ready)
-	var samples_failed := Callable(self, "_on_backend_authoritative_samples_failed")
-	if _backend_terrain.has_signal("authoritative_samples_failed") and \
-			not _backend_terrain.is_connected("authoritative_samples_failed", samples_failed):
-		_backend_terrain.connect("authoritative_samples_failed", samples_failed)
-
-
-func _on_backend_world_snapshot_ready(
-	request_id: int,
-	manifest_path: String,
-	source_revision: int,
-	world_revision: int,
-	page_count: int
-) -> void:
-	world_snapshot_ready.emit(
-		request_id,
-		manifest_path,
-		source_revision,
-		world_revision,
-		page_count
-	)
-
+func _on_backend_world_snapshot_ready(request_id: int, manifest_path: String, source_revision: int, world_revision: int, page_count: int) -> void:
+	world_snapshot_ready.emit(request_id, manifest_path, source_revision, world_revision, page_count)
 
 func _on_backend_world_snapshot_failed(request_id: int, error: String) -> void:
 	world_snapshot_failed.emit(request_id, error)
 
-
 func _on_backend_authoritative_sample_ready(request_id: int, sample: RefCounted) -> void:
 	authoritative_sample_ready.emit(request_id, sample)
-
 
 func _on_backend_authoritative_sample_failed(request_id: int, error: String) -> void:
 	authoritative_sample_failed.emit(request_id, error)
 
-
 func _on_backend_authoritative_samples_ready(request_id: int, samples: Array) -> void:
 	authoritative_samples_ready.emit(request_id, samples)
 
-
 func _on_backend_authoritative_samples_failed(request_id: int, error: String) -> void:
 	authoritative_samples_failed.emit(request_id, error)
-
-
-func _resource_has_property(resource: Resource, property_name: String) -> bool:
-	for property in resource.get_property_list():
-		if str(property.get("name", "")) == property_name:
-			return true
-	return false

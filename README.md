@@ -43,7 +43,8 @@ The current minimal game-facing API is centered on `WtTerrainWorld`:
 `submit_edit_batch`, `request_authoritative_sample`,
 `request_authoritative_samples`, `request_world_compaction`,
 `request_world_migration`, `get_runtime_metrics`, `get_cold_idle_summary`,
-`get_debug_snapshot`, and `get_terrain_api_contract_summary`.
+`get_debug_snapshot`, `get_hot_path_boundary_summary`, and
+`get_terrain_api_contract_summary`.
 Debug terrain material application belongs to addon-local
 `WtTerrainMaterialApplicator`, not to validation-game scripts.
 
@@ -77,6 +78,13 @@ Performance-sensitive terrain work belongs in native code, low-level addon
 interfaces, binary formats, shaders when justified, or Python offline tooling.
 GDScript is limited to Godot scaffolding, editor glue, input routing, debug UI,
 and small smoke-test harnesses.
+
+The validation-game G48 gate consumes `get_hot_path_boundary_summary()` to keep
+generation, meshing, streaming, edit application, and storage owned by the
+`world-transvoxel` native backend. Addon GDScript may describe profiles,
+validate bounded edit commands, forward viewer/edit/storage requests, and expose
+debug/material helpers, but it must not grow density-volume, mesh-building,
+page-generation, source-file streaming, or image/pixel terrain loops.
 
 Read [IMPLEMENTATION_CHARTER.md](IMPLEMENTATION_CHARTER.md) before changing the
 project. It is the single source of truth for scope, package boundaries,

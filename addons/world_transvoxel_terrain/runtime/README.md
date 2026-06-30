@@ -29,5 +29,12 @@ introspection on `WtTerrainWorld`: `start_world`, `stop_world`,
 `is_world_running`, `get_world_state_name`, `get_world_revision`,
 `get_world_source_revision`, `get_world_page_count`, profile summaries,
 authoritative sample request methods/signals, storage snapshot request wrappers,
-runtime telemetry, debug snapshot capture, and
+runtime telemetry, debug snapshot capture, `get_hot_path_boundary_summary`, and
 `get_terrain_api_contract_summary`.
+
+G48 uses `get_hot_path_boundary_summary` to lock the native hot-path boundary.
+Generation, meshing, streaming, edit application, and storage stay in the
+`world-transvoxel` native backend. Runtime GDScript may own bounded
+lifecycle/profile/request wrappers, but it must not implement density volume
+loops, mesh construction loops, page generation loops, source-file streaming
+loops, or image/pixel terrain loops.
