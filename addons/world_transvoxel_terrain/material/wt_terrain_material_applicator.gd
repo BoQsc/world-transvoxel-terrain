@@ -3,6 +3,10 @@ extends Node
 class_name WtTerrainMaterialApplicator
 
 const TERRAIN_SHADER := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_palette.gdshader")
+const CHECKER_TEXTURE_FORMAT := "RGBA8"
+const CHECKER_TEXTURE_BYTES_PER_PIXEL := 4
+const MAX_STANDARD_TEXTURE_BYTES := 4 * 1024
+const QUALITY_IMPLEMENTATION := "terrain_material_texture_pipeline_v1"
 
 @export var auto_apply: bool = true
 @export_range(1, 30, 1) var material_audit_interval_frames: int = 2
@@ -14,12 +18,22 @@ var _summary := {
 	"materialized_instances": 0,
 	"reapplied_instances": 0,
 	"texture_resolution": 0,
+	"texture_format": CHECKER_TEXTURE_FORMAT,
+	"texture_bytes": 0,
+	"texture_checksum": 0,
 	"shader_mode": "addon_uv2_checker",
+	"profile_shader_mode": "",
 	"profile_id": "",
+	"material_ids": [],
 	"auto_apply_count": 0,
+	"deterministic_texture": true,
+	"small_texture_budget_bytes": MAX_STANDARD_TEXTURE_BYTES,
+	"quality_implementation": QUALITY_IMPLEMENTATION,
 	"implementation": "terrain_addon_material_applicator",
 }
 var _material: ShaderMaterial
+var _material_texture_resolution := 0
+var _texture_checksum := 0
 var _auto_apply_signature := ""
 var _auto_apply_count := 0
 var _audit_frame_count := 0
@@ -39,23 +53,41 @@ func _process(_delta: float) -> void:
 func get_material_summary() -> Dictionary:
 	return _summary.duplicate()
 
+func get_material_quality_summary() -> Dictionary:
+	var summary := get_material_summary()
+	summary["quality_implementation"] = QUALITY_IMPLEMENTATION
+	summary["small_texture_budget_bytes"] = MAX_STANDARD_TEXTURE_BYTES
+	summary["deterministic_texture"] = true
+	return summary
+
 func apply_materials_now() -> Dictionary:
 	var backend := _backend_terrain()
 	if backend == null:
 		_summary["applied"] = false
 		return get_material_summary()
-	var result := _apply_to_meshes(backend, _material_instance())
+	var material := _material_instance()
+	var result := _apply_to_meshes(backend, material)
 	var profile := _material_profile_summary()
+	var resolved_texture_resolution := _material_texture_resolution
 	_summary = {
 		"applied": int(result.get("checked", 0)) > 0,
 		"materialized_instances": int(result.get("checked", 0)),
 		"reapplied_instances": int(result.get("updated", 0)),
-		"texture_resolution": texture_resolution,
+		"texture_resolution": resolved_texture_resolution,
+		"texture_format": CHECKER_TEXTURE_FORMAT,
+		"texture_bytes": _texture_bytes(resolved_texture_resolution),
+		"texture_checksum": _texture_checksum,
 		"shader_mode": "addon_uv2_checker",
+		"profile_shader_mode": str(profile.get("shader_mode", "")),
 		"profile_id": str(profile.get("profile_id", "unknown")),
+		"material_ids": Array(profile.get("material_ids", [])),
 		"material_profile_configured": bool(profile.get("configured", false)),
 		"auto_apply_count": _auto_apply_count,
 		"auto_apply_signature": _auto_apply_signature,
+		"deterministic_texture": true,
+		"small_texture_budget_bytes": MAX_STANDARD_TEXTURE_BYTES,
+		"material_instance_id": material.get_instance_id(),
+		"quality_implementation": QUALITY_IMPLEMENTATION,
 		"implementation": "terrain_addon_material_applicator",
 	}
 	return get_material_summary()
@@ -81,23 +113,29 @@ func _repair_missing_materials_if_needed() -> void:
 		apply_materials_now()
 
 func _material_instance() -> ShaderMaterial:
-	if _material == null:
-		_material = _build_material()
+	var resolution := _resolved_texture_resolution()
+	if _material == null or _material_texture_resolution != resolution:
+		_material = _build_material(resolution)
+		_material_texture_resolution = resolution
 	return _material
 
-func _build_material() -> ShaderMaterial:
+func _build_material(resolution: int) -> ShaderMaterial:
 	var shader_material := ShaderMaterial.new()
 	shader_material.shader = TERRAIN_SHADER
-	shader_material.set_shader_parameter("checker_texture", _checker_texture())
+	shader_material.set_shader_parameter("checker_texture", _checker_texture(resolution))
 	return shader_material
 
-func _checker_texture() -> Texture2D:
-	var image := Image.create(texture_resolution, texture_resolution, false, Image.FORMAT_RGBA8)
-	for y in range(texture_resolution):
-		for x in range(texture_resolution):
+func _checker_texture(resolution: int) -> Texture2D:
+	var image := Image.create(resolution, resolution, false, Image.FORMAT_RGBA8)
+	var checksum := 0
+	for y in range(resolution):
+		for x in range(resolution):
 			var bright := ((x / 4) + (y / 4)) % 2 == 0
-			var value := 1.0 if bright else 0.62
+			var byte_value := 255 if bright else 158
+			var value := float(byte_value) / 255.0
+			checksum = int((checksum + ((x + 1) * 31 + (y + 1) * 17) * byte_value) % 2147483647)
 			image.set_pixel(x, y, Color(value, value, value, 1.0))
+	_texture_checksum = checksum
 	return ImageTexture.create_from_image(image)
 
 func _apply_to_meshes(node: Node, material: Material) -> Dictionary:
@@ -161,6 +199,14 @@ func _runtime_signature() -> String:
 		int(metrics.get("edit_replacements", 0)),
 		revision,
 	]
+
+func _resolved_texture_resolution() -> int:
+	var profile := _material_profile_summary()
+	var profile_resolution := int(profile.get("texture_resolution", texture_resolution))
+	return int(clamp(profile_resolution, 2, 64))
+
+func _texture_bytes(resolution: int) -> int:
+	return resolution * resolution * CHECKER_TEXTURE_BYTES_PER_PIXEL
 
 func _terrain_world() -> Node:
 	var reference := get_node_or_null(reference_scene_path)
