@@ -10,6 +10,15 @@ const RuntimeAudit := preload("res://addons/world_transvoxel_terrain/runtime/wt_
 
 const BACKEND_TERRAIN_NODE_NAME := "WT_BackendTerrain"
 
+signal world_snapshot_ready(
+	request_id: int,
+	manifest_path: String,
+	source_revision: int,
+	world_revision: int,
+	page_count: int
+)
+signal world_snapshot_failed(request_id: int, error: String)
+
 @export var terrain_profile: Resource
 @export var generation_profile: Resource
 @export var storage_profile: Resource
@@ -58,6 +67,12 @@ func get_backend_world_revision() -> int:
 	if _backend_terrain == null or not _backend_terrain.has_method("get_world_revision"):
 		return 0
 	return int(_backend_terrain.call("get_world_revision"))
+
+
+func get_backend_world_source_revision() -> int:
+	if _backend_terrain == null or not _backend_terrain.has_method("get_world_source_revision"):
+		return 0
+	return int(_backend_terrain.call("get_world_source_revision"))
 
 
 func get_backend_world_error() -> String:
@@ -123,6 +138,40 @@ func submit_edit_batch(batch: Resource, author_id: int = 0) -> bool:
 
 func get_last_edit_submission_summary() -> Dictionary:
 	return _last_edit_submission_summary
+
+
+func request_world_compaction(output_directory: String, new_source_revision: int) -> int:
+	if not is_backend_world_running():
+		_last_error = "backend world must be running before world compaction"
+		return 0
+	if _backend_terrain == null or not _backend_terrain.has_method("request_world_compaction"):
+		_last_error = "backend terrain cannot compact world snapshots"
+		return 0
+	var request_id := int(_backend_terrain.call(
+		"request_world_compaction",
+		output_directory,
+		new_source_revision
+	))
+	if request_id <= 0:
+		_last_error = get_backend_world_error()
+		return 0
+	_last_error = "ok"
+	return request_id
+
+
+func request_world_migration(output_directory: String) -> int:
+	if not is_backend_world_running():
+		_last_error = "backend world must be running before world migration"
+		return 0
+	if _backend_terrain == null or not _backend_terrain.has_method("request_world_migration"):
+		_last_error = "backend terrain cannot migrate world snapshots"
+		return 0
+	var request_id := int(_backend_terrain.call("request_world_migration", output_directory))
+	if request_id <= 0:
+		_last_error = get_backend_world_error()
+		return 0
+	_last_error = "ok"
+	return request_id
 
 
 func update_viewer(
@@ -269,6 +318,7 @@ func _validate_storage_profile() -> bool:
 
 func _ensure_backend_terrain() -> bool:
 	if _backend_terrain != null and is_instance_valid(_backend_terrain):
+		_connect_backend_snapshot_signals()
 		return true
 	var bridge := BackendBridge.new()
 	var status := bridge.get_bridge_status()
@@ -290,7 +340,41 @@ func _ensure_backend_terrain() -> bool:
 	_backend_terrain.name = BACKEND_TERRAIN_NODE_NAME
 	_backend_terrain.set("configuration", _backend_config)
 	add_child(_backend_terrain)
+	_connect_backend_snapshot_signals()
 	return true
+
+
+func _connect_backend_snapshot_signals() -> void:
+	if _backend_terrain == null:
+		return
+	var ready_callable := Callable(self, "_on_backend_world_snapshot_ready")
+	if _backend_terrain.has_signal("world_snapshot_ready") and \
+			not _backend_terrain.is_connected("world_snapshot_ready", ready_callable):
+		_backend_terrain.connect("world_snapshot_ready", ready_callable)
+	var failed_callable := Callable(self, "_on_backend_world_snapshot_failed")
+	if _backend_terrain.has_signal("world_snapshot_failed") and \
+			not _backend_terrain.is_connected("world_snapshot_failed", failed_callable):
+		_backend_terrain.connect("world_snapshot_failed", failed_callable)
+
+
+func _on_backend_world_snapshot_ready(
+	request_id: int,
+	manifest_path: String,
+	source_revision: int,
+	world_revision: int,
+	page_count: int
+) -> void:
+	world_snapshot_ready.emit(
+		request_id,
+		manifest_path,
+		source_revision,
+		world_revision,
+		page_count
+	)
+
+
+func _on_backend_world_snapshot_failed(request_id: int, error: String) -> void:
+	world_snapshot_failed.emit(request_id, error)
 
 
 func _resource_has_property(resource: Resource, property_name: String) -> bool:
