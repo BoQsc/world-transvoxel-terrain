@@ -30,8 +30,10 @@ signal authoritative_samples_failed(request_id: int, error: String)
 @export var material_profile: Resource
 @export var auto_report_dependency_status: bool = false
 @export_range(0, 65536, 1) var runtime_active_chunk_capacity: int = 0
+@export_range(0, 65536, 1) var runtime_demand_capacity_per_viewer: int = 0
 @export_range(0, 65536, 1) var runtime_render_entry_capacity: int = 0
 @export_range(0, 65536, 1) var runtime_collision_entry_capacity: int = 0
+@export_range(0, 65536, 1) var runtime_lod_refinement_radius_chunks: int = 0
 
 var _backend_terrain: Node
 var _backend_config: Resource

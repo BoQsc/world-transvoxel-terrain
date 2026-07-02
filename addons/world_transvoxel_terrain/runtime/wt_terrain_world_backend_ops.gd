@@ -185,8 +185,10 @@ static func _validate_storage_profile(world) -> bool:
 static func _apply_runtime_config_overrides(world, config: Resource) -> void:
 	for pair in [
 		["runtime_active_chunk_capacity", "active_chunk_capacity"],
+		["runtime_demand_capacity_per_viewer", "demand_capacity_per_viewer"],
 		["runtime_render_entry_capacity", "render_entry_capacity"],
 		["runtime_collision_entry_capacity", "collision_entry_capacity"],
+		["runtime_lod_refinement_radius_chunks", "lod_refinement_radius_chunks"],
 	]:
 		var value := int(world.get(pair[0]))
 		if value > 0:
