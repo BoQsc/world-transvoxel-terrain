@@ -52,6 +52,21 @@ It depends on `world-transvoxel`. It does not vendor or copy
 `world-transvoxel-sandbox`, and it does not contain Eric Lengyel's MIT
 Transvoxel source or lookup data.
 
+## Critical edited-terrain LOD boundary
+
+`world-transvoxel-terrain` must preserve the core edited-LOD-retention contract
+when exposing game-facing terrain APIs. Edits are authoritative world state, but
+keeping every mined, dug, placed, or restored area at near-detail LOD from every
+distance is a budgeted choice, not an unlimited guarantee. Profiles that expose
+mining or construction must make the active chunk capacity, viewer radius,
+maximum LOD, and edit-retention behavior explicit.
+
+Any downstream project that claims seamless edited terrain must validate
+player-like edits across close, mid, far, and return movement. Passing
+authoritative sample persistence does not by itself prove visual edited-LOD
+continuity; rendered gap checks and far-distance shape-continuity checks are
+separate requirements.
+
 Intended consumer path:
 
 ```text
