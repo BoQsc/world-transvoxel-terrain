@@ -157,6 +157,10 @@ The exact class names may change, but these concepts may not silently disappear.
 - Flat terrain must be supported as a normal generation profile, not a special
   hack.
 - Terrain edits operate on authoritative voxel samples, not visual-only meshes.
+- Terrain material identity belongs to the same authoritative density/material
+  volume as shape data. Material V1 should extend the existing backend page,
+  edit, and journal path rather than introducing a separate disconnected
+  storage system.
 - Restore-to-base is explicit and audited before automatic regeneration.
 - Timed regeneration, smoothing, erosion, collapse, and fluid equilibrium are
   optional systems, not default behavior.
@@ -178,6 +182,24 @@ These are not part of A0/A1 unless a later contract moves them in:
 - broad GPU compute implementation;
 - independent 0BSD backend replacement;
 - separate game repository.
+
+## Deferred material and storage optimization ideas
+
+These ideas are recorded so they are not lost, but they are not requirements for
+Material V1 or Terrain 1.0 release closure:
+
+- per-chunk material palettes;
+- run-length or sparse encoding for mostly uniform material fields;
+- binary save-format versioning and migrations for material channels;
+- material weights/layers instead of a single categorical material ID;
+- GPU-side material textures or buffers after CPU/native behavior is proven;
+- server-authoritative edit delta logs for future multiplayer;
+- a sparse voxel octree or other adaptive-cell storage backend.
+
+The current standard remains chunk/page storage with balanced Transvoxel LOD.
+Do not replace that foundation with octree storage unless a later milestone
+proves a concrete bottleneck or feature requirement that chunk/page storage
+cannot satisfy.
 
 ## Roadmap
 
