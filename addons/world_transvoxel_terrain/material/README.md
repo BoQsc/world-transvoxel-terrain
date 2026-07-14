@@ -48,3 +48,8 @@ Material V1 must preserve this distinction:
   triplanar behavior;
 - if an artifact is visible only in textured mode, treat it first as material
   mapping until geometry probes prove otherwise.
+
+Human artifact analysis must keep material classes separate. When a marked point
+is open-gap-free but still looks melted or streaked, inspect the same pose in
+flat color, material-tint, and textured triplanar modes before changing
+meshing. A texture-only artifact is not evidence of nonmanifold terrain.
