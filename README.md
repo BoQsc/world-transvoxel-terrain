@@ -62,6 +62,21 @@ Profiles must expose this contract through
 `WtTerrainGenerationProfile.get_contract_summary()`, and downstream games must
 not reinterpret those IDs as presentation-only data.
 
+## Critical vertical-volume boundary
+
+Terrain profiles are bounded signed 3D volumes, not heightmaps. Public profile
+summaries must report both horizontal coverage and vertical coverage, including
+`vertical_origin_cell` when the volume extends below Y=0. Generation profiles
+must expose the native procedural vertical shape through
+`world_chunk_count_y` and `world_chunk_origin_y`.
+
+The current deeper-underground standard profile proven downstream is
+`g20_deep_2k_256_on_demand`: `2048 x 2048` horizontal cells, `256` vertical
+cells, vertical origin `-128`, and native `128 x 16 x 128` LOD0 procedural
+chunks. This is still the same terrain type; it is a larger bounded reference
+volume for underground/tunnel proof, not a cap, duplicate mesh, or presentation
+fallback.
+
 ## Critical edited-terrain LOD boundary
 
 `world-transvoxel-terrain` must preserve the core edited-LOD-retention contract
