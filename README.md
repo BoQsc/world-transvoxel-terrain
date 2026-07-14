@@ -52,6 +52,16 @@ It depends on `world-transvoxel`. It does not vendor or copy
 `world-transvoxel-sandbox`, and it does not contain Eric Lengyel's MIT
 Transvoxel source or lookup data.
 
+## Critical material strata boundary
+
+Material IDs are terrain authority, not just shader colors. The current
+standard palette, surface material IDs, and shallow/mid/deep underground depth
+bands are documented in
+[STANDARD_MATERIAL_STRATA_CONTRACT.md](STANDARD_MATERIAL_STRATA_CONTRACT.md).
+Profiles must expose this contract through
+`WtTerrainGenerationProfile.get_contract_summary()`, and downstream games must
+not reinterpret those IDs as presentation-only data.
+
 ## Critical edited-terrain LOD boundary
 
 `world-transvoxel-terrain` must preserve the core edited-LOD-retention contract
