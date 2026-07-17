@@ -47,7 +47,7 @@ func _run_test() -> void:
 		_fail("terrain world edit submission failed: %s" % terrain_world.get_last_error())
 		return
 	var summary := terrain_world.get_last_edit_submission_summary()
-	if int(summary.get("backend_command_count", 0)) != 2 or \
+	if int(summary.get("backend_command_count", 0)) != 1 or \
 			not bool(summary.get("submitted", false)):
 		_fail("terrain world edit summary mismatch: %s" % str(summary))
 		return
@@ -63,7 +63,7 @@ func _run_test() -> void:
 		_fail("edited sample query did not complete")
 		return
 	var edited: RefCounted = sample_results[edited_id]
-	if edited.call("get_density") != -1.0 or \
+	if edited.call("get_density") != -1.5 or \
 			edited.call("get_material") != 3 or \
 			edited.call("get_world_revision") != 13:
 		_fail("edited sample mismatch before restart")
@@ -88,7 +88,7 @@ func _run_test() -> void:
 		_fail("replayed sample query did not complete")
 		return
 	var replayed: RefCounted = sample_results[replayed_id]
-	if replayed.call("get_density") != -1.0 or \
+	if replayed.call("get_density") != -1.5 or \
 			replayed.call("get_material") != 3 or \
 			replayed.call("get_world_revision") != 13:
 		_fail("journal replay sample mismatch")

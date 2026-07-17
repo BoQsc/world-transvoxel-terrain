@@ -55,11 +55,11 @@ func _run_test() -> void:
 	if transaction == null:
 		_fail("bridge did not build native transaction: %s" % bridge.get_last_error())
 		return
-	if int(transaction.call("get_command_count")) != 8:
+	if int(transaction.call("get_command_count")) != 7:
 		_fail("native transaction command count mismatch: %s" % transaction.call("get_command_count"))
 		return
 	var summary := bridge.get_last_submission_summary()
-	if int(summary.get("backend_command_count", 0)) != 8:
+	if int(summary.get("backend_command_count", 0)) != 7:
 		_fail("bridge summary command count mismatch: %s" % str(summary))
 		return
 	if not terrain.call("commit_edit_transaction", transaction):
@@ -82,7 +82,7 @@ func _run_test() -> void:
 		_fail("edited sample query did not complete")
 		return
 	var edited: RefCounted = sample_results[edited_id]
-	if edited.call("get_density") != -1.0 or \
+	if edited.call("get_density") != -1.5 or \
 			edited.call("get_material") != 3 or \
 			edited.call("get_world_revision") != 13:
 		_fail("edited sample mismatch before restart")
@@ -105,7 +105,7 @@ func _run_test() -> void:
 		_fail("replayed sample query did not complete")
 		return
 	var replayed: RefCounted = sample_results[replayed_id]
-	if replayed.call("get_density") != -1.0 or \
+	if replayed.call("get_density") != -1.5 or \
 			replayed.call("get_material") != 3 or \
 			replayed.call("get_world_revision") != 13:
 		_fail("journal replay sample mismatch")
@@ -116,7 +116,7 @@ func _run_test() -> void:
 		return
 	DirAccess.remove_absolute(journal_absolute)
 	print(
-		"%s operations=5 backend_commands=8 commit=1 journal=replayed implementation=bridge_storage_fixture"
+		"%s operations=5 backend_commands=7 material_construct_commands=1 commit=1 journal=replayed implementation=bridge_storage_fixture"
 		% MARKER
 	)
 	terrain.queue_free()

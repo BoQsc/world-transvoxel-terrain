@@ -6,7 +6,7 @@ Markers:
 
 ```text
 WT_TERRAIN_A4_PHASE2_CONTRACT_PASS next=a4_phase3_public_terrain_world_lifecycle implementation=bridge_storage_fixture
-WT_TERRAIN_A4_PHASE2_GODOT_PASS operations=5 backend_commands=8 commit=1 journal=replayed implementation=bridge_storage_fixture
+WT_TERRAIN_A4_PHASE2_GODOT_PASS operations=5 backend_commands=7 material_construct_commands=1 commit=1 journal=replayed implementation=bridge_storage_fixture
 WT_TERRAIN_A4_PHASE2_SMOKE_PASS engines=2 report=artifacts/a4_phase2_bridge_storage/a4_phase2_bridge_storage_report.json
 ```
 
