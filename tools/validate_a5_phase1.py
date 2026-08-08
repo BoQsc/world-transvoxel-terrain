@@ -44,7 +44,7 @@ REQUIRED_PHRASES = {
         "WT_TERRAIN_A5_PHASE1_GODOT_PASS",
         "DebugSnapshot.capture",
         "categories=%d",
-        "profile=2048x64",
+        "profile=2048x128",
         "material_profile_configured",
     ),
     "tools/a5_phase1_debug_snapshot_smoke.py": (

@@ -8,6 +8,21 @@ static func start_backend_world(
 	manifest_path: String,
 	object_root: String
 ) -> Dictionary:
+	if backend_terrain == null:
+		return {
+			"started": false,
+			"error": "backend terrain is required",
+		}
+	if generation_profile == null:
+		if not backend_terrain.has_method("start_world"):
+			return {
+				"started": false,
+				"error": "backend terrain cannot start persisted worlds",
+			}
+		return {
+			"started": bool(backend_terrain.call("start_world", manifest_path, object_root)),
+			"error": "",
+		}
 	var source_mode := _source_mode_name(generation_profile)
 	var chunk_count_x := int(generation_profile.get("world_chunk_count_x"))
 	var chunk_count_y := int(generation_profile.get("world_chunk_count_y"))

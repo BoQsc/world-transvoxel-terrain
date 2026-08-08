@@ -42,7 +42,7 @@ func _init() -> void:
 		var profile = profile_script.new()
 		if profile.horizontal_cells != 2048:
 			errors.append("terrain profile horizontal_cells default drifted")
-		if profile.vertical_cells != 64:
+		if profile.vertical_cells != 128:
 			errors.append("terrain profile vertical_cells default drifted")
 
 	if generation_script != null:
@@ -65,7 +65,7 @@ func _init() -> void:
 		return
 
 	print(
-		"%s dependency_installed=%s profile=2048x64 implementation=placeholder_contract_only"
+		"%s dependency_installed=%s profile=2048x128 implementation=placeholder_contract_only"
 		% [MARKER, str(dependency_status.get("installed", false)).to_lower()]
 	)
 	quit(0)

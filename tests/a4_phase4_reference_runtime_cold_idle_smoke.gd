@@ -78,7 +78,7 @@ func _run_test() -> void:
 		return
 
 	print(
-		"%s profile=2048x64 viewer=settled cold_idle=stable remove=settled implementation=reference_profile_runtime_cold_idle"
+		"%s profile=2048x128 viewer=settled cold_idle=stable remove=settled implementation=reference_profile_runtime_cold_idle"
 		% MARKER
 	)
 	terrain_world.queue_free()
@@ -99,7 +99,7 @@ func _fixture_storage_profile() -> Resource:
 func _profile_is_reference(profile: Resource) -> bool:
 	var summary := Dictionary(profile.call("get_contract_summary"))
 	return int(summary.get("horizontal_cells", 0)) == 2048 and \
-		int(summary.get("vertical_cells", 0)) == 64 and \
+		int(summary.get("vertical_cells", 0)) == 128 and \
 		bool(summary.get("plus_y_is_up", false)) and \
 		bool(summary.get("finite_closed_boundary", false))
 

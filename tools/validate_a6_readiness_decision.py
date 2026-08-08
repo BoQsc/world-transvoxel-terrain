@@ -27,7 +27,7 @@ REQUIRED_PHRASES = {
         "separate validation game repository when the user explicitly asks",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Current phase: A6 complete",
+        "Current phase: TQP-51 production-addon boundary candidate frozen",
         "Definition of done for A6",
         "approve_validation_game_repository",
     ),
@@ -38,13 +38,13 @@ REQUIRED_PHRASES = {
         "separate validation game repository when the user explicitly asks",
     ),
     "README.md": (
-        "Status: A6 complete",
+        "Status: TQP-51 production-addon boundary candidate frozen",
         "WT_TERRAIN_A6_CONTRACT_PASS",
         "WT_TERRAIN_A6_READINESS_DECISION_PASS",
         "python tools/a6_readiness_decision.py",
     ),
     "addons/world_transvoxel_terrain/README.md": (
-        "Current status: A6 complete",
+        "Current status: TQP-51 production-addon boundary candidate frozen",
         "approve_validation_game_repository",
         "not yet a production-ready terrain package",
     ),
@@ -71,7 +71,7 @@ REQUIRED_API = {
     "addons/world_transvoxel_terrain/api/wt_terrain_profile.gd": (
         "class_name WtTerrainProfile",
         "horizontal_cells: int = 2048",
-        "vertical_cells: int = 64",
+        "vertical_cells: int = 128",
     ),
     "addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd": (
         "class_name WtTerrainGenerationProfile",

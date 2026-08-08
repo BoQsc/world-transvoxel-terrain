@@ -6,7 +6,7 @@ Markers:
 
 ```text
 WT_TERRAIN_A4_PHASE4_CONTRACT_PASS next=a4_phase5_a4_exit_review implementation=reference_profile_runtime_cold_idle
-WT_TERRAIN_A4_PHASE4_GODOT_PASS profile=2048x64 viewer=settled cold_idle=stable remove=settled implementation=reference_profile_runtime_cold_idle
+WT_TERRAIN_A4_PHASE4_GODOT_PASS profile=2048x128 viewer=settled cold_idle=stable remove=settled implementation=reference_profile_runtime_cold_idle
 WT_TERRAIN_A4_PHASE4_SMOKE_PASS engines=2 report=artifacts/a4_phase4_reference_runtime_cold_idle/a4_phase4_reference_runtime_cold_idle_report.json
 ```
 
@@ -19,7 +19,7 @@ A4 phase 4 validates the public runtime path above the official
   tests or games to call backend viewer APIs directly;
 - `WtTerrainWorld` exposes backend runtime metrics as a terrain-layer summary;
 - `WtTerrainRuntimeAudit` defines the terrain-layer cold-idle interpretation;
-- the default `WtTerrainProfile` remains the 2048 x 2048 x 64 reference profile
+- the default `WtTerrainProfile` remains the 2048 x 2048 x 128 reference profile
   with `+Y` up and finite closed boundaries;
 - a public `WtTerrainWorld` starts the official backend fixture, streams one
   viewer, waits for render/collision readiness, queries the ready origin chunk,

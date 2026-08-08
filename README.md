@@ -2,7 +2,8 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: A6 complete. This repository defines the addon boundary, public API
+Status: TQP-51 production-addon boundary candidate frozen; TQP-52 is next. This
+repository defines the addon boundary, public API
 shape, source layout, dependency detection, local smoke validation, official
 `world-transvoxel` bridge,
 terrain/edit/storage/recovery resource contracts, backend edit transactions,
@@ -28,7 +29,9 @@ metrics, materialized checker terrain, GPU watt sampling, flat/mountain playable
 profile selection, first-person plus overview captures, human mouse-capture fix,
 and edit-time material reapply to avoid white blink. Human feedback confirms the
 fixture is still small and performance cannot be judged from this scale. This is
-not a game repository and does not yet claim production-ready terrain.
+not a game repository and does not yet claim production-ready terrain. TQP-51
+pins the required `world-transvoxel` authority and forbids addon-local fallback
+meshers or synthetic terrain surfaces.
 
 ## Role
 
@@ -194,6 +197,7 @@ WT_TERRAIN_A5_PHASE5_CONTRACT_PASS next=a6_game_repository_readiness_decision im
 WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS validators=7 smokes=4 report=artifacts/a5_phase5_exit_review/a5_phase5_exit_review_report.json next=a6_game_repository_readiness_decision
 WT_TERRAIN_A6_CONTRACT_PASS decision=approve_validation_game_repository implementation=readiness_decision next=separate_validation_game_repository_when_user_approves
 WT_TERRAIN_A6_READINESS_DECISION_PASS decision=approve_validation_game_repository validators=2 report=artifacts/a6_readiness_decision/a6_readiness_decision_report.json next=separate_validation_game_repository_when_user_approves
+WT_TERRAIN_TQP51_BOUNDARY_PASS candidate=world-transvoxel-terrain-cpu-tqp51-1 next=tqp52_runtime_api_profiles_readiness
 ```
 
 ## License

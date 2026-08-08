@@ -47,7 +47,7 @@ REQUIRED_PHRASES = {
         "WT_TERRAIN_A5_PHASE2_GODOT_PASS",
         "wt_terrain_reference_scene.tscn",
         "refresh_debug_snapshot",
-        "profile=2048x64",
+        "profile=2048x128",
         "local_reference_scene_scaffold",
     ),
     "tools/a5_phase2_reference_scene_scaffold_smoke.py": (

@@ -3,6 +3,7 @@ extends Node
 class_name WtTerrainMaterialApplicator
 
 const TERRAIN_SHADER := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_palette.gdshader")
+const TextureFactory := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_material_texture_factory.gd")
 const CHECKER_TEXTURE_FORMAT := "RGBA8"
 const CHECKER_TEXTURE_BYTES_PER_PIXEL := 4
 const MAX_STANDARD_TEXTURE_BYTES := 4 * 1024
@@ -161,11 +162,13 @@ func _material_instance() -> ShaderMaterial:
 func _build_material(resolution: int) -> ShaderMaterial:
 	var shader_material := ShaderMaterial.new()
 	shader_material.shader = TERRAIN_SHADER
-	shader_material.set_shader_parameter("checker_texture", _checker_texture(resolution))
+	var checker := TextureFactory.checker_texture(resolution)
+	_texture_checksum = int(checker.get("checksum", 0))
+	shader_material.set_shader_parameter("checker_texture", checker.get("texture"))
 	var production_resolution := _production_texture_resolution(_material_profile_summary())
-	shader_material.set_shader_parameter("terrain_albedo_atlas", _production_atlas(production_resolution, &"albedo"))
-	shader_material.set_shader_parameter("terrain_normal_atlas", _production_atlas(production_resolution, &"normal"))
-	shader_material.set_shader_parameter("terrain_roughness_atlas", _production_atlas(production_resolution, &"roughness_orm"))
+	shader_material.set_shader_parameter("terrain_albedo_atlas", TextureFactory.production_atlas(production_resolution, &"albedo"))
+	shader_material.set_shader_parameter("terrain_normal_atlas", TextureFactory.production_atlas(production_resolution, &"normal"))
+	shader_material.set_shader_parameter("terrain_roughness_atlas", TextureFactory.production_atlas(production_resolution, &"roughness_orm"))
 	_apply_visual_mode(shader_material)
 	return shader_material
 
@@ -187,19 +190,6 @@ func _load_clean_albedo_texture() -> Texture2D:
 		return null
 	var resource := ResourceLoader.load(clean_albedo_texture_path)
 	return resource as Texture2D
-
-func _checker_texture(resolution: int) -> Texture2D:
-	var image := Image.create(resolution, resolution, false, Image.FORMAT_RGBA8)
-	var checksum := 0
-	for y in range(resolution):
-		for x in range(resolution):
-			var bright := ((x / 4) + (y / 4)) % 2 == 0
-			var byte_value := 255 if bright else 158
-			var value := float(byte_value) / 255.0
-			checksum = int((checksum + ((x + 1) * 31 + (y + 1) * 17) * byte_value) % 2147483647)
-			image.set_pixel(x, y, Color(value, value, value, 1.0))
-	_texture_checksum = checksum
-	return ImageTexture.create_from_image(image)
 
 func _apply_to_meshes(node: Node, material: Material) -> Dictionary:
 	var result := {"checked": 0, "updated": 0}
@@ -274,32 +264,10 @@ func _resolved_texture_resolution() -> int:
 	return int(clamp(profile_resolution, 2, 64))
 
 func _texture_bytes(resolution: int) -> int:
-	return resolution * resolution * CHECKER_TEXTURE_BYTES_PER_PIXEL
+	return TextureFactory.texture_bytes(resolution, CHECKER_TEXTURE_BYTES_PER_PIXEL)
 
 func _production_texture_resolution(profile: Dictionary) -> int:
 	return int(clamp(int(profile.get("standard_texture_resolution", 64)), 16, 512))
-
-func _production_atlas(resolution: int, slot: StringName) -> Texture2D:
-	var image := Image.create(resolution * 4, resolution, false, Image.FORMAT_RGBA8)
-	var base := [
-		Color(0.40, 0.62, 0.22, 1.0),
-		Color(0.42, 0.43, 0.42, 1.0),
-		Color(0.63, 0.53, 0.36, 1.0),
-		Color(0.30, 0.30, 0.32, 1.0),
-	]
-	for y in range(resolution):
-		for x in range(resolution * 4):
-			var tile := int(x / resolution)
-			var c: Color = base[tile]
-			if slot == &"normal":
-				c = Color(0.5, 0.5, 1.0, 1.0)
-			elif slot == &"roughness_orm":
-				c = Color(0.0, 0.76 + float(tile) * 0.04, 1.0, 1.0)
-			else:
-				var grain := 0.90 + 0.10 * float(((x * 13 + y * 7 + tile * 19) % 11)) / 10.0
-				c = Color(c.r * grain, c.g * grain, c.b * grain, 1.0)
-			image.set_pixel(x, y, c)
-	return ImageTexture.create_from_image(image)
 
 func _terrain_world() -> Node:
 	var reference := get_node_or_null(reference_scene_path)

@@ -49,7 +49,8 @@ Exit:
 
 - the terrain addon talks to the official MIT-backed `world-transvoxel` API;
 - dependency boundaries remain explicit;
-- deterministic CPU/native fallback remains accepted.
+- the official deterministic CPU/native backend remains authoritative and no
+  terrain-addon fallback implementation is accepted.
 
 ## A4 - Terrain profile, edit, storage, and recovery
 
@@ -106,7 +107,7 @@ Phase 4 exit:
 
 - `WtTerrainWorld` exposes viewer update/removal, chunk query, runtime metrics,
   and cold-idle summary APIs;
-- the reference profile defaults are verified as 2048 x 2048 x 64 with `+Y` up
+- the reference profile defaults are verified as 2048 x 2048 x 128 with `+Y` up
   and finite closed boundaries;
 - one public terrain-world viewer streams to ready render/collision state,
   remains cold-idle with selected counters stable, removes cleanly, and stops;
@@ -214,3 +215,21 @@ Exit:
   obvious to a player, performance cannot be judged from this scale, and the
   edit/place white blink was fixed by continuous material reapply;
 - next validation-game action is larger streaming-scale terrain validation.
+
+## TQP-51 - Production addon boundary
+
+Status: complete by `WT_TERRAIN_TQP51_BOUNDARY_PASS`.
+
+Exit:
+
+- standalone candidate is `world-transvoxel-terrain-cpu-tqp51-1`;
+- `world-transvoxel` revision
+  `f4abd7ab4f921f98aba4ee45b4453af0bae53cd8` is the required terrain authority;
+- ownership, threading, resource lifetimes, extension points, failure policy,
+  and unsupported scope are frozen in `BOUNDARY_CONTRACT.json`;
+- no fallback mesher, synthetic terrain surface, vendored upstream authority,
+  or lab/game runtime dependency exists in the installable addon;
+- presentation texture generation remains diagnostic and unqualified until
+  TQP-53;
+- no production-release claim is made;
+- next milestone is TQP-52 runtime API and profile readiness.

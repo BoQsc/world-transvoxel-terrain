@@ -14,8 +14,8 @@ func _init() -> void:
 	var errors: Array[String] = []
 
 	var terrain_profile = TerrainProfile.new()
-	if terrain_profile.horizontal_cells != 2048 or terrain_profile.vertical_cells != 64:
-		errors.append("reference terrain profile is not 2048 x 2048 x 64")
+	if terrain_profile.horizontal_cells != 2048 or terrain_profile.vertical_cells != 128:
+		errors.append("reference terrain profile is not 2048 x 2048 x 128")
 	if not terrain_profile.plus_y_is_up:
 		errors.append("reference terrain profile must use +Y up")
 	if not terrain_profile.finite_closed_boundary:
@@ -81,7 +81,7 @@ func _init() -> void:
 		return
 
 	print(
-		"%s profile=2048x64 operations=5 storage=valid recovery=cold_idle implementation=resource_semantics_only"
+		"%s profile=2048x128 operations=5 storage=valid recovery=cold_idle implementation=resource_semantics_only"
 		% MARKER
 	)
 	quit(0)

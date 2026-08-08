@@ -1,5 +1,7 @@
 @tool
 extends RefCounted
+
+const EdgeSummary := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_watertightness_edges.gd")
 class_name WtTerrainWatertightnessProbe
 
 
@@ -31,8 +33,8 @@ static func collect(backend: Node, mode: String, center: Vector3, radius: float)
 		"normal_agreement_near_zero": 0,
 	}
 	_collect_edges(backend, center, radius, edge_counts, lod0_edge_counts, edge_owners, lod0_edge_owners, stats)
-	var edge_summary := _summarize_edge_counts(edge_counts, edge_owners)
-	var lod0_edge_summary := _summarize_edge_counts(lod0_edge_counts, lod0_edge_owners)
+	var edge_summary := EdgeSummary.summarize(edge_counts, edge_owners)
+	var lod0_edge_summary := EdgeSummary.summarize(lod0_edge_counts, lod0_edge_owners)
 	for key in edge_summary.keys():
 		stats[key] = edge_summary[key]
 	for key in lod0_edge_summary.keys():
@@ -217,76 +219,12 @@ static func _accumulate_edge_if_inner(
 	var midpoint := (a + b) * 0.5
 	if midpoint.distance_to(center) > radius:
 		return
-	var key := _edge_key(a, b)
+	var key := EdgeSummary.edge_key(a, b)
 	edge_counts[key] = int(edge_counts.get(key, 0)) + 1
 	if not edge_owners.has(key):
 		edge_owners[key] = {}
 	var owners: Dictionary = edge_owners[key]
 	owners[owner] = int(owners.get(owner, 0)) + 1
-
-
-static func _summarize_edge_counts(edge_counts: Dictionary, edge_owners: Dictionary) -> Dictionary:
-	var boundary_edges := 0
-	var nonmanifold_edges := 0
-	var matched_edges := 0
-	var maximum_edge_use := 0
-	var boundary_examples := []
-	var nonmanifold_examples := []
-	for key in edge_counts.keys():
-		var count := int(edge_counts[key])
-		maximum_edge_use = maxi(maximum_edge_use, count)
-		if count == 1:
-			boundary_edges += 1
-			if boundary_examples.size() < 8:
-				boundary_examples.append("%s owners=%s" % [str(key), _owners_summary(edge_owners.get(key, {}))])
-		elif count == 2:
-			matched_edges += 1
-		else:
-			nonmanifold_edges += 1
-			if nonmanifold_examples.size() < 8:
-				nonmanifold_examples.append("%s count=%d owners=%s" % [
-					str(key),
-					count,
-					_owners_summary(edge_owners.get(key, {})),
-				])
-	return {
-		"edges": edge_counts.size(),
-		"matched_edges": matched_edges,
-		"boundary_edges": boundary_edges,
-		"nonmanifold_edges": nonmanifold_edges,
-		"maximum_edge_use": maximum_edge_use,
-		"boundary_examples": boundary_examples,
-		"nonmanifold_examples": nonmanifold_examples,
-	}
-
-
-static func _edge_key(a: Vector3, b: Vector3) -> String:
-	var key_a := _point_key(a)
-	var key_b := _point_key(b)
-	if key_a < key_b:
-		return key_a + "|" + key_b
-	return key_b + "|" + key_a
-
-
-static func _point_key(point: Vector3) -> String:
-	var scale := 1024.0
-	return "%d,%d,%d" % [
-		roundi(point.x * scale),
-		roundi(point.y * scale),
-		roundi(point.z * scale),
-	]
-
-
-static func _owners_summary(owners: Dictionary) -> String:
-	var parts := []
-	var keys := owners.keys()
-	keys.sort()
-	for index in range(mini(keys.size(), 4)):
-		var key := str(keys[index])
-		parts.append("%s:%d" % [key, int(owners[key])])
-	if keys.size() > parts.size():
-		parts.append("+%d more" % (keys.size() - parts.size()))
-	return "[" + ", ".join(parts) + "]"
 
 
 static func _mesh_owner(instance: MeshInstance3D, lod: int) -> String:

@@ -16,6 +16,11 @@ path that validation games use to visualize streamed backend meshes. This keeps
 mesh-material repair logic inside the addon boundary instead of inside a game
 repository.
 
+Its generated checker and color-atlas textures are bounded diagnostic
+presentation scaffolding, not terrain or geometry authority. They remain
+unqualified until TQP-53 and must not be presented as production texture
+quality.
+
 ## Godot terrain culling policy
 
 The default streamed terrain material uses `cull_back`.

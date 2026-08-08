@@ -2,8 +2,9 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: A6 complete. A separate validation game repository is approved
-only when the user explicitly asks for it.
+Current phase: TQP-51 production-addon boundary candidate frozen. TQP-52 runtime
+API and profile readiness is next. A separate validation game repository remains
+outside the production-addon runtime boundary.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -231,7 +232,8 @@ A3 - `world-transvoxel` bridge.
 
 - bind the terrain addon to the official MIT-backed `world-transvoxel` API;
 - keep dependency boundaries explicit;
-- preserve CPU/native deterministic fallback.
+- require the official CPU/native deterministic authority with no addon-local
+  terrain fallback.
 
 A4 - Terrain profile, edit, storage, and recovery implementation.
 
@@ -392,7 +394,7 @@ A4 phase 4 is complete when:
   metrics, and cold-idle summary methods;
 - cold-idle interpretation lives in focused runtime helper code, not a growing
   monolithic terrain-world script;
-- the default `WtTerrainProfile` is verified as the 2048 x 2048 x 64 `+Y` up
+- the default `WtTerrainProfile` is verified as the 2048 x 2048 x 128 `+Y` up
   finite reference profile;
 - the Godot smoke starts the official lifecycle fixture through
   `WtTerrainWorld`, streams one viewer, verifies ready render/collision state,
@@ -529,3 +531,23 @@ A6 is complete by `WT_TERRAIN_A6_READINESS_DECISION_PASS`. The recorded decision
 is `approve_validation_game_repository`, which means a separate validation game
 repository may be created when the user asks, but production-ready terrain is not
 claimed here.
+
+## Definition of done for TQP-51
+
+TQP-51 is complete when:
+
+- `addons/world_transvoxel_terrain/BOUNDARY_CONTRACT.json` freezes the candidate,
+  required upstream revision, ownership, threading, lifetimes, extension points,
+  failure policy, and unsupported scope;
+- `world-transvoxel` remains the sole terrain geometry and state authority;
+- the installable addon has no fallback mesher, synthetic terrain surface,
+  vendored upstream implementation, or lab/game runtime dependency;
+- generated checker and atlas textures are explicitly diagnostic and unqualified
+  until TQP-53;
+- all historical static validators and `python -B
+  tools/validate_tqp51_boundary.py` pass;
+- TQP-52 remains the next milestone and no production release is claimed.
+
+TQP-51 is complete by `WT_TERRAIN_TQP51_BOUNDARY_PASS`. This freezes a candidate
+boundary only; it does not qualify runtime APIs, profiles, textures, performance,
+or release readiness.

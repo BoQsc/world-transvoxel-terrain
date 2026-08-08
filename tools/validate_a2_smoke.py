@@ -44,7 +44,7 @@ REQUIRED_PHRASES = {
     "addons/world_transvoxel_terrain/api/wt_terrain_profile.gd": (
         "class_name WtTerrainProfile",
         "horizontal_cells: int = 2048",
-        "vertical_cells: int = 64",
+        "vertical_cells: int = 128",
         "finite_closed_boundary",
     ),
     "addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd": (
@@ -60,7 +60,7 @@ REQUIRED_PHRASES = {
     "tests/a2_addon_smoke.gd": (
         "WT_TERRAIN_A2_GODOT_SMOKE_PASS",
         "dependency_installed",
-        "profile=2048x64",
+        "profile=2048x128",
         "placeholder_contract_only",
     ),
     "tools/a2_addon_smoke.py": (

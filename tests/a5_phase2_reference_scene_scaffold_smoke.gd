@@ -52,7 +52,7 @@ func _run_test() -> void:
 
 	var terrain_profile := Dictionary(snapshot.get("terrain_profile", {}))
 	if int(terrain_profile.get("horizontal_cells", 0)) != 2048 or \
-			int(terrain_profile.get("vertical_cells", 0)) != 64:
+			int(terrain_profile.get("vertical_cells", 0)) != 128:
 		_fail("reference scene profile drifted")
 		return
 	var world := Dictionary(snapshot.get("world", {}))
@@ -60,13 +60,13 @@ func _run_test() -> void:
 		_fail("reference scene scaffold should not start backend work")
 		return
 	var status_text := str(scene.call("get_debug_status_text"))
-	if not status_text.contains("profile=2048x64") or \
+	if not status_text.contains("profile=2048x128") or \
 			not status_text.contains("implementation=local_reference_scene_scaffold"):
 		_fail("reference scene status text mismatch: %s" % status_text)
 		return
 
 	print(
-		"%s scene=instanced overlay=ready profile=2048x64 implementation=local_reference_scene_scaffold"
+		"%s scene=instanced overlay=ready profile=2048x128 implementation=local_reference_scene_scaffold"
 		% MARKER
 	)
 	scene.queue_free()

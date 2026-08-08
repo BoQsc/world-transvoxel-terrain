@@ -3,7 +3,8 @@
 This directory is the installable Godot addon boundary for
 `world-transvoxel-terrain`.
 
-Current status: A6 complete. The addon has public terrain/profile/edit/storage
+Current status: TQP-51 production-addon boundary candidate frozen; TQP-52 is
+next. The addon has public terrain/profile/edit/storage
 resources, a bridge to the official `world-transvoxel` backend, terrain-world
 lifecycle/edit submission, and a bounded reference runtime/cold-idle smoke
 through `WtTerrainWorld`. It now also has the debug snapshot data contract for
@@ -15,7 +16,9 @@ edit submission, authoritative sample queries, storage snapshot requests,
 telemetry, and debug snapshots. The A6 decision is
 `approve_validation_game_repository`, meaning a
 separate validation game repository may be created when the user explicitly asks
-for it. It is not yet a production-ready terrain package.
+for it. It is not yet a production-ready terrain package. The TQP-51 contract
+pins `world-transvoxel` as terrain authority and forbids addon-local fallback
+meshers or synthetic terrain surfaces.
 
 Allowed GDScript here is limited to editor glue, scene scaffolding, input
 routing, debug UI, and small smoke-test harnesses. Terrain generation, meshing,
@@ -24,3 +27,6 @@ low-level addon code, binary tooling, shaders when justified, or Python offline
 tooling.
 
 The addon depends on `world-transvoxel` but does not vendor it.
+
+The machine-readable ownership, threading, lifetime, failure, and unsupported
+scope contract is `BOUNDARY_CONTRACT.json`.

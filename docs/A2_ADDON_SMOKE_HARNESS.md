@@ -6,7 +6,7 @@ Validation markers:
 
 ```text
 WT_TERRAIN_A2_CONTRACT_PASS next=a3_world_transvoxel_bridge implementation=smoke_only
-WT_TERRAIN_A2_GODOT_SMOKE_PASS dependency_installed=false profile=2048x64 implementation=placeholder_contract_only
+WT_TERRAIN_A2_GODOT_SMOKE_PASS dependency_installed=false profile=2048x128 implementation=placeholder_contract_only
 WT_TERRAIN_A2_SMOKE_PASS engines=2 report=artifacts/a2_addon_smoke/a2_addon_smoke_report.json
 ```
 
@@ -20,7 +20,7 @@ compute acceleration, or game validation.
   detects whether `res://addons/world_transvoxel/plugin.cfg` exists and reports
   a clear status dictionary.
 - `addons/world_transvoxel_terrain/api/wt_terrain_profile.gd` defines the
-  placeholder 2048 x 2048 x 64 terrain profile resource.
+  placeholder 2048 x 2048 x 128 terrain profile resource.
 - `addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd`
   defines placeholder generation-profile metadata, including volumetric
   underground support.

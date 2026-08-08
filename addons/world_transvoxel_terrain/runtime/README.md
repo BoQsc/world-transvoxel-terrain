@@ -38,3 +38,8 @@ Generation, meshing, streaming, edit application, and storage stay in the
 lifecycle/profile/request wrappers, but it must not implement density volume
 loops, mesh construction loops, page generation loops, source-file streaming
 loops, or image/pixel terrain loops.
+
+TQP-51 freezes this boundary in `../BOUNDARY_CONTRACT.json`. Missing dependency,
+invalid configuration, invalid edit commands, and upstream errors fail closed.
+There is no terrain-addon worker pool, fallback mesher, or synthetic terrain
+surface. TQP-52 remains responsible for production API and profile readiness.

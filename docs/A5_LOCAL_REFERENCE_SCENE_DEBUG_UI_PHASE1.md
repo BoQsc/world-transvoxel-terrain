@@ -6,7 +6,7 @@ Markers:
 
 ```text
 WT_TERRAIN_A5_PHASE1_CONTRACT_PASS next=a5_phase2_local_reference_scene_scaffold implementation=debug_snapshot_contract
-WT_TERRAIN_A5_PHASE1_GODOT_PASS categories=10 profile=2048x64 implementation=debug_snapshot_contract
+WT_TERRAIN_A5_PHASE1_GODOT_PASS categories=10 profile=2048x128 implementation=debug_snapshot_contract
 WT_TERRAIN_A5_PHASE1_SMOKE_PASS engines=2 report=artifacts/a5_phase1_debug_snapshot/a5_phase1_debug_snapshot_report.json
 ```
 

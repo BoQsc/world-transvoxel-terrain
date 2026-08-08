@@ -41,7 +41,7 @@ func _init() -> void:
 
 	var terrain_profile := Dictionary(snapshot.get("terrain_profile", {}))
 	if int(terrain_profile.get("horizontal_cells", 0)) != 2048 or \
-			int(terrain_profile.get("vertical_cells", 0)) != 64:
+			int(terrain_profile.get("vertical_cells", 0)) != 128:
 		errors.append("debug snapshot reference profile drifted")
 	var generation_profile := Dictionary(snapshot.get("generation_profile", {}))
 	if str(generation_profile.get("profile_id", "")) != "deterministic_reference" or \
@@ -69,7 +69,7 @@ func _init() -> void:
 		return
 
 	print(
-		"%s categories=%d profile=2048x64 implementation=debug_snapshot_contract"
+		"%s categories=%d profile=2048x128 implementation=debug_snapshot_contract"
 		% [MARKER, REQUIRED_CATEGORIES.size()]
 	)
 	quit(0)

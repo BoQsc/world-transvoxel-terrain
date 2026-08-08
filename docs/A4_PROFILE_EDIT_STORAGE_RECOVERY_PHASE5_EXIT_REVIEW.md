@@ -20,7 +20,7 @@ The next valid milestone is A5 local reference scene and debug UI.
 
 A4 is closed by the combined evidence from phases 1 through 4:
 
-- the default `WtTerrainProfile` is the 2048 x 2048 x 64 reference profile with
+- the default `WtTerrainProfile` is the 2048 x 2048 x 128 reference profile with
   `+Y` up and finite closed boundaries;
 - `WtTerrainEditOperation` and `WtTerrainEditBatch` represent carve, construct,
   fill, paint, and restore-to-base operations;

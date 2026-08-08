@@ -6,7 +6,7 @@ Markers:
 
 ```text
 WT_TERRAIN_A4_PHASE1_CONTRACT_PASS next=a4_phase2_bridge_edit_submission implementation=resource_semantics_only
-WT_TERRAIN_A4_PHASE1_GODOT_PASS profile=2048x64 operations=5 storage=valid recovery=cold_idle implementation=resource_semantics_only
+WT_TERRAIN_A4_PHASE1_GODOT_PASS profile=2048x128 operations=5 storage=valid recovery=cold_idle implementation=resource_semantics_only
 WT_TERRAIN_A4_PHASE1_SMOKE_PASS engines=2 report=artifacts/a4_phase1_resources/a4_phase1_resources_report.json
 ```
 
@@ -15,7 +15,7 @@ WT_TERRAIN_A4_PHASE1_SMOKE_PASS engines=2 report=artifacts/a4_phase1_resources/a
 A4 phase 1 defines and validates the resource-level contract for the first
 real terrain layer above `world-transvoxel`:
 
-- the reference `WtTerrainProfile` is 2048 x 2048 x 64, finite, and `+Y` up;
+- the default reference `WtTerrainProfile` is 2048 x 2048 x 128, finite, and `+Y` up;
 - `WtTerrainEditOperation` represents carve, construct, fill, paint, and
   restore-to-base as explicit commands;
 - each edit operation validates input, estimates an affected `AABB`, and emits

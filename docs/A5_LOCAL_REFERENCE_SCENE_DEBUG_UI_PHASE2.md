@@ -6,7 +6,7 @@ Markers:
 
 ```text
 WT_TERRAIN_A5_PHASE2_CONTRACT_PASS next=a5_phase3_backend_reference_scene_runtime_smoke implementation=local_reference_scene_scaffold
-WT_TERRAIN_A5_PHASE2_GODOT_PASS scene=instanced overlay=ready profile=2048x64 implementation=local_reference_scene_scaffold
+WT_TERRAIN_A5_PHASE2_GODOT_PASS scene=instanced overlay=ready profile=2048x128 implementation=local_reference_scene_scaffold
 WT_TERRAIN_A5_PHASE2_SMOKE_PASS engines=2 report=artifacts/a5_phase2_reference_scene_scaffold/a5_phase2_reference_scene_scaffold_report.json
 ```
 

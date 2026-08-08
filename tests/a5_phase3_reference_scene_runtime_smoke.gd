@@ -2,7 +2,10 @@ extends SceneTree
 
 const MARKER := "WT_TERRAIN_A5_PHASE3_GODOT_PASS"
 const SCENE_PATH := "res://addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.tscn"
+const GenerationProfile := preload("res://addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd")
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
+
+var _last_settle_snapshot: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -26,6 +29,12 @@ func _run_test() -> void:
 		_fail("reference scene did not expose terrain world")
 		return
 	terrain_world.set("storage_profile", _fixture_storage_profile())
+	var generation_profile: Resource = terrain_world.get("generation_profile")
+	if generation_profile == null:
+		_fail("reference scene did not assign a generation profile")
+		return
+	generation_profile.set("source_mode", GenerationProfile.SourceMode.BAKED_WORLD)
+	generation_profile.set("profile_id", &"baked_runtime_fixture")
 
 	if not scene.call("start_reference_backend_world") or \
 			not await _wait_for_state(terrain_world, "running"):
@@ -35,7 +44,7 @@ func _run_test() -> void:
 		_fail("reference scene viewer update failed")
 		return
 	if not await _wait_for_scene_settled(scene, 1, 1):
-		_fail("reference scene did not report settled runtime")
+		_fail("reference scene did not report settled runtime: %s" % str(_last_settle_snapshot))
 		return
 
 	var snapshot: Dictionary = scene.call("refresh_debug_snapshot")
@@ -92,6 +101,7 @@ func _wait_for_state(terrain_world: Node, expected: String) -> bool:
 func _wait_for_scene_settled(scene: Node, render_count: int, collision_count: int) -> bool:
 	for _frame in range(900):
 		var snapshot: Dictionary = scene.call("refresh_debug_snapshot")
+		_last_settle_snapshot = snapshot
 		var runtime := Dictionary(snapshot.get("reference_runtime", {}))
 		if bool(runtime.get("cold_idle", false)) and \
 				int(runtime.get("render_resources", -1)) == render_count and \

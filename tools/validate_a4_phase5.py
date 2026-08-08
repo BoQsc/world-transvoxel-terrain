@@ -20,7 +20,7 @@ REQUIRED_PHRASES = {
         "WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS",
         "A4 closes at the terrain-addon API",
         "next valid milestone is A5",
-        "2048 x 2048 x 64 reference profile",
+        "2048 x 2048 x 128 reference profile",
         "carve, construct, fill, paint, and restore-to-base",
         "edit persistence is verified",
         "cold idle",

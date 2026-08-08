@@ -2,6 +2,7 @@ extends SceneTree
 
 const MARKER := "WT_TERRAIN_A5_PHASE4_GODOT_PASS"
 const SCENE_PATH := "res://addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.tscn"
+const GenerationProfile := preload("res://addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd")
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
 const REQUIRED_SECTIONS := [
 	"[world]",
@@ -38,6 +39,12 @@ func _run_test() -> void:
 		_fail("reference scene did not expose terrain world")
 		return
 	terrain_world.set("storage_profile", _fixture_storage_profile())
+	var generation_profile: Resource = terrain_world.get("generation_profile")
+	if generation_profile == null:
+		_fail("reference scene did not assign a generation profile")
+		return
+	generation_profile.set("source_mode", GenerationProfile.SourceMode.BAKED_WORLD)
+	generation_profile.set("profile_id", &"baked_runtime_fixture")
 	if not scene.call("start_reference_backend_world") or \
 			not await _wait_for_state(terrain_world, "running"):
 		_fail("reference scene did not start backend world")
@@ -59,9 +66,9 @@ func _run_test() -> void:
 			_fail("debug overlay missing section: %s" % section)
 			return
 	for required_line in [
-		"profile=2048x64",
+		"profile=2048x128",
 		"backend_state=running",
-		"source_mode=DETERMINISTIC_REFERENCE",
+		"source_mode=BAKED_WORLD",
 		"seed=1",
 		"cold_idle=true",
 		"queued_render=0",
