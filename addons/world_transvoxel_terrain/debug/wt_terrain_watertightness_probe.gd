@@ -1,8 +1,8 @@
 @tool
 extends RefCounted
+class_name WtTerrainWatertightnessProbe
 
 const EdgeSummary := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain_watertightness_edges.gd")
-class_name WtTerrainWatertightnessProbe
 
 
 static func collect(backend: Node, mode: String, center: Vector3, radius: float) -> Dictionary:
