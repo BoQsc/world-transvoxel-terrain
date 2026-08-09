@@ -32,7 +32,7 @@ low-level addon code, binary tooling, shaders when justified, or Python offline
 tooling.
 
 The addon depends on exact `world-transvoxel` revision
-`4f1fdb59e3c6200c8f823b99027b2d3f15563858` but does not vendor it or provide a
+`f0d88fe9f2d844190d11f26cbe9ed9919f7244d1` but does not vendor it or provide a
 fallback. Install and enable that addon before this one.
 
 The machine-readable ownership, threading, lifetime, failure, and unsupported

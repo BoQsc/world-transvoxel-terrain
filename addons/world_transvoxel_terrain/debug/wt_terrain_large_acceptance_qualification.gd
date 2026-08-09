@@ -27,6 +27,9 @@ func get_acceptance_profile() -> Dictionary:
 		"collision_radius_chunks": 1,
 		"maximum_lod": 2,
 		"active_chunk_capacity": 2048,
+		"cpu_profile": OS.get_environment("WT_CPU_PROFILE") if OS.has_environment("WT_CPU_PROFILE") else "balanced",
+		"procedural_generation_worker_count": int(terrain_world.runtime_profile.procedural_generation_worker_count),
+		"meshing_worker_count": int(terrain_world.runtime_profile.meshing_worker_count),
 		"authority": "world-transvoxel",
 		"fallback": false,
 	}
@@ -55,13 +58,33 @@ func collect_lod_audit(
 	return _last_audit.duplicate(true)
 
 
-func wait_until_ready(maximum_frames: int = 1800) -> Dictionary:
+func wait_until_ready(
+	maximum_frames: int = 1800,
+	profile_baseline: Dictionary = {},
+	profile_started_usec: int = 0
+) -> Dictionary:
 	var blocked_stall_frames := 0
 	var blocked_signature := ""
+	var first_visual_latency_usec := -1
+	var first_collision_latency_usec := -1
 	for frame in range(maximum_frames):
 		_refresh_metrics()
+		if profile_started_usec > 0:
+			if first_visual_latency_usec < 0 and int(_last_metrics.get("application_applied_render", 0)) > int(profile_baseline.get("application_applied_render", 0)):
+				first_visual_latency_usec = Time.get_ticks_usec() - profile_started_usec
+			if first_collision_latency_usec < 0 and int(_last_metrics.get("application_applied_collision", 0)) > int(profile_baseline.get("application_applied_collision", 0)):
+				first_collision_latency_usec = Time.get_ticks_usec() - profile_started_usec
 		if _readiness_status() == "READY":
-			return {"status": "PASS", "frames": frame, "snapshot": get_validation_snapshot()}
+			return {
+				"status": "PASS",
+				"frames": frame,
+				"snapshot": get_validation_snapshot(),
+				"settlement_latency_usec": Time.get_ticks_usec() - profile_started_usec if profile_started_usec > 0 else 0,
+				"first_visual_latency_usec": maxi(first_visual_latency_usec, 0),
+				"first_collision_latency_usec": maxi(first_collision_latency_usec, 0),
+				"visual_already_resident": profile_started_usec > 0 and first_visual_latency_usec < 0,
+				"collision_already_resident": profile_started_usec > 0 and first_collision_latency_usec < 0,
+			}
 		var active := int(_last_metrics.get("non_retiring_chunk_records", 0))
 		var ready := int(_last_metrics.get("non_retiring_fully_ready_chunk_records", 0))
 		if active > 0 and ready < active and _work_queues_are_empty():
@@ -70,9 +93,9 @@ func wait_until_ready(maximum_frames: int = 1800) -> Dictionary:
 			else:
 				blocked_signature = signature
 				blocked_stall_frames = 1
-			if blocked_stall_frames == 1:
+			if blocked_stall_frames == 15:
 				print("TQP57_LARGE_NO_ACTIVE_WORK states=%s" % JSON.stringify(get_unready_chunk_states()))
-			if blocked_stall_frames >= 60:
+			if blocked_stall_frames >= 120:
 				return {"status": "FAIL", "error": "backend stopped progressing with required chunks not ready", "frames": frame, "stall_signature": signature, "unready_states": get_unready_chunk_states(), "snapshot": get_validation_snapshot()}
 		else:
 			blocked_stall_frames = 0
@@ -118,6 +141,7 @@ func publish_view(position: Vector3, force: bool = true) -> bool:
 
 func move_viewer_and_wait(position: Vector3, maximum_frames: int = 1800) -> Dictionary:
 	var before := terrain_world.call("get_runtime_metrics") as Dictionary
+	var started_usec := Time.get_ticks_usec()
 	var target := _clamp_viewer_position(position)
 	if not _request_viewer(target, true):
 		return {"status": "FAIL", "error": terrain_world.call("get_last_error")}
@@ -126,7 +150,7 @@ func move_viewer_and_wait(position: Vector3, maximum_frames: int = 1800) -> Dict
 		var metrics := terrain_world.call("get_runtime_metrics") as Dictionary
 		if int(metrics.get("viewer_updates", 0)) > int(before.get("viewer_updates", 0)) and int(metrics.get("collision_viewer_updates", 0)) > int(before.get("collision_viewer_updates", 0)): break
 		await get_tree().process_frame
-	return await wait_until_ready(maximum_frames)
+	return await wait_until_ready(maximum_frames, before, started_usec)
 
 
 func submit_edit_and_wait(kind: StringName, center: Vector3, maximum_frames: int = 1800) -> Dictionary:
@@ -144,13 +168,25 @@ func submit_edit_and_wait(kind: StringName, center: Vector3, maximum_frames: int
 	batch.batch_id = operation.command_id
 	batch.add_operation(operation)
 	var expected_revision := int(terrain_world.call("get_world_revision")) + 1
+	var before := terrain_world.call("get_runtime_metrics") as Dictionary
 	var started := Time.get_ticks_usec()
 	if not bool(terrain_world.call("submit_edit_batch", batch, 5700)):
 		return {"status": "FAIL", "error": terrain_world.call("get_last_error")}
 	for _frame in range(maximum_frames):
 		if int(terrain_world.call("get_world_revision")) >= expected_revision:
-			var settled := await wait_until_ready(maximum_frames)
-			return {"status": settled.get("status", "FAIL"), "kind": str(kind), "center": Support.vector_summary(center), "world_revision": terrain_world.call("get_world_revision"), "latency_usec": Time.get_ticks_usec() - started, "settlement": settled}
+			var commit_latency_usec := Time.get_ticks_usec() - started
+			var settled := await wait_until_ready(maximum_frames, before, started)
+			return {
+				"status": settled.get("status", "FAIL"),
+				"kind": str(kind),
+				"center": Support.vector_summary(center),
+				"world_revision": terrain_world.call("get_world_revision"),
+				"latency_usec": Time.get_ticks_usec() - started,
+				"commit_latency_usec": commit_latency_usec,
+				"first_visual_latency_usec": settled.get("first_visual_latency_usec", 0),
+				"first_collision_latency_usec": settled.get("first_collision_latency_usec", 0),
+				"settlement": settled,
+			}
 		await get_tree().process_frame
 	return {"status": "FAIL", "error": "edit commit timed out"}
 

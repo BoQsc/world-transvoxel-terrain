@@ -14,13 +14,37 @@ var queue_peaks := {"scheduler": 0, "storage": 0, "render": 0, "collision": 0}
 var observed_lod_counts := {}
 var memory_peak_bytes := 0
 
+const NATIVE_SAMPLE_METRICS := [
+	"control_active_time_ns_total",
+	"viewer_planning_time_ns_total",
+	"storage_completion_time_ns_total",
+	"loading_resume_time_ns_total",
+	"scheduler_apply_time_ns_total",
+	"scheduler_dispatch_time_ns_total",
+	"async_mesh_completion_time_ns_total",
+	"render_publication_time_ns_total",
+	"collision_build_time_ns_total",
+	"collision_repair_time_ns_total",
+	"mesh_prepare_time_ns_total",
+	"mesh_worker_queue_wait_ns_total",
+	"mesh_worker_execute_time_ns_total",
+	"mesh_completion_time_ns_total",
+	"storage_load_time_ns_total",
+	"render_apply_time_ns_total",
+	"collision_apply_time_ns_total",
+	"main_process_time_ns_total",
+	"retirement_time_ns_total",
+]
+
 
 func _initialize() -> void:
 	call_deferred("_run")
 
 
 func _run() -> void:
-	var contract = JSON.parse_string(FileAccess.get_file_as_string(CONTRACT_PATH))
+	var contract_path := OS.get_environment("WT_ACCEPTANCE_CONTRACT") if OS.has_environment("WT_ACCEPTANCE_CONTRACT") else CONTRACT_PATH
+	var result_path := OS.get_environment("WT_ACCEPTANCE_RESULT") if OS.has_environment("WT_ACCEPTANCE_RESULT") else RESULT_PATH
+	var contract = JSON.parse_string(FileAccess.get_file_as_string(contract_path))
 	if not contract is Dictionary:
 		_fail_now("acceptance contract could not be loaded")
 		return
@@ -80,8 +104,8 @@ func _run() -> void:
 	if str(shutdown.get("status", "")) != "PASS":
 		failures.append("production-addon world did not shut down cleanly")
 	var report := {
-		"schema": "world_transvoxel_terrain.tqp57_large_terrain_acceptance_evidence.v1",
-		"milestone": "TQP-57",
+		"schema": str(contract.get("evidence_schema", "world_transvoxel_terrain.tqp57_large_terrain_acceptance_evidence.v1")),
+		"milestone": str(contract.get("milestone", "TQP-57")),
 		"status": "PASS" if failures.is_empty() else "FAIL",
 		"retained_complete": failures.is_empty(),
 		"engine": Engine.get_version_info(),
@@ -108,7 +132,7 @@ func _run() -> void:
 		"explicitly_unqualified_scope": contract.get("explicitly_unqualified_scope", []),
 		"failures": failures,
 	}
-	_write_json(RESULT_PATH, report)
+	_write_json(result_path, report)
 	if not failures.is_empty():
 		push_error("WT_TERRAIN_TQP57_LARGE_ACCEPTANCE_GODOT_FAIL: " + "; ".join(failures))
 		quit(1)
@@ -133,6 +157,8 @@ func _run_scenario(
 	edited_samples: Dictionary,
 	captures: Array[Dictionary]
 ) -> Dictionary:
+	var scenario_started_usec := Time.get_ticks_usec()
+	var metrics_start := terrain_world.call("get_runtime_metrics") as Dictionary
 	var profile: Dictionary = contract.get("runtime_profile", {})
 	var kind := str(scenario.get("kind", ""))
 	var start := _vector3(scenario.get("start", []))
@@ -165,6 +191,9 @@ func _run_scenario(
 	var render_gpu_values: Array[float] = []
 	var draw_values: Array[float] = []
 	var primitive_values: Array[float] = []
+	var native_samples := {}
+	for metric_name in NATIVE_SAMPLE_METRICS:
+		native_samples[metric_name] = []
 	var over_100ms := 0
 	var frame_count := int(profile.get("frames_per_scenario", 90))
 	var camera := scene.get_node("Camera3D") as Camera3D
@@ -188,7 +217,10 @@ func _run_scenario(
 		render_gpu_values.append(RenderingServer.viewport_get_measured_render_time_gpu(get_root().get_viewport_rid()) * 1000.0)
 		draw_values.append(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
 		primitive_values.append(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
-		_observe_metrics(terrain_world.call("get_runtime_metrics"))
+		var frame_metrics := terrain_world.call("get_runtime_metrics") as Dictionary
+		for metric_name in NATIVE_SAMPLE_METRICS:
+			(native_samples[metric_name] as Array).append(int(frame_metrics.get(metric_name, 0)))
+		_observe_metrics(frame_metrics)
 
 	var final_settlement: Dictionary = await scene.call("wait_until_ready", 2400)
 	var audit: Dictionary = scene.call("collect_lod_audit")
@@ -208,12 +240,17 @@ func _run_scenario(
 	return {
 		"id": scenario.get("id", ""),
 		"kind": kind,
+		"wall_time_usec": Time.get_ticks_usec() - scenario_started_usec,
+		"metrics_start": metrics_start,
+		"metrics_end": metrics,
 		"initial_settlement": initial_settlement,
 		"final_settlement": final_settlement,
 		"status": "PASS" if str(initial_settlement.get("status", "")) == "PASS" and \
 				str(final_settlement.get("status", "")) == "PASS" and rendered and \
 				str(audit.get("status", "")) == "PASS" and edit_pass else "FAIL",
 		"frame": _distribution(frame_values),
+		"frame_samples_usec": frame_values,
+		"native_cumulative_samples": native_samples,
 		"stutter_over_100ms_count": over_100ms,
 		"stutter_fraction_over_100ms": float(over_100ms) / float(maxi(frame_count, 1)),
 		"process": _distribution(process_values),

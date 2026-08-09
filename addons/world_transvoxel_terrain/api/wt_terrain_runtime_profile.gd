@@ -18,6 +18,7 @@ const MIB := 1024 * 1024
 @export_range(1, 65536, 1) var demand_capacity_per_viewer: int = 4096
 @export_range(0, 16, 1) var lod_refinement_radius_chunks: int = 0
 @export_range(1, 8, 1) var procedural_generation_worker_count: int = 2
+@export_range(1, 8, 1) var meshing_worker_count: int = 2
 @export_range(1, 65536, 1) var storage_request_capacity: int = 256
 @export_range(1, 65536, 1) var storage_completion_capacity: int = 256
 @export_range(1, 65536, 1) var encoded_page_entry_capacity: int = 256
@@ -53,16 +54,16 @@ func apply_builtin(kind: Preset) -> void:
 	_match_common_defaults()
 	match kind:
 		Preset.LOW_POWER:
-			_apply_scale(&"low_power", 3, 2, 96, 4, 1024, 1, 64, 32, 32, 16, 2, 1, 2500)
+			_apply_scale(&"low_power", 3, 2, 96, 4, 1024, 1, 1, 64, 32, 32, 16, 2, 1, 2500)
 			power_intent = &"minimum_cpu_gpu_board_work"
 		Preset.QUALITY:
-			_apply_scale(&"quality", 10, 3, 512, 8, 8192, 4, 512, 256, 256, 128, 8, 4, 5000)
+			_apply_scale(&"quality", 10, 3, 512, 8, 8192, 4, 4, 512, 256, 256, 128, 8, 4, 5000)
 			power_intent = &"maximum_supported_cpu_quality"
 		Preset.REFERENCE:
-			_apply_scale(&"authoritative_reference", 6, 2, 256, 8, 4096, 2, 256, 128, 128, 64, 4, 2, 4000)
+			_apply_scale(&"authoritative_reference", 6, 2, 256, 8, 4096, 2, 2, 256, 128, 128, 64, 4, 2, 4000)
 			power_intent = &"repeatable_tqp_reference"
 		_:
-			_apply_scale(&"balanced", 6, 2, 256, 8, 4096, 2, 256, 128, 128, 64, 4, 2, 4000)
+			_apply_scale(&"balanced", 6, 2, 256, 8, 4096, 2, 2, 256, 128, 128, 64, 4, 2, 4000)
 			power_intent = &"balanced_cpu_reference"
 	emit_changed()
 
@@ -90,6 +91,7 @@ func get_backend_config_overrides() -> Dictionary:
 		"demand_capacity_per_viewer": demand_capacity_per_viewer,
 		"lod_refinement_radius_chunks": lod_refinement_radius_chunks,
 		"procedural_generation_worker_count": procedural_generation_worker_count,
+		"meshing_worker_count": meshing_worker_count,
 		"storage_request_capacity": storage_request_capacity,
 		"storage_completion_capacity": storage_completion_capacity,
 		"encoded_page_entry_capacity": encoded_page_entry_capacity,
@@ -149,14 +151,15 @@ func _match_common_defaults() -> void:
 	collision_deactivation_distance = 128.0
 
 
-func _apply_scale(id: StringName, radius: int, lod: int, chunks: int, viewers: int, demand: int, workers: int, storage: int, decoded: int, mesh: int, collision: int, render_budget: int, collision_budget: int, deadline: int) -> void:
+func _apply_scale(id: StringName, radius: int, lod: int, chunks: int, viewers: int, demand: int, generation_workers: int, mesh_workers: int, storage: int, decoded: int, mesh: int, collision: int, render_budget: int, collision_budget: int, deadline: int) -> void:
 	profile_id = id
 	viewer_radius_chunks = radius
 	maximum_lod = lod
 	active_chunk_capacity = chunks
 	viewer_capacity = viewers
 	demand_capacity_per_viewer = demand
-	procedural_generation_worker_count = workers
+	procedural_generation_worker_count = generation_workers
+	meshing_worker_count = mesh_workers
 	storage_request_capacity = storage
 	storage_completion_capacity = storage
 	encoded_page_entry_capacity = storage

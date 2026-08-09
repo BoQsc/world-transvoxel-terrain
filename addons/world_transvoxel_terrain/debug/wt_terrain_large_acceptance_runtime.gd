@@ -111,7 +111,25 @@ func _configure_profiles() -> void:
 	runtime.viewer_capacity = 4
 	runtime.demand_capacity_per_viewer = 8192
 	runtime.lod_refinement_radius_chunks = 1
-	runtime.procedural_generation_worker_count = 2
+	var cpu_profile := OS.get_environment("WT_CPU_PROFILE") if OS.has_environment("WT_CPU_PROFILE") else "balanced"
+	match cpu_profile:
+		"low_power":
+			runtime.procedural_generation_worker_count = 1
+			runtime.render_apply_budget = 4
+			runtime.collision_apply_budget = 2
+		"quality":
+			runtime.procedural_generation_worker_count = 3
+			runtime.render_apply_budget = 12
+			runtime.collision_apply_budget = 4
+		_:
+			runtime.procedural_generation_worker_count = 2
+			runtime.render_apply_budget = 8
+			runtime.collision_apply_budget = 3
+	runtime.meshing_worker_count = clampi(
+		int(OS.get_environment("WT_MESHING_WORKERS")) if OS.has_environment("WT_MESHING_WORKERS") else runtime.procedural_generation_worker_count,
+		1,
+		8
+	)
 	runtime.storage_request_capacity = 8192
 	runtime.storage_completion_capacity = 8192
 	runtime.encoded_page_entry_capacity = 2048
@@ -119,8 +137,6 @@ func _configure_profiles() -> void:
 	runtime.mesh_entry_capacity = 2048
 	runtime.render_entry_capacity = 2048
 	runtime.collision_entry_capacity = 256
-	runtime.render_apply_budget = 8
-	runtime.collision_apply_budget = 3
 	runtime.collision_apply_deadline_us = 12000
 	runtime.collision_activation_distance = 64.0
 	runtime.collision_deactivation_distance = 96.0
@@ -224,7 +240,16 @@ func _queues_are_empty() -> bool:
 
 
 func _work_queues_are_empty() -> bool:
-	return int(_last_metrics.get("scheduler_queued_jobs", 1)) == 0 and int(_last_metrics.get("storage_queued_requests", 1)) == 0 and int(_last_metrics.get("queued_render", 1)) == 0 and int(_last_metrics.get("total_collision_backlog", 1)) == 0
+	return int(_last_metrics.get("scheduler_queued_jobs", 1)) == 0 and \
+			int(_last_metrics.get("scheduler_queued_completions", 1)) == 0 and \
+			int(_last_metrics.get("mesh_worker_queued_jobs", 1)) == 0 and \
+			int(_last_metrics.get("mesh_worker_queued_completions", 1)) == 0 and \
+			int(_last_metrics.get("mesh_worker_active_jobs", 1)) == 0 and \
+			int(_last_metrics.get("storage_queued_requests", 1)) == 0 and \
+			int(_last_metrics.get("storage_queued_completions", 1)) == 0 and \
+			int(_last_metrics.get("storage_active_requests", 1)) == 0 and \
+			int(_last_metrics.get("queued_render", 1)) == 0 and \
+			int(_last_metrics.get("total_collision_backlog", 1)) == 0
 
 
 func _fail_preview(message: String) -> void:

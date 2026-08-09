@@ -1,0 +1,74 @@
+{
+  "schema": "world_transvoxel_terrain.cpu_finalization_benchmark_contract.v1",
+  "evidence_schema": "world_transvoxel_terrain.cpu_finalization_benchmark_evidence.v1",
+  "milestone": "CPU-FINALIZATION",
+  "status": "acceptance_contract",
+  "authority": {
+    "repository": "world-transvoxel",
+    "fallback_mesher": false,
+    "fallback_field": false
+  },
+  "engine": "4.7",
+  "renderer": "forward_plus",
+  "scene": "res://addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_scene.tscn",
+  "runtime_profile": {
+    "preset": "rolling_hills_cave",
+    "volume_cells": [2048, 256, 2048],
+    "volume_chunks": [128, 16, 128],
+    "vertical_chunk_origin": -8,
+    "viewer_radius_chunks": 2,
+    "collision_radius_chunks": 1,
+    "maximum_lod": 2,
+    "active_chunk_capacity": 2048,
+    "pipeline_capacity": 8192,
+    "cache_capacity": 2048,
+    "collision_capacity": 256,
+    "frames_per_scenario": 300
+  },
+  "scenarios": [
+    {"id": "idle_steady", "kind": "idle", "start": [1024.0, 44.0, 1024.0], "end": [1024.0, 44.0, 1024.0]},
+    {"id": "ground_traversal", "kind": "motion", "start": [256.0, 36.0, 256.0], "end": [448.0, 40.0, 384.0]},
+    {"id": "high_speed_flight", "kind": "motion", "start": [512.0, 112.0, 512.0], "end": [960.0, 124.0, 768.0]},
+    {"id": "vertical_cave", "kind": "motion", "start": [1024.0, 64.0, 1024.0], "end": [1024.0, -24.0, 1024.0]},
+    {"id": "adaptive_lod_churn", "kind": "lod_churn", "start": [768.0, 48.0, 768.0], "end": [960.0, 48.0, 960.0]},
+    {"id": "cold_teleport", "kind": "teleport", "start": [192.0, 40.0, 1792.0], "end": [1792.0, 40.0, 1792.0]},
+    {"id": "digging", "kind": "dig", "start": [1792.0, 40.0, 1792.0], "end": [1792.0, 40.0, 1792.0], "edit_center": [1792.0, 26.0, 1792.0]},
+    {"id": "construction", "kind": "construct", "start": [1792.0, 40.0, 1792.0], "end": [1792.0, 40.0, 1792.0], "edit_center": [1800.0, 42.0, 1792.0]},
+    {"id": "far_return", "kind": "far_return", "start": [256.0, 40.0, 256.0], "end": [1792.0, 40.0, 1792.0]}
+  ],
+  "required_lod_levels": [0, 1, 2],
+  "budgets": {
+    "minimum_catalog_pages": 250000,
+    "maximum_settlement_seconds": 30,
+    "minimum_frame_samples_per_scenario": 300,
+    "maximum_frame_p99_usec": 150000.0,
+    "maximum_frame_worst_usec": 500000.0,
+    "maximum_stutter_fraction_over_100ms": 0.05,
+    "maximum_scheduler_queue_depth": 8192,
+    "maximum_storage_queue_depth": 8192,
+    "maximum_render_queue_depth": 2048,
+    "maximum_collision_queue_depth": 256,
+    "maximum_peak_process_memory_bytes": 1610612736,
+    "maximum_edit_visual_latency_usec": 5000000,
+    "maximum_edit_collision_latency_usec": 5000000,
+    "maximum_coverage_overlaps": 0,
+    "maximum_generation_mismatches": 0,
+    "maximum_topology_boundary_edges": 0,
+    "maximum_topology_nonmanifold_edges": 0,
+    "maximum_topology_orientation_inconsistent_edges": 0,
+    "maximum_topology_zero_area_triangles": 0
+  },
+  "required_capture_ids": ["initial_lod", "edited_site", "far_return", "lod_seam"],
+  "qualified_scope": [
+    "same authoritative 2048x256x2048 adaptive terrain semantics as TQP-57",
+    "non-intrusive scenario-boundary process CPU telemetry",
+    "native phase, queue wait, execution, publication, collision, frame, memory, and responsiveness evidence",
+    "at least 300 frame samples per full scenario so p99 is not selected by one tail sample"
+  ],
+  "explicitly_unqualified_scope": [
+    "CPU-package watts without a trusted package-energy provider",
+    "whole-system watts without a wall or platform-energy provider",
+    "GPU-board watts as a substitute for CPU or whole-system power",
+    "cross-hardware performance claims"
+  ]
+}
