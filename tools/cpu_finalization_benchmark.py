@@ -26,6 +26,7 @@ ACTIVE_CONTRACT = FIXTURE_ROOT / "CPU_FINALIZATION_ACTIVE_CONTRACT.json"
 RESULT_PATH = FIXTURE_ROOT / "cpu_finalization_result.json"
 SCRIPT = "res://tests/tqp57_large_terrain_acceptance.gd"
 MARKER = "WT_TERRAIN_TQP57_LARGE_ACCEPTANCE_GODOT_PASS"
+FAIL_MARKER = "WT_TERRAIN_TQP57_LARGE_ACCEPTANCE_GODOT_FAIL"
 FINAL_SITE_SCENARIOS = {"cold_teleport", "digging", "construction", "far_return"}
 KNOWN_NON_SOURCE_STATUS = {
     "world-transvoxel": {"?? tests/godot/cell_probe_test.gd.uid"},
@@ -213,15 +214,24 @@ def add_native_distributions(report: dict) -> None:
         scenario["native_phase_frame_distributions"] = distributions
 
 
-def validate_report(report: dict, contract: dict, worker_count: int) -> list[str]:
+def validate_report(
+    report: dict,
+    contract: dict,
+    meshing_worker_count: int,
+    generation_worker_count: int,
+) -> list[str]:
     failures: list[str] = []
     if report.get("status") != "PASS" or report.get("retained_complete") is not True:
         failures.append("Godot correctness workload did not retain PASS")
     profile = report.get("profile", {})
     if profile.get("fallback") is not False:
         failures.append("authority fallback was enabled")
-    if int(profile.get("meshing_worker_count", 0)) != worker_count:
+    if int(profile.get("meshing_worker_count", 0)) != meshing_worker_count:
         failures.append("meshing worker count differs from the requested profile")
+    if generation_worker_count > 0 and int(
+        profile.get("procedural_generation_worker_count", 0)
+    ) != generation_worker_count:
+        failures.append("generation worker count differs from the requested profile")
     required_samples = int(contract["budgets"]["minimum_frame_samples_per_scenario"])
     process_by_scenario = report.get("process_telemetry", {}).get("scenarios", {})
     for scenario in report.get("scenarios", []):
@@ -272,6 +282,12 @@ def main() -> None:
         default="balanced",
     )
     parser.add_argument("--meshing-workers", type=int, default=2)
+    parser.add_argument(
+        "--generation-workers",
+        type=int,
+        default=0,
+        help="Override the profile generation/storage worker count; 0 keeps the profile value",
+    )
     parser.add_argument("--frames", type=int, default=300)
     parser.add_argument("--scenario", action="append", default=[])
     parser.add_argument("--headless", action="store_true")
@@ -279,6 +295,8 @@ def main() -> None:
     arguments = parser.parse_args()
     if arguments.meshing_workers < 1 or arguments.meshing_workers > 8:
         raise RuntimeError("meshing worker count must be between 1 and 8")
+    if arguments.generation_workers < 0 or arguments.generation_workers > 8:
+        raise RuntimeError("generation worker count must be between 0 and 8")
     if arguments.frames < 300:
         raise RuntimeError("CPU-finalization p99 evidence requires at least 300 frames")
     if arguments.native_mode == "release_runtime_4_7_1" and arguments.headless:
@@ -401,6 +419,8 @@ def main() -> None:
         )
     environment["WT_CPU_PROFILE"] = arguments.profile
     environment["WT_MESHING_WORKERS"] = str(arguments.meshing_workers)
+    if arguments.generation_workers > 0:
+        environment["WT_GENERATION_WORKERS"] = str(arguments.generation_workers)
     log_path = ARTIFACT_ROOT / f"{arguments.run_id}.log"
     process = subprocess.Popen(
         command,
@@ -441,10 +461,11 @@ def main() -> None:
             elif line.startswith(MARKER):
                 last_snapshot = cpu_snapshot(measured)
                 boundary_snapshots.append(last_snapshot)
+            elif FAIL_MARKER in line:
+                last_snapshot = cpu_snapshot(measured)
+                boundary_snapshots.append(last_snapshot)
     return_code = process.wait(timeout=30)
     output = "".join(lines)
-    if return_code != 0 or MARKER not in output or harness.has_godot_error(output):
-        raise RuntimeError("CPU-finalization Godot workload failed")
     if not result_path.is_file():
         raise RuntimeError("CPU-finalization Godot result is missing")
     report = load_json(result_path)
@@ -456,6 +477,10 @@ def main() -> None:
         "headless": arguments.headless,
         "profile": arguments.profile,
         "meshing_worker_count": arguments.meshing_workers,
+        "generation_worker_count_requested": arguments.generation_workers,
+        "generation_worker_count_actual": int(
+            report.get("profile", {}).get("procedural_generation_worker_count", 0)
+        ),
         "frames_per_scenario": arguments.frames,
         "evidence_class": "qualification" if arguments.require_clean else "development",
         "promotable": bool(arguments.require_clean and not arguments.headless),
@@ -493,7 +518,21 @@ def main() -> None:
         "active_contract_sha256": sha256(ACTIVE_CONTRACT),
     }
     add_native_distributions(report)
-    failures = validate_report(report, contract, arguments.meshing_workers)
+    failures = validate_report(
+        report,
+        contract,
+        arguments.meshing_workers,
+        arguments.generation_workers,
+    )
+    for failure in report.get("failures", []):
+        if str(failure) not in failures:
+            failures.append(str(failure))
+    if return_code != 0 and "Godot workload returned a failure exit code" not in failures:
+        failures.append("Godot workload returned a failure exit code")
+    if MARKER not in output and "Godot PASS marker is missing" not in failures:
+        failures.append("Godot PASS marker is missing")
+    if harness.has_godot_error(output) and report.get("status") == "PASS":
+        failures.append("Godot emitted an unexpected error")
     report["cpu_finalization_validation_failures"] = failures
     if failures:
         report["cpu_finalization_status"] = "FAIL"
@@ -508,7 +547,8 @@ def main() -> None:
     print(
         "WT_TERRAIN_CPU_FINALIZATION_BENCHMARK_PASS "
         f"run={arguments.run_id} scenarios={len(report['scenarios'])} "
-        f"workers={arguments.meshing_workers} frames={arguments.frames} "
+        f"generation_workers={report['execution']['generation_worker_count_actual']} "
+        f"meshing_workers={arguments.meshing_workers} frames={arguments.frames} "
         f"cpu_seconds={report['process_telemetry']['whole_run']['process_cpu_seconds']:.3f}"
     )
 

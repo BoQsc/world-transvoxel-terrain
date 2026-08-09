@@ -125,6 +125,12 @@ func _configure_profiles() -> void:
 			runtime.procedural_generation_worker_count = 2
 			runtime.render_apply_budget = 8
 			runtime.collision_apply_budget = 3
+	if OS.has_environment("WT_GENERATION_WORKERS"):
+		runtime.procedural_generation_worker_count = clampi(
+			int(OS.get_environment("WT_GENERATION_WORKERS")),
+			1,
+			8
+		)
 	runtime.meshing_worker_count = clampi(
 		int(OS.get_environment("WT_MESHING_WORKERS")) if OS.has_environment("WT_MESHING_WORKERS") else runtime.procedural_generation_worker_count,
 		1,
