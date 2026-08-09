@@ -2,14 +2,14 @@
 extends Node
 class_name WtTerrainMaterialApplicator
 
-const TERRAIN_SHADER := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_palette.gdshader")
+const TERRAIN_SHADER := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_weighted_palette.gdshader")
 const TextureFactory := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_material_texture_factory.gd")
 const CHECKER_TEXTURE_FORMAT := "RGBA8"
 const CHECKER_TEXTURE_BYTES_PER_PIXEL := 4
 const MAX_STANDARD_TEXTURE_BYTES := 4 * 1024
 const QUALITY_IMPLEMENTATION := "terrain_material_texture_pipeline_v1"
-const PRODUCTION_QUALITY_IMPLEMENTATION := "terrain_production_material_texture_pipeline_v1"
-const VISIBLE_SHADER_MODE := "native_override_world_triplanar_clean_or_uv2_atlas"
+const PRODUCTION_QUALITY_IMPLEMENTATION := "terrain_native_explicit_material_weights_v1"
+const VISIBLE_SHADER_MODE := "native_override_world_triplanar_explicit_weight_layers"
 
 @export var auto_apply: bool = true
 @export_range(1, 30, 1) var material_audit_interval_frames: int = 1
@@ -166,9 +166,9 @@ func _build_material(resolution: int) -> ShaderMaterial:
 	_texture_checksum = int(checker.get("checksum", 0))
 	shader_material.set_shader_parameter("checker_texture", checker.get("texture"))
 	var production_resolution := _production_texture_resolution(_material_profile_summary())
-	shader_material.set_shader_parameter("terrain_albedo_atlas", TextureFactory.production_atlas(production_resolution, &"albedo"))
-	shader_material.set_shader_parameter("terrain_normal_atlas", TextureFactory.production_atlas(production_resolution, &"normal"))
-	shader_material.set_shader_parameter("terrain_roughness_atlas", TextureFactory.production_atlas(production_resolution, &"roughness_orm"))
+	shader_material.set_shader_parameter("terrain_albedo_array", TextureFactory.production_array(production_resolution, &"albedo"))
+	shader_material.set_shader_parameter("terrain_normal_array", TextureFactory.production_array(production_resolution, &"normal"))
+	shader_material.set_shader_parameter("terrain_roughness_array", TextureFactory.production_array(production_resolution, &"roughness_orm"))
 	_apply_visual_mode(shader_material)
 	return shader_material
 

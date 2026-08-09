@@ -129,7 +129,7 @@ Phase 5 exit:
 
 Exit:
 
-- 2048 x 2048 x 64 reference profile works through the terrain addon;
+- 2048 x 2048 x 128 reference profile works through the terrain addon;
 - carve, construct, fill, paint, and restore-to-base work through addon APIs;
 - edits persist through save/restart;
 - settled terrain remains cold.
@@ -233,3 +233,30 @@ Exit:
   TQP-53;
 - no production-release claim is made;
 - next milestone is TQP-52 runtime API and profile readiness.
+
+## TQP-52 - Runtime API, configuration profiles, and readiness
+
+Status: complete by `WT_TERRAIN_TQP52_QUALIFICATION_PASS`.
+
+Exit:
+
+- public API version 2 exposes generation-aware world/request state;
+- low-power, balanced, quality, and reference profiles declare resolution,
+  distance, queue, memory, collision, and power intent;
+- render, collision, edit, and query readiness are separate and fail closed;
+- viewer revisions and asynchronous requests are bounded;
+- real native fixtures pass on Godot 4.6.3 and 4.7.
+
+## TQP-53 - Authoring and inspection workflow
+
+Status: complete by `WT_TERRAIN_TQP53_QUALIFICATION_PASS`.
+
+Exit:
+
+- the editor plugin provides the Terrain inspection/authoring dock;
+- brush drafts, construction, material IDs, previews, JSON import, diagnostics,
+  profiling data, and one-action repro export are available;
+- undo/redo covers uncommitted drafts and resource assignment;
+- durable append-only edits do not claim an inexact inverse;
+- editor import and behavior fixtures pass on Godot 4.6.3 and 4.7;
+- next milestone is TQP-54 downstream integration and migration.

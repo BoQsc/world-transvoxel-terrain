@@ -2,9 +2,9 @@
 
 Status: canonical project direction for the terrain addon.
 
-Current phase: TQP-51 production-addon boundary candidate frozen. TQP-52 runtime
-API and profile readiness is next. A separate validation game repository remains
-outside the production-addon runtime boundary.
+Current phase: TQP-51 through TQP-53 qualified. TQP-54 downstream integration
+and migration is next. The integration game remains outside the production
+addon runtime boundary.
 
 This document is the authority for `world-transvoxel-terrain` until a later
 commit explicitly revises it. If another README, roadmap, experiment, issue, or
@@ -31,7 +31,7 @@ The addon must support:
 
 - surface and underground volumetric terrain;
 - deterministic terrain profiles and generation profiles;
-- 2048 x 2048 x 64 reference-scale terrain as an explicit supported profile;
+- 2048 x 2048 x 128 reference-scale terrain as an explicit supported profile;
 - carve, construct, fill, paint, and restore-to-base operations;
 - edit persistence through save/restart;
 - collision/readiness status that games can query;

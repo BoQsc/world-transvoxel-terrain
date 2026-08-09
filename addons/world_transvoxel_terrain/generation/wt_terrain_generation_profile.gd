@@ -11,20 +11,24 @@ enum SourceMode {
 const UNDERGROUND_MODEL := "density_volume_vertical_strata_v1"
 const MATERIAL_STRATA_MODEL := "standard_density_depth_material_strata_v1"
 const MATERIAL_PALETTE_VERSION := "world_transvoxel_material_palette_v1"
-const STANDARD_MATERIAL_IDS: Array[int] = [1, 2, 3, 4, 7]
-const SURFACE_MATERIAL_IDS: Array[int] = [2, 3, 4, 7]
-const UNDERGROUND_STRATA_MATERIAL_IDS: Array[int] = [1, 7, 4]
-const UNDERGROUND_DEPTH_BANDS := "deep>=8:1,mid>=3:7,shallow>=1:4"
+const STANDARD_MATERIAL_IDS: Array[int] = [1, 2, 3, 4, 5, 7, 8, 10]
+const SURFACE_MATERIAL_IDS: Array[int] = [2, 3, 4, 5]
+const UNDERGROUND_STRATA_MATERIAL_IDS: Array[int] = [1, 8]
+const UNDERGROUND_DEPTH_BANDS := "surface_cover<8:2|3|4|5,deep>=8:1,ore>=12:8"
 const STANDARD_MATERIAL_MEANINGS := {
 	1: "deep_stone",
-	2: "lowland_surface",
-	3: "dry_surface_soil",
+	2: "grass_surface_biome",
+	3: "gravel_surface_biome",
 	4: "shallow_surface_sand_or_player_fill",
-	7: "mid_depth_rock_or_high_surface_rock",
+	5: "snow_surface_biome",
+	7: "reserved_mid_depth_rock",
+	8: "deep_ore_patch",
+	10: "shallow_asphalt_road",
 }
 
 @export var source_mode: SourceMode = SourceMode.DETERMINISTIC_REFERENCE
 @export var seed: int = 1
+@export var procedural_preset_id: StringName = &"mountain_reference"
 @export var default_solid_material: int = 1
 @export var supports_underground_volume: bool = true
 @export var profile_id: StringName = &"deterministic_reference"
@@ -40,6 +44,7 @@ func get_contract_summary() -> Dictionary:
 		"profile_id": str(profile_id),
 		"source_mode": SourceMode.keys()[source_mode],
 		"seed": seed,
+		"procedural_preset_id": str(procedural_preset_id),
 		"default_solid_material": default_solid_material,
 		"supports_underground_volume": supports_underground_volume,
 		"underground_model": UNDERGROUND_MODEL,

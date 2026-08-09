@@ -2,13 +2,14 @@
 extends Resource
 class_name WtTerrainEditOperation
 
-enum Mode { CARVE, CONSTRUCT, FILL, PAINT, RESTORE_TO_BASE }
+enum Mode { CARVE, CONSTRUCT, FILL, PAINT, RESTORE_TO_BASE, PLACE_VOLUME }
 enum BrushShape { SPHERE, BOX, CAPSULE, PLANE }
 
 @export var mode: Mode = Mode.CARVE
 @export var brush_shape: BrushShape = BrushShape.SPHERE
 @export var center: Vector3 = Vector3.ZERO
 @export_range(0.01, 1024.0, 0.01, "suffix:m") var radius: float = 1.0
+@export_range(0.0, 64.0, 0.01, "suffix:m") var smooth_radius: float = 0.0
 @export var box_extents: Vector3 = Vector3.ONE
 @export_range(0, 65535, 1) var material_id: int = 1
 @export_range(0.0, 1.0, 0.01) var strength: float = 1.0
@@ -29,6 +30,8 @@ func get_mode_name() -> StringName:
 			return &"paint"
 		Mode.RESTORE_TO_BASE:
 			return &"restore_to_base"
+		Mode.PLACE_VOLUME:
+			return &"place_volume"
 		_:
 			return &"unknown"
 
@@ -48,7 +51,7 @@ func get_brush_shape_name() -> StringName:
 
 
 func requires_material() -> bool:
-	return mode == Mode.CONSTRUCT or mode == Mode.FILL or mode == Mode.PAINT
+	return mode == Mode.CONSTRUCT or mode == Mode.FILL or mode == Mode.PAINT or mode == Mode.PLACE_VOLUME
 
 
 func is_restore_to_base() -> bool:
@@ -66,6 +69,13 @@ func get_validation_error() -> String:
 		return "edit operation brush shape is invalid"
 	if radius <= 0.0:
 		return "edit operation radius must be positive"
+	if is_nan(smooth_radius) or is_inf(smooth_radius) or smooth_radius < 0.0:
+		return "edit operation smooth_radius must be finite and nonnegative"
+	if smooth_radius > 0.0:
+		if brush_shape != BrushShape.SPHERE:
+			return "smooth SDF operations currently require a sphere brush"
+		if mode != Mode.CARVE and mode != Mode.CONSTRUCT and mode != Mode.FILL:
+			return "smooth_radius is supported only for carve, construct, and fill"
 	if strength <= 0.0 or strength > 1.0:
 		return "edit operation strength must be in the range (0, 1]"
 	if is_nan(density_value) or is_inf(density_value):
@@ -85,6 +95,8 @@ func get_validation_error() -> String:
 
 func estimate_affected_aabb() -> AABB:
 	var half_size := Vector3.ONE * radius
+	if smooth_radius > 0.0:
+		half_size += Vector3.ONE * smooth_radius
 	match brush_shape:
 		BrushShape.BOX:
 			half_size = box_extents.abs()
@@ -103,6 +115,7 @@ func to_bridge_command() -> Dictionary:
 		"brush_shape": str(get_brush_shape_name()),
 		"center": center,
 		"radius": radius,
+		"smooth_radius": smooth_radius,
 		"box_extents": box_extents,
 		"material_id": material_id,
 		"strength": strength,

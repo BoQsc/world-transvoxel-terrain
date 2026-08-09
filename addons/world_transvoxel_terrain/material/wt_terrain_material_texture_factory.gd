@@ -42,3 +42,46 @@ static func production_atlas(resolution: int, slot: StringName) -> Texture2D:
 				color = Color(color.r * grain, color.g * grain, color.b * grain, 1.0)
 			image.set_pixel(x, y, color)
 	return ImageTexture.create_from_image(image)
+
+
+static func production_array(resolution: int, slot: StringName) -> Texture2DArray:
+	var base := [
+		Color(0.24, 0.25, 0.24, 1.0),
+		Color(0.28, 0.39, 0.20, 1.0),
+		Color(0.36, 0.35, 0.33, 1.0),
+		Color(0.56, 0.49, 0.35, 1.0),
+		Color(0.68, 0.70, 0.66, 1.0),
+		Color(0.31, 0.32, 0.31, 1.0),
+		Color(0.48, 0.29, 0.13, 1.0),
+		Color(0.09, 0.10, 0.11, 1.0),
+	]
+	var images: Array[Image] = []
+	for tile in range(base.size()):
+		var image := Image.create(resolution, resolution, false, Image.FORMAT_RGBA8)
+		for y in range(resolution):
+			for x in range(resolution):
+				image.set_pixel(x, y, _production_texel(base[tile], tile, x, y, slot))
+		image.generate_mipmaps(slot == &"normal")
+		images.append(image)
+	var texture := Texture2DArray.new()
+	var error := texture.create_from_images(images)
+	if error != OK:
+		push_error("failed to create terrain texture array: %s" % str(error))
+	return texture
+
+
+static func _production_texel(base: Color, tile: int, x: int, y: int, slot: StringName) -> Color:
+	if slot == &"normal":
+		var bump := (_noise(tile, x, y, 3) - 0.5) * (0.032 if tile == 6 else 0.018)
+		return Color(0.5 + bump, 0.5 - bump, 1.0, 1.0)
+	if slot == &"roughness_orm":
+		var values := [0.86, 0.95, 0.92, 0.88, 0.74, 0.90, 0.58, 0.88]
+		return Color(0.0, values[tile], 1.0, 1.0)
+	var grain := 0.88 + 0.18 * _noise(tile, x, y, 1)
+	return Color(base.r * grain, base.g * grain, base.b * grain, 1.0)
+
+
+static func _noise(tile: int, x: int, y: int, salt: int) -> float:
+	var value := posmod(x * 157 + y * 311 + tile * 911 + salt * 619, 10007)
+	value = posmod(value * value * 73 + value * 19 + 97, 10009)
+	return float(value) / 10008.0

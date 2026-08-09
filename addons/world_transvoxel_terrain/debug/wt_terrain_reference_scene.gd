@@ -3,6 +3,7 @@ extends Node3D
 class_name WtTerrainReferenceScene
 
 const TerrainProfile := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_profile.gd")
+const RuntimeProfile := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_runtime_profile.gd")
 const GenerationProfile := preload("res://addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd")
 const MaterialProfile := preload("res://addons/world_transvoxel_terrain/material/wt_terrain_material_profile.gd")
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
@@ -38,6 +39,8 @@ func ensure_reference_defaults() -> bool:
 		return false
 	if terrain_world.get("terrain_profile") == null:
 		terrain_world.set("terrain_profile", TerrainProfile.new())
+	if terrain_world.get("runtime_profile") == null:
+		terrain_world.set("runtime_profile", RuntimeProfile.create_builtin(RuntimeProfile.Preset.REFERENCE))
 	if terrain_world.get("generation_profile") == null:
 		terrain_world.set("generation_profile", GenerationProfile.new())
 	if terrain_world.get("storage_profile") == null:
@@ -122,6 +125,31 @@ func remove_reference_viewer(viewer_id: int, revision: int) -> bool:
 	if terrain_world == null or not terrain_world.has_method("remove_viewer"):
 		return false
 	var accepted := bool(terrain_world.call("remove_viewer", viewer_id, revision))
+	refresh_debug_snapshot()
+	return accepted
+
+
+func update_reference_collision_viewer(
+	viewer_id: int,
+	revision: int,
+	position: Vector3,
+	radius_chunks: int
+) -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null or not terrain_world.has_method("update_collision_viewer"):
+		return false
+	var accepted := bool(terrain_world.call(
+		"update_collision_viewer", viewer_id, revision, position, radius_chunks
+	))
+	refresh_debug_snapshot()
+	return accepted
+
+
+func remove_reference_collision_viewer(viewer_id: int, revision: int) -> bool:
+	var terrain_world := get_terrain_world()
+	if terrain_world == null or not terrain_world.has_method("remove_collision_viewer"):
+		return false
+	var accepted := bool(terrain_world.call("remove_collision_viewer", viewer_id, revision))
 	refresh_debug_snapshot()
 	return accepted
 

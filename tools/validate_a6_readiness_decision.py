@@ -27,7 +27,7 @@ REQUIRED_PHRASES = {
         "separate validation game repository when the user explicitly asks",
     ),
     "IMPLEMENTATION_CHARTER.md": (
-        "Current phase: TQP-51 production-addon boundary candidate frozen",
+        "Current phase: TQP-51 through TQP-53 qualified",
         "Definition of done for A6",
         "approve_validation_game_repository",
     ),
@@ -38,13 +38,13 @@ REQUIRED_PHRASES = {
         "separate validation game repository when the user explicitly asks",
     ),
     "README.md": (
-        "Status: TQP-51 production-addon boundary candidate frozen",
+        "Status: TQP-51 through TQP-53 qualified",
         "WT_TERRAIN_A6_CONTRACT_PASS",
         "WT_TERRAIN_A6_READINESS_DECISION_PASS",
         "python tools/a6_readiness_decision.py",
     ),
     "addons/world_transvoxel_terrain/README.md": (
-        "Current status: TQP-51 production-addon boundary candidate frozen",
+        "Current status: TQP-51 through TQP-53 qualified",
         "approve_validation_game_repository",
         "not yet a production-ready terrain package",
     ),

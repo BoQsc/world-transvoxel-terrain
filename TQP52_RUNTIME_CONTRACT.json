@@ -1,0 +1,49 @@
+{
+  "schema": "world_transvoxel_terrain.tqp52_runtime_contract.v1",
+  "status": "qualified",
+  "authority": {
+    "native_runtime": "world-transvoxel",
+    "production_orchestration": "world-transvoxel-terrain",
+    "fallback_mesher": false,
+    "fallback_field": false
+  },
+  "api": {
+    "name": "WtTerrainWorld",
+    "version": 2,
+    "groups": ["lifecycle", "viewer", "edit", "query", "storage", "readiness", "diagnostics"],
+    "generation_token": "api_generation"
+  },
+  "profiles": {
+    "resource": "WtTerrainRuntimeProfile",
+    "builtins": ["LOW_POWER", "BALANCED", "QUALITY", "REFERENCE"],
+    "declared_tradeoffs": ["resolution", "distance", "queues", "memory", "collision", "power"],
+    "power_claim": "intent_only_until_measured_per_profile"
+  },
+  "readiness": {
+    "scopes": ["render", "collision", "edit", "query"],
+    "states": ["unavailable", "not_requested", "pending", "ready", "backpressured", "failed"],
+    "chunk_generation_fields": ["generation", "render_generation", "staged_render_generation", "collision_generation", "staged_collision_generation"]
+  },
+  "bounded_behavior": {
+    "viewer_revisions": "positive_monotonic_per_viewer",
+    "viewer_capacity": "runtime_profile",
+    "async_request_capacity": "runtime_profile",
+    "world_transition": "cancels_wrapper_requests_and_rejects_late_completion",
+    "native_queues": "fixed_capacity_fail_closed"
+  },
+  "configuration_precedence": [
+    "runtime_profile_backend_config",
+    "explicit_nonzero_legacy_world_override"
+  ],
+  "unsupported": [
+    "runtime_profile_mutation_after_world_start",
+    "whole_system_power_claim",
+    "unbounded_viewers_or_requests",
+    "cross_generation_result_acceptance"
+  ],
+  "evidence": {
+    "static_validator": "tools/validate_tqp52_runtime_contract.py",
+    "godot_smoke": "tools/tqp52_runtime_contract_smoke.py",
+    "result": "artifacts/tqp52_runtime_contract/tqp52_runtime_contract_report.json"
+  }
+}

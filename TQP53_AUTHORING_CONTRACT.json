@@ -1,0 +1,33 @@
+{
+  "schema": "world_transvoxel_terrain.tqp53_authoring_contract.v1",
+  "status": "qualified",
+  "runtime_dependency": "world-transvoxel-terrain only",
+  "terrain_authority": "world-transvoxel",
+  "editor_workflow": {
+    "dock": "Terrain",
+    "selection": "WtTerrainWorld",
+    "brushes": ["sphere", "box"],
+    "operations": ["carve", "construct", "fill", "paint", "restore", "place_volume"],
+    "preview": "non_persistent_editor_mesh",
+    "material_palette": [1, 2, 3, 4, 5, 7, 8, 10],
+    "profile_import": "json_authoring_document",
+    "diagnostics": ["readiness", "runtime_metrics", "last_error"],
+    "repro_export": "world_transvoxel_terrain.repro.v1"
+  },
+  "undo_redo": {
+    "scope": "uncommitted_authoring_document_and_resource_assignment",
+    "durable_edit_commit_reversible": false,
+    "reason": "no authoritative inverse is claimed for append-only terrain edits"
+  },
+  "boundaries": {
+    "lab_runtime_dependency": false,
+    "editor_code_in_exported_runtime": false,
+    "procedural_field_duplication": false,
+    "fallback_mesher": false
+  },
+  "evidence": {
+    "static_validator": "tools/validate_tqp53_authoring_workflow.py",
+    "godot_smoke": "tools/tqp53_authoring_workflow_smoke.py",
+    "result": "artifacts/tqp53_authoring_workflow/tqp53_authoring_workflow_report.json"
+  }
+}

@@ -41,7 +41,7 @@ static func stop_backend_world(world) -> bool:
 
 static func submit_edit_batch(world, batch: Resource, author_id: int) -> bool:
 	if not world.is_backend_world_running():
-		world._last_error = "backend world must be running before edit submission"
+		world._last_error = "backend world must be running before edit submission: %s" % world.get_backend_world_error()
 		return false
 	var edit_bridge := EditBridge.new()
 	if not edit_bridge.commit_batch(world._backend_terrain, batch, author_id):
@@ -93,7 +93,7 @@ static func request_authoritative_samples(world, points: Array, lod: int) -> int
 
 static func update_viewer(world, viewer_id: int, revision: int, position: Vector3, radius_chunks: int, maximum_lod: int) -> bool:
 	if not world.is_backend_world_running():
-		world._last_error = "backend world must be running before viewer updates"
+		world._last_error = "backend world must be running before viewer updates: %s" % world.get_backend_world_error()
 		return false
 	if not world._backend_terrain.has_method("update_viewer"):
 		world._last_error = "backend terrain cannot update viewers"
@@ -112,6 +112,32 @@ static func remove_viewer(world, viewer_id: int, revision: int) -> bool:
 		world._last_error = "backend terrain cannot remove viewers"
 		return false
 	if not bool(world._backend_terrain.call("remove_viewer", viewer_id, revision)):
+		world._last_error = world.get_backend_world_error()
+		return false
+	world._last_error = "ok"
+	return true
+
+static func update_collision_viewer(world, viewer_id: int, revision: int, position: Vector3, radius_chunks: int) -> bool:
+	if not world.is_backend_world_running():
+		world._last_error = "backend world must be running before collision viewer updates"
+		return false
+	if not world._backend_terrain.has_method("update_collision_viewer"):
+		world._last_error = "terrain backend cannot update collision viewers"
+		return false
+	if not bool(world._backend_terrain.call("update_collision_viewer", viewer_id, revision, position, radius_chunks)):
+		world._last_error = world.get_backend_world_error()
+		return false
+	world._last_error = "ok"
+	return true
+
+static func remove_collision_viewer(world, viewer_id: int, revision: int) -> bool:
+	if not world.is_backend_world_running():
+		world._last_error = "backend world must be running before collision viewer removal"
+		return false
+	if not world._backend_terrain.has_method("remove_collision_viewer"):
+		world._last_error = "terrain backend cannot remove collision viewers"
+		return false
+	if not bool(world._backend_terrain.call("remove_collision_viewer", viewer_id, revision)):
 		world._last_error = world.get_backend_world_error()
 		return false
 	world._last_error = "ok"
@@ -161,6 +187,8 @@ static func connect_backend_runtime_signals(world) -> void:
 		["authoritative_sample_failed", "_on_backend_authoritative_sample_failed"],
 		["authoritative_samples_ready", "_on_backend_authoritative_samples_ready"],
 		["authoritative_samples_failed", "_on_backend_authoritative_samples_failed"],
+		["edit_committed", "_on_backend_edit_committed"],
+		["edit_failed", "_on_backend_edit_failed"],
 	]:
 		var callable := Callable(world, pair[1])
 		if world._backend_terrain.has_signal(pair[0]) and not world._backend_terrain.is_connected(pair[0], callable):
@@ -183,16 +211,34 @@ static func _validate_storage_profile(world) -> bool:
 	return true
 
 static func _apply_runtime_config_overrides(world, config: Resource) -> void:
+	if world.runtime_profile != null and world.runtime_profile.has_method("get_backend_config_overrides"):
+		var overrides := Dictionary(world.runtime_profile.call("get_backend_config_overrides"))
+		for property_name in overrides:
+			config.set(str(property_name), overrides[property_name])
 	for pair in [
 		["runtime_active_chunk_capacity", "active_chunk_capacity"],
+		["runtime_viewer_capacity", "viewer_capacity"],
 		["runtime_demand_capacity_per_viewer", "demand_capacity_per_viewer"],
 		["runtime_render_entry_capacity", "render_entry_capacity"],
 		["runtime_collision_entry_capacity", "collision_entry_capacity"],
 		["runtime_lod_refinement_radius_chunks", "lod_refinement_radius_chunks"],
+		["runtime_procedural_generation_worker_count", "procedural_generation_worker_count"],
+		["runtime_render_apply_budget", "render_apply_budget"],
+		["runtime_collision_apply_budget", "collision_apply_budget"],
+		["runtime_collision_apply_deadline_us", "collision_apply_deadline_us"],
+		["runtime_render_transition_frames", "render_transition_frames"],
 	]:
 		var value := int(world.get(pair[0]))
 		if value > 0:
 			config.set(pair[1], value)
+	if bool(world.runtime_shader_fade_parameter_enabled):
+		config.set("shader_fade_parameter_enabled", true)
+	if bool(world.runtime_global_coarse_lod_coverage):
+		config.set("global_coarse_lod_coverage", true)
+	if world.runtime_collision_activation_distance > 0.0:
+		config.set("collision_activation_distance", world.runtime_collision_activation_distance)
+	if world.runtime_collision_deactivation_distance > 0.0:
+		config.set("collision_deactivation_distance", world.runtime_collision_deactivation_distance)
 
 static func _finish_request(world, request_id: int) -> int:
 	if request_id <= 0:

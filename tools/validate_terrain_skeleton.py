@@ -41,7 +41,7 @@ REQUIRED_PHRASES = {
         "The independent 0BSD Transvoxel backend is deferred",
         "GDScript is not allowed for",
         "Avoid the old single-large-source-file failure mode",
-        "2048 x 2048 x 64 reference-scale terrain",
+        "2048 x 2048 x 128 reference-scale terrain",
         "carve, construct, fill, paint, and restore-to-base",
         "settled cold-idle behavior",
         "A1 - Public API and source-layout contract",
