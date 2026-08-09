@@ -33,6 +33,10 @@ The profile is applied before native world startup. Existing nonzero
 precedence over the profile. Runtime profile mutation after startup is outside
 the version-1 contract; stop, change the profile, and restart instead.
 
+Native storage owns `<object_root>/world.wtedit`. Custom journal filenames and
+disabled edit persistence are rejected because the backend cannot honor them;
+the profile reports the effective native journal path explicitly.
+
 ## Evidence
 
 `tools/validate_tqp52_runtime_contract.py` validates the package contract.

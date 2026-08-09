@@ -119,6 +119,19 @@ func _validate_builtin_profiles() -> bool:
 				not summary.has("power"):
 			_fail("runtime profile contract failed for preset %s" % str(kind))
 			return false
+	var storage = StorageProfile.new()
+	storage.object_root_path = "user://worlds/tqp52-storage"
+	if storage.is_valid() or "object-root journal path" not in storage.get_validation_error():
+		_fail("custom native journal path was not rejected")
+		return false
+	storage.edit_journal_path = storage.get_effective_edit_journal_path()
+	if not storage.is_valid():
+		_fail("native object-root journal path was rejected")
+		return false
+	storage.persist_edits = false
+	if storage.is_valid() or "always journals" not in storage.get_validation_error():
+		_fail("disabled native edit persistence was not rejected")
+		return false
 	return true
 
 
