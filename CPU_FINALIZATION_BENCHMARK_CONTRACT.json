@@ -9,6 +9,11 @@
     "fallback_field": false
   },
   "engine": "4.7",
+  "engine_policy": {
+    "minimum_supported": "4.7",
+    "editor_host_qualification": "4.7",
+    "release_runtime_qualification": "4.7.1"
+  },
   "renderer": "forward_plus",
   "scene": "res://addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_scene.tscn",
   "runtime_profile": {

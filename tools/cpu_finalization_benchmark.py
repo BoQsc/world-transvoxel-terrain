@@ -21,6 +21,7 @@ from tqp_release_common import ROOT, git_output, load_json, sha256
 ARTIFACT_ROOT = ROOT / "artifacts" / "cpu_finalization"
 FIXTURE_ROOT = ARTIFACT_ROOT / "project"
 SOURCE_CONTRACT = ROOT / "CPU_FINALIZATION_BENCHMARK_CONTRACT.json"
+EXPORT_PRESET = ROOT / "CPU_FINALIZATION_EXPORT_PRESET.cfg"
 ACTIVE_CONTRACT = FIXTURE_ROOT / "CPU_FINALIZATION_ACTIVE_CONTRACT.json"
 RESULT_PATH = FIXTURE_ROOT / "cpu_finalization_result.json"
 SCRIPT = "res://tests/tqp57_large_terrain_acceptance.gd"
@@ -56,12 +57,27 @@ def source_status(repository: Path) -> dict[str, object]:
 
 
 def cpu_snapshot(process: psutil.Process) -> dict[str, float | int]:
-    cpu = process.cpu_times()
-    memory = process.memory_info()
+    processes = [process]
+    try:
+        processes.extend(process.children(recursive=True))
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        pass
+    cpu_seconds = 0.0
+    rss_bytes = 0
+    observed = 0
+    for item in processes:
+        try:
+            cpu = item.cpu_times()
+            cpu_seconds += float(cpu.user + cpu.system)
+            rss_bytes += int(item.memory_info().rss)
+            observed += 1
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
     return {
         "wall_seconds": time.perf_counter(),
-        "process_cpu_seconds": float(cpu.user + cpu.system),
-        "rss_bytes": int(memory.rss),
+        "process_cpu_seconds": cpu_seconds,
+        "rss_bytes": rss_bytes,
+        "process_count": observed,
     }
 
 
@@ -89,7 +105,7 @@ def prepare_fixture(contract: dict, native_mode: str) -> None:
     tqp57.prepare_fixture()
     shutil.copy2(SOURCE_CONTRACT, FIXTURE_ROOT / SOURCE_CONTRACT.name)
     ACTIVE_CONTRACT.write_text(json.dumps(contract, indent=2) + "\n", encoding="utf-8")
-    if native_mode == "release_native_editor_host":
+    if native_mode in ("release_native_editor_host", "release_runtime_4_7_1"):
         extension = (
             FIXTURE_ROOT
             / "addons"
@@ -104,6 +120,48 @@ def prepare_fixture(contract: dict, native_mode: str) -> None:
             raise RuntimeError("release-native editor-host substitution is invalid")
         contents = contents.replace(debug_name, release_name)
         extension.write_text(contents, encoding="utf-8")
+    if native_mode == "release_runtime_4_7_1":
+        shutil.copy2(EXPORT_PRESET, FIXTURE_ROOT / "export_presets.cfg")
+        project_path = FIXTURE_ROOT / "project.godot"
+        project = project_path.read_text(encoding="utf-8")
+        name_line = 'config/name="World Transvoxel Terrain A4 Phase 3 Fixture"'
+        if project.count(name_line) != 1:
+            raise RuntimeError("export fixture application section is invalid")
+        project = project.replace(
+            name_line,
+            name_line
+            + '\nrun/main_scene="res://tests/cpu_finalization_export_main.tscn"',
+        )
+        project_path.write_text(project, encoding="utf-8")
+
+
+def engine_version(engine: Path) -> str:
+    result = subprocess.run(
+        [str(engine), "--version"],
+        check=False,
+        text=True,
+        capture_output=True,
+        errors="replace",
+        timeout=30,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"could not read Godot version: {engine}")
+    return (result.stdout + result.stderr).strip().splitlines()[0]
+
+
+def discover_release_runtime_engine(explicit: list[Path]) -> tuple[str, Path]:
+    if len(explicit) > 1:
+        raise RuntimeError("release-runtime qualification accepts one Godot executable")
+    engine = explicit[0].resolve() if explicit else Path(
+        "C:/Program Files (x86)/Steam/steamapps/common/Godot Engine/"
+        "godot.windows.opt.tools.64.exe"
+    )
+    if not engine.is_file():
+        raise RuntimeError("Godot 4.7.1 editor/export host is unavailable")
+    version = engine_version(engine)
+    if not version.startswith("4.7.1."):
+        raise RuntimeError(f"release-runtime qualification requires Godot 4.7.1: {version}")
+    return "4.7.1", engine
 
 
 def percentile_tail_count(sample_count: int, percentile: float) -> int:
@@ -201,7 +259,11 @@ def main() -> None:
     parser.add_argument("--run-id", required=True)
     parser.add_argument(
         "--native-mode",
-        choices=("debug_editor", "release_native_editor_host"),
+        choices=(
+            "debug_editor",
+            "release_native_editor_host",
+            "release_runtime_4_7_1",
+        ),
         default="debug_editor",
     )
     parser.add_argument(
@@ -219,6 +281,8 @@ def main() -> None:
         raise RuntimeError("meshing worker count must be between 1 and 8")
     if arguments.frames < 300:
         raise RuntimeError("CPU-finalization p99 evidence requires at least 300 frames")
+    if arguments.native_mode == "release_runtime_4_7_1" and arguments.headless:
+        raise RuntimeError("release-runtime rendering evidence cannot use headless mode")
 
     authority = ROOT.parent / "world-transvoxel"
     source_integrity = [source_status(repository) for repository in (ROOT, authority)]
@@ -251,33 +315,96 @@ def main() -> None:
                 f"{sorted(FINAL_SITE_SCENARIOS)}"
             )
         contract["required_capture_ids"] = []
+    if arguments.native_mode == "release_runtime_4_7_1":
+        version, engine = discover_release_runtime_engine(arguments.godot)
+        contract["engine"] = version
+    else:
+        engines = harness.discover_engines(arguments.godot)
+        if [version for version, _engine in engines] != ["4.7"]:
+            raise RuntimeError("editor-host CPU finalization requires pinned Godot 4.7")
+        version, engine = engines[0]
     prepare_fixture(contract, arguments.native_mode)
-    engines = harness.discover_engines(arguments.godot)
-    if [version for version, _engine in engines] != ["4.7"]:
-        raise RuntimeError("CPU finalization requires the pinned Godot 4.7 engine")
-    version, engine = engines[0]
     harness.ARTIFACT_ROOT = ARTIFACT_ROOT
     harness.FIXTURE_ROOT = FIXTURE_ROOT
     harness.run_import(version, engine)
 
-    command = [str(engine)]
-    if arguments.headless:
-        command.append("--headless")
-    command.extend(
-        ["--path", str(FIXTURE_ROOT), "--resolution", "1280x720", "--script", SCRIPT]
-    )
+    result_path = RESULT_PATH
+    process_cwd = FIXTURE_ROOT
+    runtime_artifacts: dict[str, object] = {}
+    if arguments.native_mode == "release_runtime_4_7_1":
+        export_path = ARTIFACT_ROOT / f"{arguments.run_id}.exe"
+        export_pck = export_path.with_suffix(".pck")
+        console_path = export_path.with_name(export_path.stem + ".console.exe")
+        for path in (export_path, export_pck, console_path):
+            path.unlink(missing_ok=True)
+        exported = subprocess.run(
+            [
+                str(engine),
+                "--headless",
+                "--path",
+                str(FIXTURE_ROOT),
+                "--export-release",
+                "Windows Desktop",
+                str(export_path),
+            ],
+            cwd=FIXTURE_ROOT,
+            check=False,
+            text=True,
+            capture_output=True,
+            errors="replace",
+            timeout=180,
+        )
+        export_output = exported.stdout + exported.stderr
+        if exported.returncode != 0 or not export_path.is_file() or not export_pck.is_file():
+            print(export_output, end="" if export_output.endswith("\n") else "\n")
+            raise RuntimeError("Godot 4.7.1 release export failed")
+        launch_path = console_path if console_path.is_file() else export_path
+        result_path = ARTIFACT_ROOT / f"{arguments.run_id}-runtime-result.json"
+        result_path.unlink(missing_ok=True)
+        process_cwd = ARTIFACT_ROOT
+        command = [str(launch_path), "--resolution", "1280x720"]
+        runtime_artifacts = {
+            "executable": export_path.name,
+            "executable_sha256": sha256(export_path),
+            "pck": export_pck.name,
+            "pck_sha256": sha256(export_pck),
+            "console_wrapper": console_path.name if console_path.is_file() else "",
+            "template_engine_version": engine_version(engine),
+        }
+    else:
+        command = [str(engine)]
+        if arguments.headless:
+            command.append("--headless")
+        command.extend(
+            [
+                "--path",
+                str(FIXTURE_ROOT),
+                "--resolution",
+                "1280x720",
+                "--script",
+                SCRIPT,
+            ]
+        )
     environment = os.environ.copy()
     environment["GODOT_AUDIO_DRIVER"] = "Dummy"
     environment["WT_ACCEPTANCE_CONTRACT"] = (
         "res://CPU_FINALIZATION_ACTIVE_CONTRACT.json"
     )
-    environment["WT_ACCEPTANCE_RESULT"] = "res://cpu_finalization_result.json"
+    environment["WT_ACCEPTANCE_RESULT"] = (
+        str(result_path)
+        if arguments.native_mode == "release_runtime_4_7_1"
+        else "res://cpu_finalization_result.json"
+    )
+    if arguments.native_mode == "release_runtime_4_7_1":
+        environment["WT_ACCEPTANCE_CAPTURE_ROOT"] = str(
+            ARTIFACT_ROOT / f"{arguments.run_id}-captures"
+        )
     environment["WT_CPU_PROFILE"] = arguments.profile
     environment["WT_MESHING_WORKERS"] = str(arguments.meshing_workers)
     log_path = ARTIFACT_ROOT / f"{arguments.run_id}.log"
     process = subprocess.Popen(
         command,
-        cwd=FIXTURE_ROOT,
+        cwd=process_cwd,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -318,9 +445,9 @@ def main() -> None:
     output = "".join(lines)
     if return_code != 0 or MARKER not in output or harness.has_godot_error(output):
         raise RuntimeError("CPU-finalization Godot workload failed")
-    if not RESULT_PATH.is_file():
+    if not result_path.is_file():
         raise RuntimeError("CPU-finalization Godot result is missing")
-    report = load_json(RESULT_PATH)
+    report = load_json(result_path)
     report["candidate_revision"] = git_output(ROOT, "rev-parse", "HEAD")
     report["authority_revision"] = git_output(authority, "rev-parse", "HEAD")
     report["execution"] = {
@@ -332,6 +459,7 @@ def main() -> None:
         "frames_per_scenario": arguments.frames,
         "evidence_class": "qualification" if arguments.require_clean else "development",
         "promotable": bool(arguments.require_clean and not arguments.headless),
+        "runtime_artifacts": runtime_artifacts,
     }
     report["source_integrity"] = source_integrity
     report["host"] = {

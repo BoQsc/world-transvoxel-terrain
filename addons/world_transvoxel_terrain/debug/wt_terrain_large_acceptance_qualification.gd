@@ -39,8 +39,11 @@ func get_validation_snapshot() -> Dictionary:
 	_refresh_metrics()
 	return {
 		"status": _readiness_status(),
+		"status_text": status_label.text,
 		"profile": get_acceptance_profile(),
 		"world_state": terrain_world.call("get_world_state_name") if terrain_world != null else "missing",
+		"world_error": terrain_world.call("get_last_error") if terrain_world != null else "missing",
+		"backend_identity": terrain_world.call("get_backend_identity") if terrain_world != null else {},
 		"world_revision": terrain_world.call("get_world_revision") if terrain_world != null else 0,
 		"catalog_page_count": terrain_world.call("get_world_page_count") if _world_started else 0,
 		"viewer_position": Support.vector_summary(_viewer_position),

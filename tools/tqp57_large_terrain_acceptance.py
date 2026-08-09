@@ -26,9 +26,15 @@ def prepare_fixture() -> None:
     harness.SCRIPT = SCRIPT
     harness.MARKER = MARKER
     harness.prepare_fixture()
-    target = FIXTURE_ROOT / "tests" / "tqp57_large_terrain_acceptance.gd"
-    target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "tests" / target.name, target)
+    tests_root = FIXTURE_ROOT / "tests"
+    tests_root.mkdir(parents=True, exist_ok=True)
+    for name in (
+        "tqp57_large_terrain_acceptance.gd",
+        "tqp57_large_terrain_acceptance_runner.gd",
+        "cpu_finalization_export_main.gd",
+        "cpu_finalization_export_main.tscn",
+    ):
+        shutil.copy2(ROOT / "tests" / name, tests_root / name)
     shutil.copy2(ROOT / "TQP57_LARGE_TERRAIN_ACCEPTANCE_CONTRACT.json", FIXTURE_ROOT)
 
 
