@@ -45,6 +45,8 @@ REQUIRED = {
 def main() -> None:
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     assert contract["schema"] == "world_transvoxel_terrain.tqp53_authoring_contract.v1"
+    assert contract["engine_policy"]["minimum_version"] == "4.7"
+    assert contract["engine_policy"]["current_qualification_matrix"] == ["4.7"]
     assert contract["undo_redo"]["durable_edit_commit_reversible"] is False
     assert contract["boundaries"]["lab_runtime_dependency"] is False
     assert contract["boundaries"]["procedural_field_duplication"] is False

@@ -18,7 +18,7 @@ ARTIFACT_ROOT = ROOT / "artifacts" / "a5_phase4_debug_overlay_categories"
 FIXTURE_ROOT = ARTIFACT_ROOT / "project"
 SCRIPT = "res://tests/a5_phase4_debug_overlay_categories_smoke.gd"
 MARKER = "WT_TERRAIN_A5_PHASE4_GODOT_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 DEPENDENCY_FILES = (
     "plugin.cfg",

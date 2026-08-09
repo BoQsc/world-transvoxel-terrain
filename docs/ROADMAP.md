@@ -245,7 +245,7 @@ Exit:
   distance, queue, memory, collision, and power intent;
 - render, collision, edit, and query readiness are separate and fail closed;
 - viewer revisions and asynchronous requests are bounded;
-- real native fixtures pass on Godot 4.6.3 and 4.7.
+- real native fixtures pass on the current Godot 4.7 qualification target.
 
 ## TQP-53 - Authoring and inspection workflow
 
@@ -258,5 +258,6 @@ Exit:
   profiling data, and one-action repro export are available;
 - undo/redo covers uncommitted drafts and resource assignment;
 - durable append-only edits do not claim an inexact inverse;
-- editor import and behavior fixtures pass on Godot 4.6.3 and 4.7;
+- editor import and behavior fixtures pass on the current Godot 4.7
+  qualification target;
 - next milestone is TQP-54 downstream integration and migration.

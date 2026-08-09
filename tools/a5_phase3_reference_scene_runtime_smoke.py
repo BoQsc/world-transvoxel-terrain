@@ -18,7 +18,7 @@ ARTIFACT_ROOT = ROOT / "artifacts" / "a5_phase3_reference_scene_runtime"
 FIXTURE_ROOT = ARTIFACT_ROOT / "project"
 SCRIPT = "res://tests/a5_phase3_reference_scene_runtime_smoke.gd"
 MARKER = "WT_TERRAIN_A5_PHASE3_GODOT_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 DEPENDENCY_FILES = (
     "plugin.cfg",

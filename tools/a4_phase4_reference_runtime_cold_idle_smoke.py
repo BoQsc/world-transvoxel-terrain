@@ -18,7 +18,7 @@ ARTIFACT_ROOT = ROOT / "artifacts" / "a4_phase4_reference_runtime_cold_idle"
 FIXTURE_ROOT = ARTIFACT_ROOT / "project"
 SCRIPT = "res://tests/a4_phase4_reference_runtime_cold_idle_smoke.gd"
 MARKER = "WT_TERRAIN_A4_PHASE4_GODOT_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 DEPENDENCY_FILES = (
     "plugin.cfg",

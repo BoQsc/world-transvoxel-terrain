@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "a2_addon_smoke"
 SCRIPT = "res://tests/a2_addon_smoke.gd"
 MARKER = "WT_TERRAIN_A2_GODOT_SMOKE_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 
 def discover_engines(explicit: list[Path]) -> list[tuple[str, Path]]:

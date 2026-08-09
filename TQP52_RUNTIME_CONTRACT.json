@@ -1,6 +1,12 @@
 {
   "schema": "world_transvoxel_terrain.tqp52_runtime_contract.v1",
   "status": "qualified",
+  "engine_policy": {
+    "minimum_version": "4.7",
+    "current_qualification_matrix": ["4.7"],
+    "newer_versions": "require_explicit_qualification_before_promotion",
+    "legacy_results": "historical_evidence_not_support_requirement"
+  },
   "authority": {
     "native_runtime": "world-transvoxel",
     "production_orchestration": "world-transvoxel-terrain",

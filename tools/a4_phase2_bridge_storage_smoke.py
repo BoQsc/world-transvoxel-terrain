@@ -18,7 +18,7 @@ ARTIFACT_ROOT = ROOT / "artifacts" / "a4_phase2_bridge_storage"
 FIXTURE_ROOT = ARTIFACT_ROOT / "project"
 SCRIPT = "res://tests/a4_phase2_bridge_storage_smoke.gd"
 MARKER = "WT_TERRAIN_A4_PHASE2_GODOT_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 DEPENDENCY_FILES = (
     "plugin.cfg",

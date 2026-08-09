@@ -1,7 +1,9 @@
 # TQP-53 Authoring And Inspection Workflow
 
-Status: qualified by `WT_TERRAIN_TQP53_QUALIFICATION_PASS` on Godot 4.6.3 and
-4.7.
+Status: qualified by `WT_TERRAIN_TQP53_QUALIFICATION_PASS` on Godot 4.7.
+
+Godot 4.7 is the minimum and sole current qualification target. Older engine
+results are historical evidence, not a compatibility requirement.
 
 Enabling the addon adds a `Terrain` editor dock. Selecting a `WtTerrainWorld`
 exposes runtime profile selection, lifecycle actions, readiness and native

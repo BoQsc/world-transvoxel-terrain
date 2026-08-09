@@ -15,7 +15,7 @@ WORLD_TRANSVOXEL_REPO = ROOT.parent / "world-transvoxel"
 ARTIFACT_ROOT = ROOT / "artifacts" / "a4_phase1_resources"
 SCRIPT = "res://tests/a4_phase1_resources_smoke.gd"
 MARKER = "WT_TERRAIN_A4_PHASE1_GODOT_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 
 def discover_engines(explicit: list[Path]) -> list[tuple[str, Path]]:

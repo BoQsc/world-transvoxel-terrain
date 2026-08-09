@@ -17,7 +17,7 @@ ARTIFACT_ROOT = ROOT / "artifacts" / "a3_bridge_smoke"
 FIXTURE_ROOT = ARTIFACT_ROOT / "project"
 SCRIPT = "res://tests/a3_bridge_smoke.gd"
 MARKER = "WT_TERRAIN_A3_GODOT_BRIDGE_PASS"
-ENGINE_VERSIONS = ("4.6.3", "4.7")
+ENGINE_VERSIONS = ("4.7",)
 
 DEPENDENCY_FILES = (
     "plugin.cfg",
