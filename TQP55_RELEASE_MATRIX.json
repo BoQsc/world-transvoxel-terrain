@@ -1,0 +1,110 @@
+{
+  "schema": "world_transvoxel_terrain.tqp55_release_matrix.v1",
+  "milestone": "TQP-55",
+  "status": "qualification_contract",
+  "release_id": "world-transvoxel-terrain-cpu-1.0.0",
+  "version": "1.0.0",
+  "authority": {
+    "repository": "world-transvoxel",
+    "revision": "f4abd7ab4f921f98aba4ee45b4453af0bae53cd8",
+    "fallback_mesher": false,
+    "fallback_field": false,
+    "native_artifacts": [
+      {
+        "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
+        "sha256": "898c11c1388170b900f84f1b04cb3529a8a4cfc7308a4c10c32818492e140b39",
+        "bytes": 2126848,
+        "qualification": "executed_by_godot_tools_runtime"
+      },
+      {
+        "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
+        "sha256": "e60bac26e955431a164e3bb7da2d0138a60f88b72cbff2baa2f72f4a886ddff4",
+        "bytes": 2052608,
+        "qualification": "integrity_and_package_pin"
+      }
+    ]
+  },
+  "supported_matrix": {
+    "platforms": ["windows-10-x86_64"],
+    "engine_versions": ["4.7"],
+    "renderers": ["forward_plus"],
+    "execution_modes": ["godot_editor", "godot_tools_headless", "godot_runtime_api"],
+    "profiles": ["LOW_POWER", "BALANCED", "QUALITY", "REFERENCE"],
+    "hardware_classes": ["reference_gtx1060_max_q_intel_model158"],
+    "upgrade_policy": "newer_godot_and_native_revisions_require_explicit_qualification"
+  },
+  "reference_hardware": {
+    "operating_system": "Windows-10-10.0.19045-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 158 Stepping 9, GenuineIntel",
+    "gpu": "NVIDIA GeForce GTX 1060 with Max-Q Design",
+    "gpu_driver": "566.36"
+  },
+  "required_local_evidence": [
+    "artifacts/tqp52_runtime_contract/tqp52_runtime_contract_report.json",
+    "artifacts/tqp53_authoring_workflow/tqp53_authoring_workflow_report.json"
+  ],
+  "required_retained_evidence": [
+    {
+      "repository": "world-transvoxel-cell-lab",
+      "path": "labs/terrain_lab/results/complex_visual_temporal_corpus_human_review_windows.json",
+      "sha256": "33b1a5512ff1a3e82172d98f9ade3e7638a5d5c11e1d29cfa1a8c3da916a88d6",
+      "accepted_status": ["PASS"]
+    },
+    {
+      "repository": "world-transvoxel-cell-lab",
+      "path": "labs/terrain_lab/results/fast_arrival_responsiveness_reference_windows.json",
+      "sha256": "c04b9d0e28115dde98ea53d7e633bc9bd751e6a146e711f59f84df38cef75710",
+      "accepted_status": ["PASS"]
+    },
+    {
+      "repository": "world-transvoxel-cell-lab",
+      "path": "labs/terrain_lab/results/targeted_collision_residency_reference_windows.json",
+      "sha256": "e6908ca8f2248bdd5b021267b2760589c1946408f9c9f12107b7b9bb7fa5bbe8",
+      "accepted_status": ["PASS"]
+    },
+    {
+      "repository": "world-transvoxel-cell-lab",
+      "path": "labs/terrain_lab/results/large_world_performance_reference_windows.json",
+      "sha256": "bcf696bf291bd78e21bdab4847c556e9570249a5d406d53bd50d373369448853",
+      "accepted_status": ["PASS"]
+    },
+    {
+      "repository": "world-transvoxel-cell-lab",
+      "path": "labs/terrain_lab/results/low_power_profiles_reference_windows.json",
+      "sha256": "4dd7f86ed920b8858f8d410fdefb66f46aac693a6cc2529a94904337b74f8b6d",
+      "accepted_status": ["MEASURED_TARGET_MISS"],
+      "requires_retained_complete": true
+    },
+    {
+      "repository": "world-transvoxel-cell-lab",
+      "path": "labs/terrain_lab/results/complex_adaptive_soak_recovery_reference_windows.json",
+      "sha256": "20972645c21bf1c595ca053aee351f5b67e8f57f8c876e529d60b7f22dfe8408",
+      "accepted_status": ["PASS"],
+      "requires_retained_complete": true
+    },
+    {
+      "repository": "world-transvoxel-integration-game",
+      "path": "docs/evidence/tqp54_migration_windows.json",
+      "sha256": "5582d06cbc28a627786fc4762d98a53cc8ee396ef246b0bdac2631815d65fa5d",
+      "accepted_status": ["PASS"]
+    }
+  ],
+  "release_budgets": {
+    "maximum_wrapper_long_haul_memory_growth_bytes": 67108864,
+    "maximum_scheduler_queue_depth": 4096,
+    "maximum_storage_queue_depth": 256,
+    "maximum_render_queue_depth": 128,
+    "maximum_collision_queue_depth": 64,
+    "queue_rejections": 0
+  },
+  "explicitly_unqualified_scope": [
+    "non-Windows platforms and non-x86_64 architectures",
+    "Godot versions other than 4.7 until separately qualified",
+    "compatibility across arbitrary CPUs GPUs drivers or renderers",
+    "GPU field generation meshing streaming or edit execution",
+    "multiplayer navigation gameplay water vegetation and structural simulation",
+    "CPU-package or complete-system power without an accepted sensor",
+    "claim that the 16 W 60 FPS target is achieved on every scenario"
+  ]
+}

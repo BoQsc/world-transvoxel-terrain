@@ -87,7 +87,7 @@ def prepare_fixture() -> None:
                 "",
                 "[application]",
                 'config/name="World Transvoxel Terrain A3 Bridge Fixture"',
-                'config/features=PackedStringArray("4.6", "Forward Plus")',
+                'config/features=PackedStringArray("4.7", "Forward Plus")',
                 "",
                 "[editor_plugins]",
                 'enabled=PackedStringArray("res://addons/world_transvoxel_terrain/plugin.cfg")',

@@ -261,3 +261,49 @@ Exit:
 - editor import and behavior fixtures pass on the current Godot 4.7
   qualification target;
 - next milestone is TQP-54 downstream integration and migration.
+
+## TQP-54 - Downstream integration and migration
+
+Status: complete in the pinned integration repository on Godot 4.7.
+
+Exit:
+
+- exact candidate and native-authority packages are pinned without fallbacks;
+- representative render, collision, edit, persistence, replay, generation, and
+  failure behavior pass through `WtTerrainWorld`;
+- game presentation and deep game diagnostics stay outside this addon.
+
+## TQP-55 - CPU production release qualification matrix
+
+Status: complete by `WT_TERRAIN_TQP55_QUALIFICATION_PASS`.
+
+Exit:
+
+- Windows x86-64, Godot 4.7, Forward+, native artifacts, hardware class,
+  profiles, execution modes, retained evidence, and unsupported scope are
+  machine-readable;
+- a deterministic standalone candidate package is reproducible;
+- known power target misses remain explicit.
+
+## TQP-56 - CPU production long-haul certification
+
+Status: complete by `WT_TERRAIN_TQP56_QUALIFICATION_PASS`.
+
+Exit:
+
+- the production wrapper passes bounded traversal, residency, edit, query,
+  restart/replay, origin-shift, fault, queue, memory, and shutdown coverage;
+- retained TQP-49 evidence supplies the 1800-second drift window;
+- ordinary development reruns remain bounded to about one minute.
+
+## TQP-57 - CPU terrain standard and standalone release
+
+Status: complete by `WT_TERRAIN_TQP57_RELEASE_PASS`.
+
+Exit:
+
+- CPU Terrain Standard 1.0, installation/migration notes, supported matrix,
+  dependency pin, explicit unqualified scope, deterministic archive, per-file
+  manifest, and release evidence are reproducible;
+- version `1.0.0` is the first limited Windows CPU reference release;
+- later GPU and broader platform qualification remain separate milestones.

@@ -2,7 +2,9 @@
 
 Reusable Godot terrain addon built above `world-transvoxel`.
 
-Status: TQP-51 through TQP-53 qualified; TQP-54 downstream migration is next.
+Status: CPU Terrain Standard 1.0 qualified through TQP-57 for the declared
+Windows x86-64, Godot 4.7, Forward+ reference matrix. GPU execution,
+non-Windows platforms, arbitrary hardware, and game systems are not qualified.
 This repository defines the addon boundary, public API
 shape, source layout, dependency detection, local smoke validation, official
 `world-transvoxel` bridge,
@@ -29,10 +31,11 @@ player capture, first-person carve/place affordance, edit commits, replacement
 metrics, materialized checker terrain, GPU watt sampling, flat/mountain playable
 profile selection, first-person plus overview captures, human mouse-capture fix,
 and edit-time material reapply to avoid white blink. Human feedback confirms the
-fixture is still small and performance cannot be judged from this scale. This is
-not a game repository and does not yet claim production-ready terrain. TQP-51
-pins the required `world-transvoxel` authority and forbids addon-local fallback
-meshers or synthetic terrain surfaces.
+fixture is still small and performance cannot be judged from this scale. This
+is not a game repository. TQP-51 pins the required `world-transvoxel` authority
+and forbids addon-local fallback meshers or synthetic terrain surfaces. TQP-55
+through TQP-57 add the reproducible CPU release matrix, production-wrapper
+long-haul proof, standard, migration notes, and standalone addon package.
 
 ## Role
 
@@ -109,9 +112,13 @@ connect player/camera
 run
 ```
 
+Release and support details are in
+[CPU Terrain Standard 1.0](docs/CPU_TERRAIN_STANDARD_1_0.md) and
+[TQP-57 Standalone CPU Terrain Release](docs/TQP57_STANDALONE_RELEASE.md).
+
 ## Current non-goals
 
-- no separate game repository yet;
+- no bundled game presentation or gameplay runtime;
 - no GPU compute rewrite;
 - no water/lava, planets, structural collapse, vegetation, building blocks, or
   inventory systems;
@@ -157,6 +164,9 @@ python tools/validate_a6_readiness_decision.py
 python tools/validate_tqp51_boundary.py
 python tools/validate_tqp52_runtime_contract.py
 python tools/validate_tqp53_authoring_workflow.py
+python tools/validate_tqp55_release_matrix.py --require-report
+python tools/validate_tqp56_long_haul.py
+python tools/validate_tqp57_release.py
 python tools/a2_addon_smoke.py
 python tools/a3_bridge_smoke.py
 python tools/a4_phase1_resources_smoke.py
@@ -172,6 +182,9 @@ python tools/a5_phase5_exit_review.py
 python tools/a6_readiness_decision.py
 python tools/tqp52_runtime_contract_smoke.py
 python tools/tqp53_authoring_workflow_smoke.py
+python -B tools/tqp55_release_matrix.py
+python -B tools/tqp56_cpu_long_haul.py
+python -B tools/build_tqp57_release.py
 ```
 
 Expected marker:
@@ -180,34 +193,37 @@ Expected marker:
 WT_TERRAIN_SKELETON_PASS addon=world-transvoxel-terrain implementation=deferred game_repository=deferred
 WT_TERRAIN_A1_CONTRACT_PASS next=a2_addon_local_smoke_harness implementation=contract_only
 WT_TERRAIN_A2_CONTRACT_PASS next=a3_world_transvoxel_bridge implementation=smoke_only
-WT_TERRAIN_A2_SMOKE_PASS engines=2 report=artifacts/a2_addon_smoke/a2_addon_smoke_report.json
+WT_TERRAIN_A2_SMOKE_PASS engines=1 report=artifacts/a2_addon_smoke/a2_addon_smoke_report.json
 WT_TERRAIN_A3_CONTRACT_PASS next=a4_terrain_profile_edit_storage_recovery implementation=bridge_only
-WT_TERRAIN_A3_BRIDGE_PASS engines=2 report=artifacts/a3_bridge_smoke/a3_bridge_smoke_report.json
+WT_TERRAIN_A3_BRIDGE_PASS engines=1 report=artifacts/a3_bridge_smoke/a3_bridge_smoke_report.json
 WT_TERRAIN_A4_PHASE1_CONTRACT_PASS next=a4_phase2_bridge_edit_submission implementation=resource_semantics_only
-WT_TERRAIN_A4_PHASE1_SMOKE_PASS engines=2 report=artifacts/a4_phase1_resources/a4_phase1_resources_report.json
+WT_TERRAIN_A4_PHASE1_SMOKE_PASS engines=1 report=artifacts/a4_phase1_resources/a4_phase1_resources_report.json
 WT_TERRAIN_A4_PHASE2_CONTRACT_PASS next=a4_phase3_public_terrain_world_lifecycle implementation=bridge_storage_fixture
-WT_TERRAIN_A4_PHASE2_SMOKE_PASS engines=2 report=artifacts/a4_phase2_bridge_storage/a4_phase2_bridge_storage_report.json
+WT_TERRAIN_A4_PHASE2_SMOKE_PASS engines=1 report=artifacts/a4_phase2_bridge_storage/a4_phase2_bridge_storage_report.json
 WT_TERRAIN_A4_PHASE3_CONTRACT_PASS next=a4_phase4_reference_profile_runtime_cold_idle implementation=terrain_world_lifecycle
-WT_TERRAIN_A4_PHASE3_SMOKE_PASS engines=2 report=artifacts/a4_phase3_terrain_world_lifecycle/a4_phase3_terrain_world_lifecycle_report.json
+WT_TERRAIN_A4_PHASE3_SMOKE_PASS engines=1 report=artifacts/a4_phase3_terrain_world_lifecycle/a4_phase3_terrain_world_lifecycle_report.json
 WT_TERRAIN_A4_PHASE4_CONTRACT_PASS next=a4_phase5_a4_exit_review implementation=reference_profile_runtime_cold_idle
-WT_TERRAIN_A4_PHASE4_SMOKE_PASS engines=2 report=artifacts/a4_phase4_reference_runtime_cold_idle/a4_phase4_reference_runtime_cold_idle_report.json
+WT_TERRAIN_A4_PHASE4_SMOKE_PASS engines=1 report=artifacts/a4_phase4_reference_runtime_cold_idle/a4_phase4_reference_runtime_cold_idle_report.json
 WT_TERRAIN_A4_PHASE5_CONTRACT_PASS next=a5_local_reference_scene_debug_ui implementation=a4_exit_review
 WT_TERRAIN_A4_PHASE5_EXIT_REVIEW_PASS validators=9 smokes=6 report=artifacts/a4_phase5_exit_review/a4_phase5_exit_review_report.json next=a5_local_reference_scene_debug_ui
 WT_TERRAIN_A5_PHASE1_CONTRACT_PASS next=a5_phase2_local_reference_scene_scaffold implementation=debug_snapshot_contract
-WT_TERRAIN_A5_PHASE1_SMOKE_PASS engines=2 report=artifacts/a5_phase1_debug_snapshot/a5_phase1_debug_snapshot_report.json
+WT_TERRAIN_A5_PHASE1_SMOKE_PASS engines=1 report=artifacts/a5_phase1_debug_snapshot/a5_phase1_debug_snapshot_report.json
 WT_TERRAIN_A5_PHASE2_CONTRACT_PASS next=a5_phase3_backend_reference_scene_runtime_smoke implementation=local_reference_scene_scaffold
-WT_TERRAIN_A5_PHASE2_SMOKE_PASS engines=2 report=artifacts/a5_phase2_reference_scene_scaffold/a5_phase2_reference_scene_scaffold_report.json
+WT_TERRAIN_A5_PHASE2_SMOKE_PASS engines=1 report=artifacts/a5_phase2_reference_scene_scaffold/a5_phase2_reference_scene_scaffold_report.json
 WT_TERRAIN_A5_PHASE3_CONTRACT_PASS next=a5_phase4_debug_overlay_category_rendering implementation=backend_reference_scene_runtime_smoke
-WT_TERRAIN_A5_PHASE3_SMOKE_PASS engines=2 report=artifacts/a5_phase3_reference_scene_runtime/a5_phase3_reference_scene_runtime_report.json
+WT_TERRAIN_A5_PHASE3_SMOKE_PASS engines=1 report=artifacts/a5_phase3_reference_scene_runtime/a5_phase3_reference_scene_runtime_report.json
 WT_TERRAIN_A5_PHASE4_CONTRACT_PASS next=a5_phase5_a5_exit_review implementation=debug_overlay_category_rendering
-WT_TERRAIN_A5_PHASE4_SMOKE_PASS engines=2 report=artifacts/a5_phase4_debug_overlay_categories/a5_phase4_debug_overlay_categories_report.json
+WT_TERRAIN_A5_PHASE4_SMOKE_PASS engines=1 report=artifacts/a5_phase4_debug_overlay_categories/a5_phase4_debug_overlay_categories_report.json
 WT_TERRAIN_A5_PHASE5_CONTRACT_PASS next=a6_game_repository_readiness_decision implementation=a5_exit_review
 WT_TERRAIN_A5_PHASE5_EXIT_REVIEW_PASS validators=7 smokes=4 report=artifacts/a5_phase5_exit_review/a5_phase5_exit_review_report.json next=a6_game_repository_readiness_decision
 WT_TERRAIN_A6_CONTRACT_PASS decision=approve_validation_game_repository implementation=readiness_decision next=separate_validation_game_repository_when_user_approves
 WT_TERRAIN_A6_READINESS_DECISION_PASS decision=approve_validation_game_repository validators=2 report=artifacts/a6_readiness_decision/a6_readiness_decision_report.json next=separate_validation_game_repository_when_user_approves
 WT_TERRAIN_TQP51_BOUNDARY_PASS candidate=world-transvoxel-terrain-cpu-tqp51-1 next=tqp52_runtime_api_profiles_readiness
-WT_TERRAIN_TQP52_QUALIFICATION_PASS engines=2 report=artifacts/tqp52_runtime_contract/tqp52_runtime_contract_report.json
-WT_TERRAIN_TQP53_QUALIFICATION_PASS engines=2 report=artifacts/tqp53_authoring_workflow/tqp53_authoring_workflow_report.json
+WT_TERRAIN_TQP52_QUALIFICATION_PASS engines=1 report=artifacts/tqp52_runtime_contract/tqp52_runtime_contract_report.json
+WT_TERRAIN_TQP53_QUALIFICATION_PASS engines=1 report=artifacts/tqp53_authoring_workflow/tqp53_authoring_workflow_report.json
+WT_TERRAIN_TQP55_QUALIFICATION_PASS engines=1 profiles=4 package=<sha256>
+WT_TERRAIN_TQP56_QUALIFICATION_PASS duration=<seconds> cycles=<count> restarts=<count> queue_rejections=0
+WT_TERRAIN_TQP57_RELEASE_PASS version=1.0.0 files=<count> package=<sha256> zip=<sha256>
 ```
 
 ## License

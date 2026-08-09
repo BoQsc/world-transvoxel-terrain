@@ -1,0 +1,46 @@
+{
+  "schema": "world_transvoxel_terrain.tqp56_long_haul_contract.v1",
+  "milestone": "TQP-56",
+  "status": "qualification_contract",
+  "engine": "4.7",
+  "platform": "windows-10-x86_64",
+  "profile": "BALANCED",
+  "minimum_wrapper_duration_seconds": 60,
+  "minimum_cycles": 8,
+  "minimum_edits": 2,
+  "minimum_queries": 2,
+  "minimum_restarts": 1,
+  "required_workloads": [
+    "bounded traversal and flight",
+    "targeted render and collision residency",
+    "carve and construction edits",
+    "authoritative sample queries",
+    "journal save restart and replay",
+    "presentation origin shift without authority-coordinate mutation",
+    "invalid edit and stale viewer fault rejection",
+    "queue memory recovery and clean shutdown"
+  ],
+  "budgets": {
+    "maximum_memory_growth_bytes": 67108864,
+    "maximum_queue_rejections": 0,
+    "maximum_scheduler_queue_depth": 4096,
+    "maximum_storage_queue_depth": 256,
+    "maximum_render_queue_depth": 128,
+    "maximum_collision_queue_depth": 64,
+    "maximum_settle_seconds": 15
+  },
+  "retained_long_run": {
+    "repository": "world-transvoxel-cell-lab",
+    "path": "labs/terrain_lab/results/complex_adaptive_soak_recovery_reference_windows.json",
+    "sha256": "20972645c21bf1c595ca053aee351f5b67e8f57f8c876e529d60b7f22dfe8408",
+    "minimum_rendered_seconds": 1800,
+    "minimum_frame_samples": 108000
+  },
+  "explicitly_unqualified_scope": [
+    "multi-day operation",
+    "unbounded worlds or queues",
+    "cross-hardware thermal and power equivalence",
+    "GPU terrain execution",
+    "game-system correctness"
+  ]
+}
