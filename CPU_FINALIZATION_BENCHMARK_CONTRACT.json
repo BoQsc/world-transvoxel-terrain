@@ -28,6 +28,7 @@
     "pipeline_capacity": 8192,
     "cache_capacity": 2048,
     "collision_capacity": 256,
+    "maximum_logical_cpu_count": 3,
     "frames_per_scenario": 300
   },
   "scenarios": [
@@ -68,6 +69,7 @@
     "same authoritative 2048x256x2048 adaptive terrain semantics as TQP-57",
     "non-intrusive scenario-boundary process CPU telemetry",
     "native phase, queue wait, execution, publication, collision, frame, memory, and responsiveness evidence",
+    "a recorded process-affinity ceiling of at most three logical CPUs",
     "at least 300 frame samples per full scenario so p99 is not selected by one tail sample"
   ],
   "explicitly_unqualified_scope": [

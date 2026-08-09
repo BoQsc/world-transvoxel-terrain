@@ -283,6 +283,12 @@ def main() -> None:
     )
     parser.add_argument("--meshing-workers", type=int, default=2)
     parser.add_argument(
+        "--logical-cpu-limit",
+        type=int,
+        default=3,
+        help="Pin this harness and inherited Godot processes to this many logical CPUs",
+    )
+    parser.add_argument(
         "--generation-workers",
         type=int,
         default=0,
@@ -293,14 +299,47 @@ def main() -> None:
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--require-clean", action="store_true")
     arguments = parser.parse_args()
-    if arguments.meshing_workers < 1 or arguments.meshing_workers > 8:
-        raise RuntimeError("meshing worker count must be between 1 and 8")
-    if arguments.generation_workers < 0 or arguments.generation_workers > 8:
-        raise RuntimeError("generation worker count must be between 0 and 8")
+    contract = load_json(SOURCE_CONTRACT)
+    contract_cpu_limit = int(
+        contract["runtime_profile"]["maximum_logical_cpu_count"]
+    )
+    if (
+        arguments.logical_cpu_limit < 1
+        or arguments.logical_cpu_limit > contract_cpu_limit
+    ):
+        raise RuntimeError(
+            "logical CPU limit must be between 1 and "
+            f"{contract_cpu_limit} for this qualification contract"
+        )
+    if (
+        arguments.meshing_workers < 1
+        or arguments.meshing_workers > arguments.logical_cpu_limit
+    ):
+        raise RuntimeError(
+            "meshing worker count must fit the logical CPU limit"
+        )
+    if (
+        arguments.generation_workers < 0
+        or arguments.generation_workers > arguments.logical_cpu_limit
+    ):
+        raise RuntimeError(
+            "generation worker count must fit the logical CPU limit"
+        )
     if arguments.frames < 300:
         raise RuntimeError("CPU-finalization p99 evidence requires at least 300 frames")
     if arguments.native_mode == "release_runtime_4_7_1" and arguments.headless:
         raise RuntimeError("release-runtime rendering evidence cannot use headless mode")
+
+    benchmark_process = psutil.Process()
+    available_affinity = benchmark_process.cpu_affinity()
+    if len(available_affinity) < arguments.logical_cpu_limit:
+        raise RuntimeError(
+            "requested logical CPU limit exceeds the inherited process affinity"
+        )
+    selected_affinity = available_affinity[: arguments.logical_cpu_limit]
+    benchmark_process.cpu_affinity(selected_affinity)
+    if benchmark_process.cpu_affinity() != selected_affinity:
+        raise RuntimeError("could not enforce the requested logical CPU affinity")
 
     authority = ROOT.parent / "world-transvoxel"
     source_integrity = [source_status(repository) for repository in (ROOT, authority)]
@@ -316,7 +355,6 @@ def main() -> None:
             )
             raise RuntimeError(f"qualification repository is dirty: {details}")
 
-    contract = load_json(SOURCE_CONTRACT)
     contract["runtime_profile"]["frames_per_scenario"] = arguments.frames
     contract["budgets"]["minimum_frame_samples_per_scenario"] = arguments.frames
     if arguments.scenario:
@@ -432,6 +470,11 @@ def main() -> None:
         env=environment,
     )
     measured = psutil.Process(process.pid)
+    launched_affinity = measured.cpu_affinity()
+    if launched_affinity != selected_affinity:
+        process.terminate()
+        process.wait(timeout=30)
+        raise RuntimeError("launched benchmark process did not inherit CPU affinity")
     run_start = cpu_snapshot(measured)
     last_snapshot = run_start
     boundary_snapshots = [run_start]
@@ -476,6 +519,9 @@ def main() -> None:
         "native_mode": arguments.native_mode,
         "headless": arguments.headless,
         "profile": arguments.profile,
+        "logical_cpu_limit": arguments.logical_cpu_limit,
+        "logical_cpu_affinity": selected_affinity,
+        "launched_process_logical_cpu_affinity": launched_affinity,
         "meshing_worker_count": arguments.meshing_workers,
         "generation_worker_count_requested": arguments.generation_workers,
         "generation_worker_count_actual": int(
@@ -492,6 +538,7 @@ def main() -> None:
         "processor": platform.processor(),
         "logical_cpu_count": psutil.cpu_count(logical=True),
         "physical_cpu_count": psutil.cpu_count(logical=False),
+        "process_logical_cpu_affinity": benchmark_process.cpu_affinity(),
         "total_memory_bytes": psutil.virtual_memory().total,
     }
     whole_run = telemetry_delta(run_start, last_snapshot)
@@ -548,7 +595,8 @@ def main() -> None:
         "WT_TERRAIN_CPU_FINALIZATION_BENCHMARK_PASS "
         f"run={arguments.run_id} scenarios={len(report['scenarios'])} "
         f"generation_workers={report['execution']['generation_worker_count_actual']} "
-        f"meshing_workers={arguments.meshing_workers} frames={arguments.frames} "
+        f"meshing_workers={arguments.meshing_workers} "
+        f"logical_cpus={arguments.logical_cpu_limit} frames={arguments.frames} "
         f"cpu_seconds={report['process_telemetry']['whole_run']['process_cpu_seconds']:.3f}"
     )
 
