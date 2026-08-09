@@ -35,7 +35,9 @@ fixture is still small and performance cannot be judged from this scale. This
 is not a game repository. TQP-51 pins the required `world-transvoxel` authority
 and forbids addon-local fallback meshers or synthetic terrain surfaces. TQP-55
 through TQP-57 add the reproducible CPU release matrix, production-wrapper
-long-haul proof, standard, migration notes, and standalone addon package.
+long-haul proof, standalone 2048 x 256 x 2048 adaptive-terrain acceptance,
+live mixed-LOD seam topology audit, standard, migration notes, and addon
+package.
 
 ## Role
 
@@ -48,6 +50,7 @@ The current minimal game-facing API is centered on `WtTerrainWorld`:
 `get_world_revision`, `get_world_source_revision`, `get_world_page_count`,
 `get_profile_summaries`, `update_viewer`, `remove_viewer`,
 `update_collision_viewer`, `remove_collision_viewer`, `query_chunk_state`,
+`query_active_chunk_states`,
 `get_chunk_readiness`, `get_readiness_snapshot`,
 `submit_edit_batch`, `request_authoritative_sample`,
 `request_authoritative_samples`, `request_world_compaction`,

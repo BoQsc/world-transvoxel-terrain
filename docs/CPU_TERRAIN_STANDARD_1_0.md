@@ -7,7 +7,7 @@ possible terrain workload or machine is solved.
 ## Authoritative boundaries
 
 - `world-transvoxel` revision
-  `f4abd7ab4f921f98aba4ee45b4453af0bae53cd8` owns density samples, material
+  `4f1fdb59e3c6200c8f823b99027b2d3f15563858` owns density samples, material
   samples, regular and transition topology, adaptive streaming, edit
   application, persistence, native queues, render resources, and collision
   resources.
@@ -67,6 +67,15 @@ visible. TQP-49 retains 1802.58 seconds and 108,000 frames of drift, persistence
 recovery, and shutdown evidence. TQP-56 adds 60 seconds through the production
 wrapper with repeated edits, queries, restarts, origin shifts, and queue/memory
 checks.
+
+TQP-57 additionally assembles the standalone addon into a 2048 x 256 x 2048
+rolling-hills/cave world and directly exercises LOD0/1/2 traversal, flight,
+vertical movement, cold teleport, digging, construction, far-return replay,
+targeted collision, and restart persistence. It locates a live LOD0/1 boundary
+from authoritative chunk states and retains a direct mesh audit with zero
+boundary, nonmanifold, same-direction shared, or zero-area edges. Four rendered
+captures and frame, queue, memory, edit-latency, and residency evidence are
+retained with the release gate.
 
 These values are comparison baselines and regression ceilings on one reference
 machine. They are not universal frame-rate, wattage, view-distance, or latency

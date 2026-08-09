@@ -6,20 +6,20 @@
   "version": "1.0.0",
   "authority": {
     "repository": "world-transvoxel",
-    "revision": "f4abd7ab4f921f98aba4ee45b4453af0bae53cd8",
+    "revision": "4f1fdb59e3c6200c8f823b99027b2d3f15563858",
     "fallback_mesher": false,
     "fallback_field": false,
     "native_artifacts": [
       {
         "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
-        "sha256": "898c11c1388170b900f84f1b04cb3529a8a4cfc7308a4c10c32818492e140b39",
-        "bytes": 2126848,
+        "sha256": "f89c9459fbfcfcb0c2599e8f28f21f6c67e2d02516acef07d7d27eac4026ccf0",
+        "bytes": 2127360,
         "qualification": "executed_by_godot_tools_runtime"
       },
       {
         "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
-        "sha256": "e60bac26e955431a164e3bb7da2d0138a60f88b72cbff2baa2f72f4a886ddff4",
-        "bytes": 2052608,
+        "sha256": "b1043486d9b79ad0f886f0fd3b504da7ef6fcdf18f796d6d44750bfc34b1a4d2",
+        "bytes": 2053120,
         "qualification": "integrity_and_package_pin"
       }
     ]

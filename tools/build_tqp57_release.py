@@ -24,6 +24,7 @@ REPORT_PATH = ARTIFACT_ROOT / "tqp57_release_report.json"
 def main() -> None:
     run_python("tools/validate_tqp55_release_matrix.py", "--require-report")
     run_python("tools/validate_tqp56_long_haul.py")
+    run_python("tools/validate_tqp57_large_terrain_acceptance.py", "--require-report")
     contract = load_json(ROOT / "TQP57_RELEASE_CONTRACT.json")
     package = write_deterministic_addon_zip(ZIP_PATH)
     files = tracked_addon_files()

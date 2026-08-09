@@ -25,7 +25,7 @@ def main() -> None:
     require(contract.get("package_root") == "addons/world_transvoxel_terrain", "TQP-57 package root drifted")
     dependency = contract.get("dependency", {})
     require(dependency.get("bundled") is False and dependency.get("fallback") is False, "TQP-57 dependency boundary drifted")
-    require(dependency.get("revision") == "f4abd7ab4f921f98aba4ee45b4453af0bae53cd8", "TQP-57 authority pin drifted")
+    require(dependency.get("revision") == "4f1fdb59e3c6200c8f823b99027b2d3f15563858", "TQP-57 authority pin drifted")
 
     for relative in contract.get("required_evidence", []):
         path = ROOT / relative

@@ -32,4 +32,9 @@ python tools/a5_phase3_reference_scene_runtime_smoke.py
 python tools/a5_phase4_debug_overlay_categories_smoke.py
 python tools/a5_phase5_exit_review.py
 python tools/a6_readiness_decision.py
+python -B tools/tqp57_large_terrain_acceptance.py
 ```
+
+The TQP-57 workload requires Godot 4.7 Forward+, runs nine bounded large-world
+scenarios, audits an actual mixed-LOD mesh interface, and retains four visual
+captures plus performance, edit, collision, and persistence evidence.

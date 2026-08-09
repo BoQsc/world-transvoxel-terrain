@@ -7,17 +7,19 @@
   "package_root": "addons/world_transvoxel_terrain",
   "dependency": {
     "repository": "world-transvoxel",
-    "revision": "f4abd7ab4f921f98aba4ee45b4453af0bae53cd8",
+    "revision": "4f1fdb59e3c6200c8f823b99027b2d3f15563858",
     "bundled": false,
     "fallback": false
   },
   "supported_matrix_contract": "TQP55_RELEASE_MATRIX.json",
   "long_haul_contract": "TQP56_LONG_HAUL_CONTRACT.json",
+  "large_terrain_acceptance_contract": "TQP57_LARGE_TERRAIN_ACCEPTANCE_CONTRACT.json",
   "standard": "docs/CPU_TERRAIN_STANDARD_1_0.md",
   "migration_notes": "docs/TQP57_STANDALONE_RELEASE.md",
   "required_evidence": [
     "artifacts/tqp55_release_matrix/tqp55_release_matrix_report.json",
-    "artifacts/tqp56_long_haul/tqp56_long_haul_report.json"
+    "artifacts/tqp56_long_haul/tqp56_long_haul_report.json",
+    "artifacts/tqp57_large_terrain_acceptance/tqp57_large_terrain_acceptance_report.json"
   ],
   "package_policy": {
     "deterministic_zip": true,

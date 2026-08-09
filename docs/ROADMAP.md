@@ -224,7 +224,7 @@ Exit:
 
 - standalone candidate is `world-transvoxel-terrain-cpu-tqp51-1`;
 - `world-transvoxel` revision
-  `f4abd7ab4f921f98aba4ee45b4453af0bae53cd8` is the required terrain authority;
+  `4f1fdb59e3c6200c8f823b99027b2d3f15563858` is the required terrain authority;
 - ownership, threading, resource lifetimes, extension points, failure policy,
   and unsupported scope are frozen in `BOUNDARY_CONTRACT.json`;
 - no fallback mesher, synthetic terrain surface, vendored upstream authority,

@@ -8,7 +8,7 @@ tracked source. `world-transvoxel` remains a separate exact dependency.
 
 1. Use Godot 4.7 on Windows x86-64 with Forward+.
 2. Install `world-transvoxel` revision
-   `f4abd7ab4f921f98aba4ee45b4453af0bae53cd8` as
+   `4f1fdb59e3c6200c8f823b99027b2d3f15563858` as
    `res://addons/world_transvoxel`.
 3. Extract `world-transvoxel-terrain-1.0.0.zip` so the addon is at
    `res://addons/world_transvoxel_terrain`.
@@ -36,6 +36,7 @@ Run:
 ```console
 python -B tools/tqp55_release_matrix.py
 python -B tools/tqp56_cpu_long_haul.py
+python -B tools/tqp57_large_terrain_acceptance.py
 python -B tools/build_tqp57_release.py
 ```
 
@@ -43,3 +44,7 @@ The final command writes the archive, per-file manifest, package digest, ZIP
 digest, supported matrix, dependency pin, and release evidence under ignored
 `artifacts/tqp57_release`. The authoritative scope and exclusions are in
 `CPU_TERRAIN_STANDARD_1_0.md` and `TQP55_RELEASE_MATRIX.json`.
+
+The large-terrain command is a bounded Godot 4.7 Forward+ acceptance run. It
+retains nine scenario results, a direct live mixed-LOD seam topology audit, and
+four PNG captures under `artifacts/tqp57_large_terrain_acceptance`.

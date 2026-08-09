@@ -23,7 +23,7 @@ documents, artifacts, games, and labs are not runtime dependencies.
 ## Required dependency
 
 The candidate depends on sibling addon `world-transvoxel` at revision
-`f4abd7ab4f921f98aba4ee45b4453af0bae53cd8`. The dependency is not vendored.
+`4f1fdb59e3c6200c8f823b99027b2d3f15563858`. The dependency is not vendored.
 Startup must fail with an explicit error when the required classes or valid
 configuration are unavailable. There is no addon-local fallback mesher,
 synthetic full-map surface, backdrop terrain, or copied Transvoxel topology.

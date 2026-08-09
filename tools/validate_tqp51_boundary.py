@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ADDON = ROOT / "addons/world_transvoxel_terrain"
 CONTRACT_PATH = ADDON / "BOUNDARY_CONTRACT.json"
 EXPECTED_CANDIDATE = "world-transvoxel-terrain-cpu-tqp51-1"
-EXPECTED_UPSTREAM = "f4abd7ab4f921f98aba4ee45b4453af0bae53cd8"
+EXPECTED_UPSTREAM = "4f1fdb59e3c6200c8f823b99027b2d3f15563858"
 
 REQUIRED_FILES = (
     "addons/world_transvoxel_terrain/BOUNDARY_CONTRACT.json",
