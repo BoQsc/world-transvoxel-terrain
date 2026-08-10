@@ -58,7 +58,8 @@ func _init() -> void:
 	var material := Dictionary(snapshot.get("material", {}))
 	if not bool(material.get("configured", false)) or \
 			str(material.get("status", "")) != "material_profile_configured" or \
-			str(material.get("profile_id", "")) != "debug_checker_palette":
+			str(material.get("profile_id", "")) != "debug_checker_palette" or \
+			int(material.get("standard_texture_resolution", 0)) != 512:
 		errors.append("debug snapshot material profile drifted")
 
 	world.free()
