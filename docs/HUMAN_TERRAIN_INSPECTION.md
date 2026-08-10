@@ -24,6 +24,10 @@ The launcher accepts `--editor` to open the generated project in the editor and
 Godot older than 4.7 and constrains itself and the launched Godot process to at
 most three logical CPUs.
 
+The runtime opens fullscreen, moves itself to the foreground, captures mouse
+look, and enters collision-controlled walking as soon as the initial terrain
+target is ready. Press `Escape` to release the mouse when UI access is needed.
+
 ## Runtime Controls
 
 | Control | Action |
@@ -48,12 +52,20 @@ small look-ahead and remains at the reference terrain's surface band while the
 free camera flies above it. The human harness requests a two-chunk local
 collision radius so the crosshair and player can operate around that focus;
 the TQP-57 acceptance profile remains at its authoritative one-chunk default.
-An edit is refused while the local collision
-generation is missing, stale, or being replaced. Walk mode can only start from
-a valid yellow terrain target and uses a `CharacterBody3D` capsule against the
-same localized terrain collision resources. The dock exposes world readiness, viewer and
+An edit is refused while local collision is missing or invalid. A valid prior
+collision remains usable while the authority stages its atomic replacement,
+matching the runtime's safety-collision contract. A second edit remains blocked
+until the current edit's own render and collision replacements finish. Walk
+mode can only start from a valid yellow terrain target and uses a
+`CharacterBody3D` capsule against the same localized terrain collision
+resources. The dock exposes world readiness, viewer and
 revision state, active and ready residency, LOD counts, overlap count, pending
 generation state, queues, FPS, and frame time.
+
+Each human edit reports authoritative commit, local visual replacement, and
+local collision replacement latency in milliseconds. Results are appended to
+`user://world_transvoxel_terrain/human_performance/edit_timings.jsonl`; they are
+diagnostic evidence and do not replace the automated acceptance baseline.
 
 Issue recordings are capped at 30 seconds and sample camera motion, viewer
 position, active LOD counts, readiness, revisions, queues, replacements, and

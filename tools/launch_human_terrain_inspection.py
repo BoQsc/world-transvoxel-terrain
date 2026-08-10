@@ -20,6 +20,8 @@ MAIN_SCENE = (
     "res://addons/world_transvoxel_terrain/debug/"
     "wt_terrain_human_inspection_scene.tscn"
 )
+SMOKE_SCRIPT = "res://tests/human_terrain_inspection_smoke.gd"
+SMOKE_MARKER = "WT_TERRAIN_HUMAN_INSPECTION_SMOKE_PASS"
 STEAM_GODOT = Path(
     "C:/Program Files (x86)/Steam/steamapps/common/Godot Engine/"
     "godot.windows.opt.tools.64.exe"
@@ -65,6 +67,10 @@ def prepare_fixture() -> None:
                 raise
             time.sleep(0.5)
     project = FIXTURE_ROOT / "project.godot"
+    harness.copy_file(
+        ROOT / "tests" / "human_terrain_inspection_smoke.gd",
+        FIXTURE_ROOT / "tests" / "human_terrain_inspection_smoke.gd",
+    )
     project.write_text(
         "\n".join(
             [
@@ -78,8 +84,7 @@ def prepare_fixture() -> None:
                 "[display]",
                 "window/size/viewport_width=1280",
                 "window/size/viewport_height=720",
-                "window/size/window_width_override=1280",
-                "window/size/window_height_override=720",
+                "window/size/mode=3",
                 "window/stretch/mode=\"canvas_items\"",
                 "",
                 "[editor_plugins]",
@@ -98,6 +103,7 @@ def main() -> None:
     parser.add_argument("--godot", type=Path, default=STEAM_GODOT)
     parser.add_argument("--editor", action="store_true")
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--smoke-test", action="store_true")
     parser.add_argument("--wait", action="store_true")
     arguments = parser.parse_args()
 
@@ -116,12 +122,32 @@ def main() -> None:
         )
         return
 
+    if arguments.smoke_test:
+        result = subprocess.run(
+            [str(engine), "--headless", "--path", str(FIXTURE_ROOT), "--script", SMOKE_SCRIPT],
+            cwd=FIXTURE_ROOT,
+            env={**os.environ, "WT_CPU_PROFILE": "balanced"},
+            check=False,
+            text=True,
+            capture_output=True,
+            errors="replace",
+            timeout=120,
+        )
+        combined = result.stdout + result.stderr
+        print(combined, end="")
+        if (
+            result.returncode != 0
+            or SMOKE_MARKER not in combined
+            or harness.has_godot_error(combined)
+        ):
+            raise SystemExit(result.returncode or 1)
+        return
+
     command = [
         str(engine),
         "--path",
         str(FIXTURE_ROOT),
-        "--resolution",
-        "1280x720",
+        "--fullscreen",
     ]
     if arguments.editor:
         command.append("--editor")

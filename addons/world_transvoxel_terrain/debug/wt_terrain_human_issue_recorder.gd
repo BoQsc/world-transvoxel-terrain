@@ -154,6 +154,22 @@ func elapsed_usec() -> int:
 	return Time.get_ticks_usec() - _started_usec if _started_usec > 0 else 0
 
 
+func record_edit_timing(timing: Dictionary) -> void:
+	var root := "user://world_transvoxel_terrain/human_performance"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(root))
+	var path := root.path_join("edit_timings.jsonl")
+	var file := FileAccess.open(
+		path,
+		FileAccess.READ_WRITE if FileAccess.file_exists(path) else FileAccess.WRITE
+	)
+	if file == null:
+		return
+	file.seek_end()
+	var record := timing.duplicate(true)
+	record["recorded_unix_msec"] = int(Time.get_unix_time_from_system() * 1000.0)
+	file.store_line(JSON.stringify(record))
+
+
 func _save_screenshot(id: String) -> void:
 	var image := get_viewport().get_texture().get_image()
 	image.save_png(ProjectSettings.globalize_path(_issue_root.path_join(id + ".png")))

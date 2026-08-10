@@ -4,7 +4,10 @@ class_name WtTerrainHumanInspectionScene
 
 const HUMAN_SURFACE_STREAMING_CEILING := 40.0
 const HUMAN_LOOK_AHEAD_DISTANCE := 32.0
+const HUMAN_VISUAL_UPDATE_DISTANCE := 16.0
+const HUMAN_COLLISION_UPDATE_DISTANCE := 4.0
 const HUMAN_COLLISION_RADIUS_CHUNKS := 2
+const HUMAN_EDIT_TIMEOUT_FRAMES := 1800
 @onready var edit_target_marker: MeshInstance3D = %EditTargetMarker
 @onready var human_player: CharacterBody3D = %HumanPlayer
 @onready var human_player_shape: CollisionShape3D = %HumanPlayerShape
@@ -22,8 +25,13 @@ var _human_target_valid := false
 var _human_edit_busy := false
 var _human_message := "LOCAL COLLISION PENDING"
 var _human_walk_mode := false
+var _auto_start_walk_pending := true
 var _human_target_accumulator := 0.0
 var _human_overlay_accumulator := 0.0
+var _human_message_hold_until_usec := 0
+var _human_edit_sequence := 0
+var _last_edit_timing: Dictionary = {}
+var _published_human_collision_position := Vector3(INF, INF, INF)
 var _brush_group: ButtonGroup
 var _movement_group: ButtonGroup
 
@@ -44,12 +52,20 @@ func _ready() -> void:
 	issue_recorder.call("configure", self)
 	issue_recorder.connect("status_changed", _on_issue_status_changed)
 	_refresh_human_overlay()
+	if not Engine.is_editor_hint():
+		call_deferred("_activate_human_gameplay")
 
 
 func _exit_tree() -> void:
 	issue_recorder.call("shutdown")
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	super._exit_tree()
+
+
+func _stop_preview(cleanup: bool) -> Dictionary:
+	var result := await super._stop_preview(cleanup)
+	_published_human_collision_position = Vector3(INF, INF, INF)
+	return result
 
 
 func _process(delta: float) -> void:
@@ -61,6 +77,8 @@ func _process(delta: float) -> void:
 	if _human_target_accumulator >= 0.05:
 		_human_target_accumulator = 0.0
 		_update_human_target()
+		if _auto_start_walk_pending and _human_target_valid:
+			_set_walk_mode(true)
 	if _human_overlay_accumulator >= 0.2:
 		_human_overlay_accumulator = 0.0
 		_refresh_human_overlay()
@@ -105,14 +123,31 @@ func _update_runtime_camera(delta: float) -> void:
 		return
 	var focus := human_player.global_position if _human_walk_mode else _fly_streaming_focus()
 	var tracked := _clamp_viewer_position(focus)
-	if tracked.distance_to(_viewer_position) >= 4.0:
-		_request_viewer(
-			tracked,
-			false,
-			VIEWER_RADIUS_CHUNKS,
-			MAXIMUM_LOD,
-			HUMAN_COLLISION_RADIUS_CHUNKS
-		)
+	_publish_human_streaming_focus(tracked)
+
+
+func _publish_human_streaming_focus(position: Vector3) -> void:
+	if position.distance_to(_published_viewer_position) >= HUMAN_VISUAL_UPDATE_DISTANCE:
+		_viewer_revision += 1
+		if bool(terrain_world.call(
+			"update_viewer", VIEWER_ID, _viewer_revision, position,
+			VIEWER_RADIUS_CHUNKS, MAXIMUM_LOD
+		)):
+			_viewer_position = position
+			_published_viewer_position = position
+			viewer_marker.position = position
+		else:
+			status_label.text = "FAIL: visual viewer update"
+	if position.distance_to(_published_human_collision_position) >= \
+			HUMAN_COLLISION_UPDATE_DISTANCE:
+		_collision_revision += 1
+		if bool(terrain_world.call(
+			"update_collision_viewer", COLLISION_VIEWER_ID, _collision_revision,
+			position, HUMAN_COLLISION_RADIUS_CHUNKS
+		)):
+			_published_human_collision_position = position
+		else:
+			status_label.text = "FAIL: collision viewer update"
 
 
 func _update_fly_camera(delta: float) -> void:
@@ -211,6 +246,12 @@ func _set_mouse_look(enabled: bool) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if enabled else Input.MOUSE_MODE_VISIBLE
 
 
+func _activate_human_gameplay() -> void:
+	if DisplayServer.get_name() != "headless":
+		DisplayServer.window_move_to_foreground()
+	_set_mouse_look(true)
+
+
 func _select_human_brush(kind: StringName) -> void:
 	_human_brush_kind = kind
 	%CarveButton.button_pressed = kind == &"carve"
@@ -228,6 +269,7 @@ func _set_walk_mode(enabled: bool) -> void:
 		_human_message = "WALK NEEDS AN UPWARD-FACING SURFACE"
 		fly_button.button_pressed = true
 		return
+	_auto_start_walk_pending = false
 	_human_walk_mode = enabled
 	edit_target_marker.scale = Vector3.ONE * (0.2 if enabled else 1.0)
 	human_player_shape.disabled = not enabled
@@ -255,12 +297,12 @@ func _update_human_target() -> void:
 	query.exclude = [human_player.get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty():
-		if not _human_edit_busy:
+		if _may_replace_human_message():
 			_human_message = "NO LOCAL COLLISION HIT"
 		return
 	var position := hit.get("position", Vector3.ZERO) as Vector3
 	if not _is_current_collision_ready(position):
-		if not _human_edit_busy:
+		if _may_replace_human_message():
 			_human_message = "LOCAL COLLISION UPDATING"
 		return
 	_human_target = position
@@ -268,9 +310,13 @@ func _update_human_target() -> void:
 	_human_target_valid = true
 	edit_target_marker.global_position = position
 	edit_target_marker.visible = true
-	if not _human_edit_busy and not bool(issue_recorder.call("is_recording")) and \
+	if _may_replace_human_message() and not bool(issue_recorder.call("is_recording")) and \
 			not bool(issue_recorder.call("is_playing")):
 		_human_message = "TARGET %.1f, %.1f, %.1f" % [position.x, position.y, position.z]
+
+
+func _may_replace_human_message() -> bool:
+	return not _human_edit_busy and Time.get_ticks_usec() >= _human_message_hold_until_usec
 
 
 func _is_current_collision_ready(position: Vector3) -> bool:
@@ -285,35 +331,102 @@ func _is_current_collision_ready(position: Vector3) -> bool:
 	var generation := int(state.call("get_generation"))
 	return bool(state.call("is_collision_required")) and \
 			bool(state.call("is_collision_ready")) and \
-			int(state.call("get_collision_generation")) in [0, generation] and \
-			int(state.call("get_staged_collision_generation")) == 0
+			int(state.call("get_collision_generation")) in [0, generation]
 
 
 func _submit_human_target_edit() -> void:
 	if _human_edit_busy or bool(issue_recorder.call("is_playing")):
 		_human_message = "EDIT UNAVAILABLE"
+		_refresh_human_overlay()
 		return
 	if not _human_target_valid:
 		_human_message = "NO READY COLLISION TARGET"
+		_refresh_human_overlay()
 		return
 	_human_edit_busy = true
-	var submission := submit_edit(_human_brush_kind, _human_target)
+	_human_edit_sequence += 1
+	var edit_sequence := _human_edit_sequence
+	var kind := _human_brush_kind
+	var center := _human_target
+	var coordinate := _lod0_coordinate(center)
+	var before_state := terrain_world.call("query_chunk_state", coordinate, 0) as RefCounted
+	var before_generation := int(before_state.call("get_generation")) if before_state != null else -1
+	var started_usec := Time.get_ticks_usec()
+	var submission := submit_edit(kind, center)
 	if str(submission.get("status", "")) != "PASS":
 		_human_message = "EDIT REJECTED: %s" % str(submission.get("error", "unknown"))
 		_human_edit_busy = false
+		_refresh_human_overlay()
 		return
 	var expected_revision := int(submission.get("expected_world_revision", 0))
-	_human_message = "%s COMMIT %d PENDING" % [str(_human_brush_kind).to_upper(), expected_revision]
-	for _frame in range(1800):
-		if int(terrain_world.call("get_world_revision")) >= expected_revision:
-			_human_message = "%s COMMITTED AT REVISION %d" % [
-				str(_human_brush_kind).to_upper(), expected_revision,
-			]
-			_human_edit_busy = false
-			return
+	_human_message = "%s SUBMITTED / REVISION %d" % [str(kind).to_upper(), expected_revision]
+	_human_message_hold_until_usec = started_usec + 30000000
+	_refresh_human_overlay()
+	var commit_latency_usec := -1
+	var visual_latency_usec := -1
+	var collision_latency_usec := -1
+	for _frame in range(HUMAN_EDIT_TIMEOUT_FRAMES):
+		var elapsed_usec := Time.get_ticks_usec() - started_usec
+		if commit_latency_usec < 0 and int(terrain_world.call("get_world_revision")) >= expected_revision:
+			commit_latency_usec = elapsed_usec
+			if edit_sequence == _human_edit_sequence:
+				_human_message = "%s COMMIT %.1f ms / REBUILDING" % [
+					str(kind).to_upper(), float(commit_latency_usec) / 1000.0,
+				]
+				_refresh_human_overlay()
+		var state := terrain_world.call("query_chunk_state", coordinate, 0) as RefCounted
+		if state != null and bool(state.call("is_present")):
+			var generation := int(state.call("get_generation"))
+			if generation > before_generation:
+				if visual_latency_usec < 0 and bool(state.call("is_visual_ready")) and \
+						int(state.call("get_render_generation")) == generation and \
+						int(state.call("get_staged_render_generation")) == 0:
+					visual_latency_usec = elapsed_usec
+				if collision_latency_usec < 0 and bool(state.call("is_collision_required")) and \
+						bool(state.call("is_collision_ready")) and \
+						int(state.call("get_collision_generation")) == generation and \
+						int(state.call("get_staged_collision_generation")) == 0:
+					collision_latency_usec = elapsed_usec
+		if commit_latency_usec >= 0 and visual_latency_usec >= 0 and collision_latency_usec >= 0:
+			break
 		await get_tree().process_frame
-	_human_message = "EDIT COMMIT TIMED OUT"
-	_human_edit_busy = false
+	if edit_sequence == _human_edit_sequence:
+		_human_edit_busy = false
+	var timing := {
+		"schema": "world_transvoxel_terrain.human_edit_timing.v1",
+		"status": "PASS" if commit_latency_usec >= 0 and visual_latency_usec >= 0 and \
+				collision_latency_usec >= 0 else "TIMEOUT",
+		"kind": str(kind),
+		"center": Support.vector_summary(center),
+		"chunk_coordinate": [coordinate.x, coordinate.y, coordinate.z],
+		"before_generation": before_generation,
+		"world_revision": expected_revision,
+		"commit_latency_usec": maxi(commit_latency_usec, 0),
+		"visual_latency_usec": maxi(visual_latency_usec, 0),
+		"collision_latency_usec": maxi(collision_latency_usec, 0),
+	}
+	issue_recorder.call("record_edit_timing", timing)
+	if edit_sequence == _human_edit_sequence:
+		_last_edit_timing = timing
+		if str(timing.get("status", "")) == "PASS":
+			_human_message = "%s  COMMIT %.1f / VISUAL %.1f / COLLISION %.1f ms" % [
+				str(kind).to_upper(),
+				float(commit_latency_usec) / 1000.0,
+				float(visual_latency_usec) / 1000.0,
+				float(collision_latency_usec) / 1000.0,
+			]
+		else:
+			_human_message = "%s LOCAL REPLACEMENT TIMED OUT" % str(kind).to_upper()
+		_human_message_hold_until_usec = Time.get_ticks_usec() + 5000000
+		_refresh_human_overlay()
+
+
+static func _lod0_coordinate(position: Vector3) -> Vector3i:
+	return Vector3i(
+		floori(position.x / 16.0),
+		floori(position.y / 16.0),
+		floori(position.z / 16.0)
+	)
 
 
 func _refresh_human_overlay() -> void:
@@ -350,6 +463,7 @@ func capture_human_issue_sample() -> Dictionary:
 		"brush": str(_human_brush_kind),
 		"readiness": _readiness_status(),
 		"world_revision": terrain_world.call("get_world_revision") if _world_started else 0,
+		"last_edit_timing": _last_edit_timing.duplicate(true),
 		"lod_counts": (_last_audit.get("lod_counts", {}) as Dictionary).duplicate(true),
 		"metrics": {
 			"active": metrics.get("non_retiring_chunk_records", 0),
@@ -358,11 +472,36 @@ func capture_human_issue_sample() -> Dictionary:
 			"collision": metrics.get("collision_resources", 0),
 			"scheduler": metrics.get("scheduler_queued_jobs", 0),
 			"storage": metrics.get("storage_queued_requests", 0),
+			"storage_active": metrics.get("storage_active_requests", 0),
+			"mesh_worker_active": metrics.get("mesh_worker_active_jobs", 0),
+			"mesh_worker_queued": metrics.get("mesh_worker_queued_jobs", 0),
+			"mesh_completions": metrics.get("mesh_worker_queued_completions", 0),
+			"publications": metrics.get("publication_queue_count", 0),
+			"priority_publications": metrics.get("priority_publication_queue_count", 0),
 			"queued_render": metrics.get("queued_render", 0),
 			"collision_backlog": metrics.get("total_collision_backlog", 0),
 			"pending_replacements": metrics.get("pending_chunk_replacements", 0),
 			"pending_retirements": metrics.get("pending_chunk_retirements", 0),
 		},
+	}
+
+
+func capture_lod0_chunk_state(coordinate: Vector3i) -> Dictionary:
+	var state := terrain_world.call("query_chunk_state", coordinate, 0) as RefCounted
+	if state == null or not bool(state.call("is_present")):
+		return {"present": false, "coordinate": [coordinate.x, coordinate.y, coordinate.z]}
+	return {
+		"present": true,
+		"coordinate": [coordinate.x, coordinate.y, coordinate.z],
+		"generation": state.call("get_generation"),
+		"visual_required": state.call("is_visual_required"),
+		"visual_ready": state.call("is_visual_ready"),
+		"render_generation": state.call("get_render_generation"),
+		"staged_render_generation": state.call("get_staged_render_generation"),
+		"collision_required": state.call("is_collision_required"),
+		"collision_ready": state.call("is_collision_ready"),
+		"collision_generation": state.call("get_collision_generation"),
+		"staged_collision_generation": state.call("get_staged_collision_generation"),
 	}
 
 
