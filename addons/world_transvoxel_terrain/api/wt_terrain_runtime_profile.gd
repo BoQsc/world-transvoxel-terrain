@@ -37,6 +37,7 @@ const MIB := 1024 * 1024
 @export_range(1, 33333, 1, "suffix:us") var collision_apply_deadline_us: int = 4000
 @export_range(0.0, 1000000.0, 0.01, "suffix:m") var collision_activation_distance: float = 96.0
 @export_range(0.0, 1000000.0, 0.01, "suffix:m") var collision_deactivation_distance: float = 128.0
+@export var collision_from_visual_viewers: bool = false
 @export_range(0, 240, 1) var render_transition_frames: int = 0
 @export var shader_fade_parameter_enabled: bool = false
 @export var global_coarse_lod_coverage: bool = false
@@ -110,6 +111,7 @@ func get_backend_config_overrides() -> Dictionary:
 		"collision_apply_deadline_us": collision_apply_deadline_us,
 		"collision_activation_distance": collision_activation_distance,
 		"collision_deactivation_distance": collision_deactivation_distance,
+		"collision_from_visual_viewers": collision_from_visual_viewers,
 		"render_transition_frames": render_transition_frames,
 		"shader_fade_parameter_enabled": shader_fade_parameter_enabled,
 		"global_coarse_lod_coverage": global_coarse_lod_coverage,
@@ -126,7 +128,7 @@ func get_contract_summary() -> Dictionary:
 		"distance": {"viewer_radius_chunks": viewer_radius_chunks, "collision_radius_chunks": collision_radius_chunks},
 		"queues": {"maximum_async_requests": maximum_async_requests, "storage_requests": storage_request_capacity, "storage_completions": storage_completion_capacity},
 		"memory": {"encoded_page_mib": encoded_page_mebibytes, "decoded_page_mib": decoded_page_mebibytes, "mesh_mib": mesh_mebibytes, "render_mib": render_mebibytes, "collision_mib": collision_mebibytes},
-		"collision": {"activation_distance_m": collision_activation_distance, "deactivation_distance_m": collision_deactivation_distance, "apply_budget": collision_apply_budget, "deadline_us": collision_apply_deadline_us},
+		"collision": {"activation_distance_m": collision_activation_distance, "deactivation_distance_m": collision_deactivation_distance, "from_visual_viewers": collision_from_visual_viewers, "apply_budget": collision_apply_budget, "deadline_us": collision_apply_deadline_us},
 		"power": {"intent": str(power_intent), "measured_target_status": "unqualified_profile_intent_only"},
 		"backend_config": get_backend_config_overrides(),
 		"implementation": IMPLEMENTATION,
@@ -149,6 +151,7 @@ func _match_common_defaults() -> void:
 	global_coarse_lod_coverage = false
 	collision_activation_distance = 96.0
 	collision_deactivation_distance = 128.0
+	collision_from_visual_viewers = false
 
 
 func _apply_scale(id: StringName, radius: int, lod: int, chunks: int, viewers: int, demand: int, generation_workers: int, mesh_workers: int, storage: int, decoded: int, mesh: int, collision: int, render_budget: int, collision_budget: int, deadline: int) -> void:

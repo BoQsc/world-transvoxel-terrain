@@ -30,7 +30,7 @@ REQUIRED_PHRASES = {
         "Reusable Godot terrain addon built above `world-transvoxel`",
         "Status:",
         "It does not vendor or copy",
-        "no separate game repository yet",
+        "This is not a game repository",
         "no large GDScript terrain hot paths",
         "WT_TERRAIN_SKELETON_PASS",
     ),
@@ -54,7 +54,7 @@ REQUIRED_PHRASES = {
     ),
     "addons/world_transvoxel_terrain/plugin.cfg": (
         'name="World Transvoxel Terrain"',
-        'version="0.0.0-dev"',
+        'version="1.1.0-rc1"',
         'script="editor/world_transvoxel_terrain_plugin.gd"',
     ),
     "docs/ROADMAP.md": (

@@ -103,6 +103,8 @@ static func _accumulate_mesh(
 	lod0_edge_owners: Dictionary,
 	stats: Dictionary
 ) -> void:
+	if not instance.is_visible_in_tree():
+		return
 	stats["mesh_instances"] = int(stats.get("mesh_instances", 0)) + 1
 	var mesh := instance.mesh
 	if mesh == null or not (mesh is ArrayMesh):

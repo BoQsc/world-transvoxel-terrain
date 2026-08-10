@@ -1,7 +1,7 @@
 {
-  "schema": "world_transvoxel_terrain.tqp57_large_terrain_acceptance_contract.v2",
-  "milestone": "TQP-57R",
-  "status": "acceptance_contract",
+  "schema": "world_transvoxel_terrain.cpu_production_closure_contract.v1",
+  "milestone": "TQP-R01-R06",
+  "status": "qualification_contract",
   "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
   "authority": {
     "repository": "world-transvoxel",
@@ -57,6 +57,7 @@
     "maximum_render_queue_depth": 2048,
     "maximum_collision_queue_depth": 256,
     "maximum_peak_process_memory_bytes": 1610612736,
+    "maximum_peak_video_memory_bytes": 536870912,
     "maximum_edit_visual_latency_usec": 5000000,
     "maximum_edit_collision_latency_usec": 5000000,
     "maximum_coverage_overlaps": 0,
@@ -64,24 +65,38 @@
     "maximum_topology_boundary_edges": 0,
     "maximum_topology_nonmanifold_edges": 0,
     "maximum_topology_orientation_inconsistent_edges": 0,
-    "maximum_topology_zero_area_triangles": 0
+    "maximum_topology_zero_area_triangles": 0,
+    "maximum_temporal_visible_volume_overlaps": 0,
+    "maximum_temporal_interior_hole_pixels": 0,
+    "maximum_repainted_existing_solid_samples": 0
   },
-  "required_capture_ids": ["global_coarse", "initial_lod", "edited_site", "far_return", "lod_seam"],
+  "required_capture_ids": [
+    "global_coarse",
+    "initial_lod",
+    "edited_site",
+    "far_return",
+    "lod_seam",
+    "temporal_first_failure_or_clean"
+  ],
+  "required_evidence": {
+    "large_terrain": "artifacts/tqp57_large_terrain_acceptance/tqp57_large_terrain_acceptance_report.json",
+    "temporal_continuity": "artifacts/cpu_temporal_continuity/cpu_temporal_continuity_report.json",
+    "prefetch_readiness": "artifacts/cpu_prefetch_readiness/cpu_prefetch_readiness_report.json"
+  },
   "qualified_scope": [
-    "standalone production-addon scene using only the pinned world-transvoxel authority",
-    "2048x256x2048 rolling-hills/cave volume with complete LOD3 coverage and bounded local LOD2/LOD1/LOD0 refinement",
-    "rendered traversal, flight, vertical cave movement, LOD churn, teleport, digging, construction, and far-return",
-    "stable applied render and targeted local collision generations with no overlapping adaptive coverage",
-    "construction material ownership limited to samples changed from non-solid to solid",
-    "direct closed-manifold and shared-edge orientation audit at a live mixed-LOD interface",
-    "retained frame, queue, memory, edit-latency, topology, persistence, and visual evidence",
-    "process CPU time, peak RSS, and inherited affinity evidence"
+    "complete 2048x256x2048 finite-world LOD3 coarse coverage before local refinement",
+    "continuous LOD3/LOD2/LOD1/LOD0 visual coverage with targeted local collision",
+    "construction material ownership limited to newly created solid samples",
+    "per-frame temporal publication checks during traversal, teleport, and LOD churn",
+    "retained loading, frame, queue, memory, edit, collision, persistence, and visual evidence",
+    "self-contained Godot 4.7 Windows x86-64 release archive containing both required addons"
   ],
   "explicitly_unqualified_scope": [
     "unbounded worlds or arbitrary LOD depth",
-    "cross-platform, cross-renderer, cross-hardware, or GPU execution",
+    "non-Windows platforms, non-x86-64 architectures, and renderers other than Forward+",
     "the full 60 FPS at 16 GPU-board watts target",
-    "CPU-package or whole-system watts without a trusted energy provider",
-    "gameplay, networking, navigation, water, vegetation, or structural simulation"
+    "gameplay, networking, navigation, water, vegetation, or structural simulation",
+    "GPU field generation, meshing, streaming, or edit execution",
+    "CPU-package or whole-system watts without a trusted energy provider"
   ]
 }

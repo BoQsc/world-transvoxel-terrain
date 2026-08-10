@@ -1,0 +1,58 @@
+{
+  "schema": "world_transvoxel_terrain.cpu_release_bundle_contract.v1",
+  "milestone": "TQP-R06",
+  "status": "release_candidate_contract",
+  "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
+  "version": "1.1.0-rc1",
+  "engine": "4.7",
+  "platform": "windows",
+  "architecture": "x86_64",
+  "renderer": "forward_plus",
+  "terrain_addon_root": "addons/world_transvoxel_terrain",
+  "authority": {
+    "repository": "world-transvoxel",
+    "revision": "d73fd37211797b043797d072020a48a2eaed7383",
+    "addon_root": "addons/world_transvoxel",
+    "fallback": false
+  },
+  "authority_runtime_files": [
+    "LICENSE_SCOPE.md",
+    "OPERATING_LIMITS.md",
+    "PUBLIC_API.md",
+    "README.md",
+    "plugin.cfg",
+    "world_transvoxel.gdextension",
+    "world_transvoxel.gdextension.uid",
+    "editor/world_transvoxel_bake_command.gd",
+    "editor/world_transvoxel_bake_command.gd.uid",
+    "editor/world_transvoxel_plugin.gd",
+    "editor/world_transvoxel_plugin.gd.uid",
+    "thirdparty/transvoxel_mit/LICENSE",
+    "bin/world_transvoxel.windows.template_debug.x86_64.dll",
+    "bin/world_transvoxel.windows.template_release.x86_64.dll"
+  ],
+  "required_evidence": [
+    "artifacts/cpu_production_closure/cpu_production_closure_report.json"
+  ],
+  "package_policy": {
+    "deterministic_zip": true,
+    "canonical_text_line_endings": "LF",
+    "fixed_zip_timestamp": "1980-01-01T00:00:00Z",
+    "contains_both_addons": true,
+    "contains_debug_and_release_binaries": true,
+    "contains_lab_or_game_runtime": false,
+    "requires_no_sibling_repository_at_runtime": true
+  },
+  "qualified_scope": [
+    "self-contained Godot 4.7 Windows x86-64 addon installation",
+    "official world-transvoxel authority with no fallback",
+    "deterministic release archive and manifest",
+    "clean extracted-project import and runtime bridge smoke"
+  ],
+  "explicitly_unqualified_scope": [
+    "non-Windows platforms and non-x86-64 architectures",
+    "Godot versions older than 4.7",
+    "Asset Library moderation acceptance or public listing",
+    "GPU execution and universal performance claims"
+  ]
+}

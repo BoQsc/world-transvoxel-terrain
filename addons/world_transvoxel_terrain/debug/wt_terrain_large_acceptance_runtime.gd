@@ -12,6 +12,11 @@ const Support := preload("res://addons/world_transvoxel_terrain/debug/wt_terrain
 const WORLD_CELLS := Vector3i(2048, 256, 2048)
 const WORLD_CHUNKS := Vector3i(128, 16, 128)
 const VERTICAL_ORIGIN_CHUNKS := -8
+const MAXIMUM_LOD := 3
+const GLOBAL_COARSE_ROOT_COUNT := 512
+const FULL_WORLD_LOD0_COVERAGE := 128 * 16 * 128
+const VIEWER_RADIUS_CHUNKS := 2
+const COLLISION_RADIUS_CHUNKS := 1
 const SOURCE_REVISION := 957001
 const VIEWER_ID := 5701
 const COLLISION_VIEWER_ID := 5702
@@ -92,6 +97,13 @@ var _runtime_follow_camera := true
 var _looking := false
 var _camera_pitch := -0.35
 var _camera_yaw := -0.75
+var _coarse_bootstrap_requested := false
+var _coarse_stage_ready := false
+var _refinement_requested := false
+var _hold_after_coarse := false
+var _bootstrap_started_usec := 0
+var _coarse_ready_latency_usec := 0
+var _refinement_request_viewer_updates := -1
 
 
 func _configure_profiles() -> void:
@@ -102,15 +114,16 @@ func _configure_profiles() -> void:
 	terrain.vertical_origin_cell = VERTICAL_ORIGIN_CHUNKS * 16
 	terrain_world.set("terrain_profile", terrain)
 	var runtime = RuntimeProfile.new()
-	runtime.profile_id = &"tqp57_large_acceptance"
-	runtime.viewer_radius_chunks = 2
-	runtime.maximum_lod = 2
-	runtime.collision_radius_chunks = 1
+	runtime.profile_id = &"cpu_large_world_global_coarse"
+	runtime.viewer_radius_chunks = VIEWER_RADIUS_CHUNKS
+	runtime.maximum_lod = MAXIMUM_LOD
+	runtime.collision_radius_chunks = COLLISION_RADIUS_CHUNKS
 	runtime.maximum_async_requests = 64
 	runtime.active_chunk_capacity = 2048
 	runtime.viewer_capacity = 4
 	runtime.demand_capacity_per_viewer = 8192
 	runtime.lod_refinement_radius_chunks = 1
+	runtime.global_coarse_lod_coverage = true
 	var cpu_profile := OS.get_environment("WT_CPU_PROFILE") if OS.has_environment("WT_CPU_PROFILE") else "balanced"
 	match cpu_profile:
 		"low_power":
@@ -138,14 +151,18 @@ func _configure_profiles() -> void:
 	)
 	runtime.storage_request_capacity = 8192
 	runtime.storage_completion_capacity = 8192
-	runtime.encoded_page_entry_capacity = 2048
-	runtime.decoded_page_entry_capacity = 2048
+	runtime.encoded_page_entry_capacity = 3072
+	runtime.encoded_page_mebibytes = 128
+	runtime.decoded_page_entry_capacity = 3072
+	runtime.decoded_page_mebibytes = 128
 	runtime.mesh_entry_capacity = 2048
 	runtime.render_entry_capacity = 2048
 	runtime.collision_entry_capacity = 256
 	runtime.collision_apply_deadline_us = 12000
-	runtime.collision_activation_distance = 64.0
-	runtime.collision_deactivation_distance = 96.0
+	# Collision is owned only by explicit collision viewers. Visual viewers,
+	# including look-ahead prefetch viewers, must remain collision-free.
+	runtime.collision_activation_distance = 0.0
+	runtime.collision_deactivation_distance = 0.0
 	runtime.power_intent = &"cpu_large_terrain_acceptance"
 	terrain_world.set("runtime_profile", runtime)
 	var generation = GenerationProfile.new()
@@ -186,8 +203,14 @@ func _start_preview() -> void:
 		await get_tree().process_frame
 	if not _world_started:
 		_fail_preview("large world did not enter running state"); return
-	if not _request_viewer(_viewer_position, true):
-		_fail_preview("initial viewer request rejected"); return
+	_coarse_bootstrap_requested = true
+	_coarse_stage_ready = false
+	_refinement_requested = false
+	_bootstrap_started_usec = Time.get_ticks_usec()
+	_coarse_ready_latency_usec = 0
+	_refinement_request_viewer_updates = -1
+	if not _request_viewer(_viewer_position, true, 0, MAXIMUM_LOD):
+		_fail_preview("global coarse bootstrap request rejected"); return
 	_starting = false
 	material_applicator.call("apply_materials_now")
 	_refresh_metrics()
@@ -207,6 +230,10 @@ func _stop_preview(cleanup: bool) -> Dictionary:
 			if str(terrain_world.call("get_world_state_name")) == "stopped": break
 			await get_tree().process_frame
 	_world_started = false
+	_coarse_bootstrap_requested = false
+	_coarse_stage_ready = false
+	_refinement_requested = false
+	_refinement_request_viewer_updates = -1
 	_published_viewer_position = Vector3(INF, INF, INF)
 	_last_metrics = {}; _last_audit = {}
 	call("_clear_resident_bounds")
@@ -215,14 +242,25 @@ func _stop_preview(cleanup: bool) -> Dictionary:
 	return {"status": "PASS" if stopped else "FAIL", "world_state": terrain_world.call("get_world_state_name")}
 
 
-func _request_viewer(position: Vector3, force: bool) -> bool:
+func _request_viewer(
+	position: Vector3,
+	force: bool,
+	radius_chunks: int = VIEWER_RADIUS_CHUNKS,
+	maximum_lod: int = MAXIMUM_LOD
+) -> bool:
 	_viewer_position = position
 	viewer_marker.position = position
 	if not _world_started: return false
 	if not force and position.distance_to(_published_viewer_position) < 2.0: return true
 	_viewer_revision += 1; _collision_revision += 1
-	var accepted := bool(terrain_world.call("update_viewer", VIEWER_ID, _viewer_revision, position, 2, 2))
-	accepted = accepted and bool(terrain_world.call("update_collision_viewer", COLLISION_VIEWER_ID, _collision_revision, position, 1))
+	var accepted := bool(terrain_world.call(
+		"update_viewer", VIEWER_ID, _viewer_revision, position,
+		radius_chunks, maximum_lod
+	))
+	accepted = accepted and bool(terrain_world.call(
+		"update_collision_viewer", COLLISION_VIEWER_ID, _collision_revision,
+		position, COLLISION_RADIUS_CHUNKS
+	))
 	if accepted: _published_viewer_position = position
 	else: status_label.text = "FAIL: viewer update"
 	return accepted
@@ -232,13 +270,68 @@ func _refresh_metrics() -> void:
 	if not _world_started: return
 	_last_metrics = terrain_world.call("get_runtime_metrics")
 	_last_audit = call("_collect_live_lod_counts")
+	_advance_global_coarse_bootstrap()
 
 
 func _readiness_status() -> String:
 	if not _world_started: return "STARTING" if _starting else "STOPPED"
+	if _coarse_bootstrap_requested and not _refinement_requested:
+		return "COARSE READY" if _coarse_stage_ready else "COARSE STARTUP"
+	if _refinement_requested and int(_last_metrics.get("viewer_updates", 0)) <= \
+			_refinement_request_viewer_updates:
+		return "REFINING"
 	var active := int(_last_metrics.get("non_retiring_chunk_records", 0))
 	var ready := int(_last_metrics.get("non_retiring_fully_ready_chunk_records", 0))
 	return "READY" if active > 0 and ready == active and _queues_are_empty() else "STREAMING"
+
+
+func _runtime_is_settled() -> bool:
+	var active := int(_last_metrics.get("non_retiring_chunk_records", 0))
+	var ready := int(_last_metrics.get("non_retiring_fully_ready_chunk_records", 0))
+	return active > 0 and ready == active and _queues_are_empty()
+
+
+func _advance_global_coarse_bootstrap() -> void:
+	if not _coarse_bootstrap_requested or _refinement_requested or not _runtime_is_settled():
+		return
+	if not _coarse_stage_ready:
+		var lod_counts := _last_audit.get("lod_counts", {}) as Dictionary
+		if int(lod_counts.get(str(MAXIMUM_LOD), 0)) != GLOBAL_COARSE_ROOT_COUNT:
+			_fail_preview("global coarse bootstrap did not cover every LOD3 root")
+			return
+		_coarse_ready_latency_usec = Time.get_ticks_usec() - _bootstrap_started_usec
+		_coarse_stage_ready = true
+	if _hold_after_coarse:
+		return
+	_refinement_request_viewer_updates = int(_last_metrics.get("viewer_updates", 0))
+	_refinement_requested = true
+	if not _request_viewer(
+		_viewer_position, true, VIEWER_RADIUS_CHUNKS, MAXIMUM_LOD
+	):
+		_fail_preview("local refinement request rejected after coarse bootstrap")
+
+
+func get_global_coverage_bootstrap_summary() -> Dictionary:
+	return {
+		"coarse_bootstrap_requested": _coarse_bootstrap_requested,
+		"coarse_stage_ready": _coarse_stage_ready,
+		"refinement_requested": _refinement_requested,
+		"coarse_ready_latency_usec": _coarse_ready_latency_usec,
+		"refinement_request_viewer_updates": _refinement_request_viewer_updates,
+		"expected_coarse_roots": GLOBAL_COARSE_ROOT_COUNT,
+		"expected_lod0_coverage": FULL_WORLD_LOD0_COVERAGE,
+		"implementation": "global_coarse_then_local_refinement_v1",
+	}
+
+
+func set_hold_after_coarse(enabled: bool) -> void:
+	_hold_after_coarse = enabled
+
+
+func release_local_refinement() -> bool:
+	_hold_after_coarse = false
+	_advance_global_coarse_bootstrap()
+	return _refinement_requested
 
 
 func _queues_are_empty() -> bool:
@@ -246,7 +339,9 @@ func _queues_are_empty() -> bool:
 
 
 func _work_queues_are_empty() -> bool:
-	return int(_last_metrics.get("scheduler_queued_jobs", 1)) == 0 and \
+	return int(_last_metrics.get("publication_queue_count", 1)) == 0 and \
+			int(_last_metrics.get("priority_publication_queue_count", 1)) == 0 and \
+			int(_last_metrics.get("scheduler_queued_jobs", 1)) == 0 and \
 			int(_last_metrics.get("scheduler_queued_completions", 1)) == 0 and \
 			int(_last_metrics.get("mesh_worker_queued_jobs", 1)) == 0 and \
 			int(_last_metrics.get("mesh_worker_queued_completions", 1)) == 0 and \

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0-rc1 - 2026-08-10
+
+- Requalify the bounded 2048 x 256 x 2048 CPU terrain path with global LOD3
+  coarse coverage, local LOD2/LOD1/LOD0 refinement, temporal continuity,
+  visual-only prefetch, and targeted collision.
+- Preserve existing solid materials during construction and repair collision
+  readiness after bounded mesh-cache eviction.
+- Add retained three-logical-CPU process telemetry and a deterministic
+  self-contained Windows x86-64 bundle containing both required addons.
+
 ## 1.0.0 - 2026-08-09
 
 - Release the first limited Windows CPU reference terrain addon for Godot 4.7.

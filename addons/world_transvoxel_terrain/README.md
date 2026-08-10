@@ -3,7 +3,8 @@
 This directory is the installable Godot addon boundary for
 `world-transvoxel-terrain`.
 
-Version: `1.0.0`. CPU Terrain Standard 1.0 is qualified through TQP-57 for
+Version: `1.1.0-rc1`. CPU Terrain Standard 1.0 is requalified through the
+TQP-R01 through TQP-R06 correction sequence for
 Windows x86-64, Godot 4.7, Forward+, and the pinned reference matrix. The addon
 has public terrain/profile/runtime/edit/storage
 resources, a bridge to the official `world-transvoxel` backend, terrain-world
@@ -22,7 +23,7 @@ The A6 decision is
 separate validation game repository may be created when the user explicitly asks
 for it. The TQP-51 contract pins `world-transvoxel` as terrain authority and
 forbids addon-local fallback meshers or synthetic terrain surfaces. Version
-1.0.0 is production-scoped only to its declared matrix; GPU terrain,
+1.1.0-rc1 is release-candidate scoped only to its declared matrix; GPU terrain,
 non-Windows systems, arbitrary hardware, and game systems remain unqualified.
 
 Allowed GDScript here is limited to editor glue, scene scaffolding, input
@@ -32,7 +33,9 @@ low-level addon code, binary tooling, shaders when justified, or Python offline
 tooling.
 
 The addon depends on exact `world-transvoxel` revision
-`f0d88fe9f2d844190d11f26cbe9ed9919f7244d1` but does not vendor it or provide a
+`d73fd37211797b043797d072020a48a2eaed7383` and provides no fallback. The
+self-contained release archive bundles that dependency beside this addon; the
+source repository itself does not vendor it or provide a
 fallback. Install and enable that addon before this one.
 
 The machine-readable ownership, threading, lifetime, failure, and unsupported

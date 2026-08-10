@@ -12,6 +12,8 @@ const AcceptanceScene := preload(
 
 var failures: Array[String] = []
 var sample_results := {}
+var sample_batch_results := {}
+var sample_batch_failures := {}
 var queue_peaks := {"scheduler": 0, "storage": 0, "render": 0, "collision": 0}
 var observed_lod_counts := {}
 var memory_peak_bytes := 0
@@ -57,8 +59,20 @@ func _run() -> void:
 	var scene: Node = AcceptanceScene.instantiate()
 	get_tree().root.add_child(scene)
 	scene.call("set_automatic_viewer_tracking", false)
+	scene.call("set_hold_after_coarse", true)
 	var terrain_world: Node = scene.call("get_terrain_world")
 	terrain_world.authoritative_sample_ready.connect(_on_sample_ready)
+	terrain_world.authoritative_samples_ready.connect(_on_samples_ready)
+	terrain_world.authoritative_samples_failed.connect(_on_samples_failed)
+	var coarse: Dictionary = await scene.call("wait_until_global_coarse_ready", 2400)
+	if str(coarse.get("status", "")) != "PASS":
+		_fail_now("production-addon global coarse terrain did not become ready: %s" % JSON.stringify(coarse))
+		return
+	var captures: Array[Dictionary] = []
+	captures.append(await _capture(scene, "global_coarse", Vector3(1024.0, 2200.0, 1924.0), Vector3(1024.0, 0.0, 1024.0)))
+	if not bool(scene.call("release_local_refinement")):
+		_fail_now("production-addon local refinement did not follow coarse bootstrap")
+		return
 	var initial: Dictionary = await scene.call("wait_until_ready", 2400)
 	if str(initial.get("status", "")) != "PASS":
 		_fail_now("production-addon large terrain did not become ready: %s" % JSON.stringify(initial))
@@ -68,7 +82,6 @@ func _run() -> void:
 	var initial_snapshot: Dictionary = scene.call("get_validation_snapshot")
 	var initial_audit: Dictionary = scene.call("collect_lod_audit")
 	_observe_audit(initial_audit)
-	var captures: Array[Dictionary] = []
 	captures.append(await _capture(scene, "initial_lod", Vector3(1024.0, 116.0, 1120.0), Vector3(1024.0, 34.0, 1024.0)))
 
 	var scenarios: Array[Dictionary] = []
@@ -103,7 +116,7 @@ func _run() -> void:
 	var persistence := await _restart_and_verify(scene, terrain_world, edited_samples)
 	var final_snapshot: Dictionary = scene.call("get_validation_snapshot")
 	var aggregate := _aggregate(scenarios)
-	_evaluate(contract, scenarios, aggregate, initial_snapshot, final_snapshot, final_audit, lod_seam_audit, collision, persistence, captures)
+	_evaluate(contract, scenarios, aggregate, initial_snapshot, final_snapshot, initial_audit, final_audit, lod_seam_audit, collision, persistence, captures)
 	var shutdown: Dictionary = await scene.call("shutdown_for_validation")
 	if str(shutdown.get("status", "")) != "PASS":
 		failures.append("production-addon world did not shut down cleanly")
@@ -117,6 +130,9 @@ func _run() -> void:
 		"profile": profile,
 		"backend_identity": terrain_world.call("get_backend_identity"),
 		"initial_snapshot": initial_snapshot,
+		"global_coarse_bootstrap_evidence": coarse,
+		"initial_lod_audit": initial_audit,
+		"global_coverage_bootstrap": initial_snapshot.get("global_coverage_bootstrap", {}),
 		"scenarios": scenarios,
 		"aggregate": aggregate,
 		"observed_lod_counts": observed_lod_counts,
@@ -141,12 +157,13 @@ func _run() -> void:
 		push_error("WT_TERRAIN_TQP57_LARGE_ACCEPTANCE_GODOT_FAIL: " + "; ".join(failures))
 		finished.emit(1)
 		return
-	print("%s scenarios=%d lod0=%d lod1=%d lod2=%d overlaps=0 generation_errors=0 topology_edges=0 persistence=1 collision=1" % [
+	print("%s scenarios=%d lod0=%d lod1=%d lod2=%d lod3=%d overlaps=0 generation_errors=0 topology_edges=0 persistence=1 collision=1" % [
 		MARKER,
 		scenarios.size(),
 		int(observed_lod_counts.get("0", 0)),
 		int(observed_lod_counts.get("1", 0)),
 		int(observed_lod_counts.get("2", 0)),
+		int(observed_lod_counts.get("3", 0)),
 	])
 	scene.queue_free()
 	await get_tree().process_frame
@@ -176,8 +193,14 @@ func _run_scenario(
 		initial_settlement = await scene.call("move_viewer_and_wait", start, 2400)
 
 	var edit_result := {}
+	var material_ownership := {}
 	if kind in ["dig", "construct"]:
 		var center := _vector3(scenario.get("edit_center", []))
+		var construction_probe_points: Array = []
+		var construction_before := {}
+		if kind == "construct":
+			construction_probe_points = _construction_probe_points(center)
+			construction_before = await _query_samples(terrain_world, construction_probe_points)
 		var before = await _query_sample(terrain_world, Vector3i(roundi(center.x), roundi(center.y), roundi(center.z)))
 		edit_result = await scene.call("submit_edit_and_wait", StringName("carve" if kind == "dig" else "construct"), center, 2400)
 		var after = await _query_sample(terrain_world, Vector3i(roundi(center.x), roundi(center.y), roundi(center.z)))
@@ -186,6 +209,10 @@ func _run_scenario(
 		edit_result["sample_changed"] = not _same_sample_value(edit_result["sample_before"], edit_result["sample_after"])
 		edited_samples[str(Vector3i(roundi(center.x), roundi(center.y), roundi(center.z)))] = edit_result["sample_after"]
 		if kind == "construct":
+			var construction_after := await _query_samples(terrain_world, construction_probe_points)
+			material_ownership = _evaluate_construction_material_ownership(
+				construction_before, construction_after
+			)
 			captures.append(await _capture(scene, "edited_site", center + Vector3(-54.0, 46.0, -72.0), center))
 
 	var frame_values: Array[float] = []
@@ -271,6 +298,7 @@ func _run_scenario(
 		"loading_state": _loading_state(metrics),
 		"lod_audit": audit,
 		"edit": edit_result,
+		"material_ownership": material_ownership,
 	}
 
 
@@ -358,6 +386,14 @@ func _on_sample_ready(request_id: int, sample: RefCounted) -> void:
 	sample_results[request_id] = sample
 
 
+func _on_samples_ready(request_id: int, samples: Array) -> void:
+	sample_batch_results[request_id] = samples
+
+
+func _on_samples_failed(request_id: int, error: String) -> void:
+	sample_batch_failures[request_id] = error
+
+
 func _observe_metrics(metrics: Dictionary) -> void:
 	queue_peaks.scheduler = maxi(int(queue_peaks.scheduler), int(metrics.get("scheduler_queued_jobs", 0)))
 	queue_peaks.storage = maxi(int(queue_peaks.storage), int(metrics.get("storage_queued_requests", 0)))
@@ -378,6 +414,7 @@ func _evaluate(
 	aggregate: Dictionary,
 	initial: Dictionary,
 	final: Dictionary,
+	initial_audit: Dictionary,
 	audit: Dictionary,
 	lod_seam_audit: Dictionary,
 	collision: Dictionary,
@@ -397,11 +434,22 @@ func _evaluate(
 		var edit := scenario.get("edit", {}) as Dictionary
 		if not edit.is_empty():
 			_expect(float(edit.get("latency_usec", INF)) <= float(budgets.get("maximum_edit_visual_latency_usec", 0)), "edit settlement latency exceeded")
+		var material_ownership := scenario.get("material_ownership", {}) as Dictionary
+		if not material_ownership.is_empty():
+			_expect(str(material_ownership.get("status", "")) == "PASS", "construction material ownership failed")
 	_expect(int(queue_peaks.scheduler) <= int(budgets.get("maximum_scheduler_queue_depth", 0)), "scheduler queue exceeded")
 	_expect(int(queue_peaks.storage) <= int(budgets.get("maximum_storage_queue_depth", 0)), "storage queue exceeded")
 	_expect(int(queue_peaks.render) <= int(budgets.get("maximum_render_queue_depth", 0)), "render queue exceeded")
 	_expect(int(queue_peaks.collision) <= int(budgets.get("maximum_collision_queue_depth", 0)), "collision queue exceeded")
 	_expect(memory_peak_bytes <= int(budgets.get("maximum_peak_process_memory_bytes", 0)), "memory ceiling exceeded")
+	var expected_coverage := int(budgets.get("required_full_world_lod0_coverage", 0))
+	_expect(int(initial_audit.get("lod0_coverage_cells", -1)) == expected_coverage, "initial full-world coarse coverage is incomplete")
+	_expect(int(audit.get("lod0_coverage_cells", -1)) == expected_coverage, "final full-world adaptive coverage is incomplete")
+	var bootstrap := initial.get("global_coverage_bootstrap", {}) as Dictionary
+	_expect(bool(bootstrap.get("refinement_requested", false)), "local refinement did not follow global coarse bootstrap")
+	var coarse_latency_usec := int(bootstrap.get("coarse_ready_latency_usec", 0))
+	_expect(coarse_latency_usec > 0, "global coarse bootstrap latency was not measured")
+	_expect(coarse_latency_usec <= int(float(budgets.get("maximum_coarse_startup_seconds", 0)) * 1000000.0), "global coarse bootstrap exceeded its startup budget")
 	_expect(int(audit.get("coverage_overlap_count", -1)) <= int(budgets.get("maximum_coverage_overlaps", 0)), "adaptive coverage overlaps detected")
 	_expect((audit.get("visual_generation_mismatches", []) as Array).is_empty(), "visual generation mismatches detected")
 	_expect((audit.get("collision_generation_mismatches", []) as Array).is_empty(), "collision generation mismatches detected")
@@ -482,6 +530,71 @@ static func _sample_state(sample) -> Dictionary:
 	}
 
 
+func _query_samples(terrain_world: Node, points: Array) -> Dictionary:
+	var request_id := int(terrain_world.call("request_authoritative_samples", points, 0))
+	if request_id <= 0:
+		return {"status": "FAIL", "error": terrain_world.call("get_last_error")}
+	for _frame in range(1200):
+		if sample_batch_results.has(request_id):
+			var samples := sample_batch_results[request_id] as Array
+			sample_batch_results.erase(request_id)
+			var values := {}
+			for sample in samples:
+				if sample == null:
+					continue
+				values[str(sample.call("get_grid_point"))] = _sample_state(sample)
+			return {"status": "PASS", "values": values}
+		if sample_batch_failures.has(request_id):
+			var error := str(sample_batch_failures[request_id])
+			sample_batch_failures.erase(request_id)
+			return {"status": "FAIL", "error": error}
+		await get_tree().process_frame
+	return {"status": "FAIL", "error": "sample batch timed out"}
+
+
+static func _construction_probe_points(center: Vector3) -> Array:
+	var points: Array = []
+	for z in range(roundi(center.z) - 6, roundi(center.z) + 7, 2):
+		for y in range(roundi(center.y) - 6, roundi(center.y) + 1):
+			for x in range(roundi(center.x) - 6, roundi(center.x) + 7, 2):
+				points.append(Vector3i(x, y, z))
+	return points
+
+
+static func _evaluate_construction_material_ownership(
+	before: Dictionary,
+	after: Dictionary
+) -> Dictionary:
+	if str(before.get("status", "")) != "PASS" or str(after.get("status", "")) != "PASS":
+		return {"status": "FAIL", "error": "construction sample probe failed"}
+	var before_values := before.get("values", {}) as Dictionary
+	var after_values := after.get("values", {}) as Dictionary
+	var preserved_existing_solid := 0
+	var created_material_samples := 0
+	var repainted_existing_solid: Array[String] = []
+	for key in before_values:
+		if not after_values.has(key):
+			continue
+		var old_sample := before_values[key] as Dictionary
+		var new_sample := after_values[key] as Dictionary
+		if float(old_sample.get("density", 0.0)) < 0.0:
+			preserved_existing_solid += 1
+			if int(old_sample.get("material", -1)) != int(new_sample.get("material", -2)):
+				repainted_existing_solid.append(str(key))
+		elif float(new_sample.get("density", 0.0)) < 0.0 and \
+				int(new_sample.get("material", 0)) == 4:
+			created_material_samples += 1
+	return {
+		"status": "PASS" if repainted_existing_solid.is_empty() and \
+				preserved_existing_solid > 0 and created_material_samples > 0 else "FAIL",
+		"probed_samples": before_values.size(),
+		"preserved_existing_solid_samples": preserved_existing_solid,
+		"created_material_samples": created_material_samples,
+		"repainted_existing_solid_samples": repainted_existing_solid,
+		"rule": "construct_material_claims_air_to_solid_only",
+	}
+
+
 static func _same_sample_value(expected: Dictionary, actual: Dictionary) -> bool:
 	return not expected.is_empty() and not actual.is_empty() and \
 			is_equal_approx(float(expected.get("density", INF)), float(actual.get("density", -INF))) and \
@@ -515,6 +628,8 @@ func _validate_profile(contract: Dictionary, profile: Dictionary) -> void:
 	var expected := contract.get("runtime_profile", {}) as Dictionary
 	_expect(_int_array_equal(profile.get("volume_cells", []), expected.get("volume_cells", [])), "acceptance volume drifted")
 	_expect(int(profile.get("maximum_lod", -1)) == int(expected.get("maximum_lod", -2)), "acceptance maximum LOD drifted")
+	_expect(bool(profile.get("global_coarse_lod_coverage", false)) == bool(expected.get("global_coarse_lod_coverage", false)), "global coarse coverage drifted")
+	_expect(int(profile.get("global_coarse_root_count", -1)) == int(expected.get("global_coarse_root_count", -2)), "global coarse root count drifted")
 	_expect(profile.get("fallback", true) is bool and not bool(profile.get("fallback", true)), "fallback terrain is forbidden")
 
 

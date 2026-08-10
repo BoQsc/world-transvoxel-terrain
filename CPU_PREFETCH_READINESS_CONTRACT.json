@@ -1,0 +1,49 @@
+{
+  "schema": "world_transvoxel_terrain.cpu_prefetch_readiness_contract.v1",
+  "milestone": "TQP-R04",
+  "status": "qualification_contract",
+  "engine": "4.7",
+  "renderer": "forward_plus",
+  "authority_revision": "d73fd37211797b043797d072020a48a2eaed7383",
+  "world": {
+    "volume_cells": [2048, 256, 2048],
+    "maximum_lod": 3,
+    "global_coarse_lod_coverage": true,
+    "initial_position": [1024.0, 44.0, 1024.0],
+    "prefetch_position": [1792.0, 40.0, 1792.0],
+    "prefetch_viewer_id": 5799,
+    "visual_radius_chunks": 2,
+    "collision_radius_chunks": 1
+  },
+  "budgets": {
+    "maximum_bootstrap_seconds": 30,
+    "maximum_cold_settlement_seconds": 30,
+    "maximum_prefetch_settlement_seconds": 30,
+    "maximum_arrival_settlement_seconds": 5,
+    "maximum_arrival_first_collision_seconds": 5,
+    "maximum_arrival_storage_requests": 0,
+    "maximum_arrival_mesh_jobs": 0,
+    "maximum_arrival_render_publications": 0,
+    "maximum_prefetch_collision_viewer_updates": 0,
+    "minimum_prefetched_lod0_visual_chunks": 1,
+    "minimum_arrival_lod0_collision_chunks": 1,
+    "maximum_generation_errors": 0,
+    "maximum_coverage_overlaps": 0
+  },
+  "required_capture_ids": [
+    "prefetch_ready",
+    "arrival_ready"
+  ],
+  "qualified_scope": [
+    "visual-only look-ahead demand through the production multi-viewer API",
+    "LOD0 target visual readiness before the authoritative viewer arrives",
+    "zero target-arrival storage requests and mesh jobs after completed prefetch",
+    "localized collision activation after arrival without world-wide collision demand",
+    "bounded handoff retirement of the prior visual viewer"
+  ],
+  "explicitly_unqualified_scope": [
+    "prediction quality for any particular game movement model",
+    "unbounded prefetch distance or unlimited simultaneous viewers",
+    "GPU execution and game-specific navigation or physics behavior"
+  ]
+}

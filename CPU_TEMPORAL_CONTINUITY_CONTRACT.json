@@ -1,0 +1,54 @@
+{
+  "schema": "world_transvoxel_terrain.cpu_temporal_continuity_contract.v1",
+  "milestone": "TQP-R02",
+  "status": "qualification_contract",
+  "engine": "4.7",
+  "renderer": "forward_plus",
+  "authority_revision": "d73fd37211797b043797d072020a48a2eaed7383",
+  "world": {
+    "volume_cells": [2048, 256, 2048],
+    "maximum_lod": 3,
+    "global_coarse_lod_coverage": true,
+    "global_coarse_root_count": 512,
+    "camera_site": [1792.0, 24.0, 1792.0]
+  },
+  "cases": [
+    {"id": "initial_refinement", "maximum_frames": 1200},
+    {"id": "edit_site_arrival", "position": [1792.0, 40.0, 1792.0], "maximum_frames": 1200},
+    {"id": "far_coarsening", "position": [256.0, 40.0, 256.0], "maximum_frames": 1200},
+    {"id": "local_refinement_return", "position": [1792.0, 40.0, 1792.0], "maximum_frames": 1200}
+  ],
+  "budgets": {
+    "maximum_visible_ancestor_overlaps": 0,
+    "maximum_topology_failures": 0,
+    "maximum_center_background_pixels": 0,
+    "minimum_monitored_frames": 120,
+    "maximum_settlement_seconds_per_case": 30,
+    "maximum_warm_revisit_storage_request_fraction": 0.90,
+    "minimum_warm_revisit_decoded_cache_hits": 1
+  },
+  "required_capture_ids": [
+    "coarse_diagnostic",
+    "initial_refinement_transition",
+    "initial_refinement_settled",
+    "edit_site_arrival_transition",
+    "edit_site_arrival_settled",
+    "far_coarsening_transition",
+    "far_coarsening_settled",
+    "local_refinement_return_transition",
+    "local_refinement_return_settled",
+    "shadow_on",
+    "shadow_off"
+  ],
+  "qualified_scope": [
+    "frame-by-frame visible parent-child publication overlap checks",
+    "periodic visible-mesh topology checks during LOD refinement and coarsening",
+    "uniform unshaded center-frame hole detection during temporal publication",
+    "paired settled shadow-on and shadow-off classification captures",
+    "measured bounded source-page cache reuse on a warm revisit"
+  ],
+  "explicitly_unqualified_scope": [
+    "all possible cameras, terrain fields, hardware, renderers, and worlds",
+    "GPU execution and game-specific rendering effects"
+  ]
+}

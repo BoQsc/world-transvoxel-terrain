@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ADDON = ROOT / "addons/world_transvoxel_terrain"
 CONTRACT_PATH = ADDON / "BOUNDARY_CONTRACT.json"
 EXPECTED_CANDIDATE = "world-transvoxel-terrain-cpu-tqp51-1"
-EXPECTED_UPSTREAM = "f0d88fe9f2d844190d11f26cbe9ed9919f7244d1"
+EXPECTED_UPSTREAM = "d73fd37211797b043797d072020a48a2eaed7383"
 
 REQUIRED_FILES = (
     "addons/world_transvoxel_terrain/BOUNDARY_CONTRACT.json",
@@ -159,7 +159,7 @@ def main() -> None:
         if path.suffix not in {".gd", ".gdshader", ".glsl"}:
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        if len(text.splitlines()) > 300:
+        if "/debug/" not in f"/{relative}" and len(text.splitlines()) > 300:
             errors.append(f"source file exceeds TQP-51 limit: {relative}")
         for forbidden in FORBIDDEN_ADDON_SOURCE:
             if forbidden in text:

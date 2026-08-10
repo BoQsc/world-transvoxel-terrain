@@ -10,7 +10,7 @@ func _refresh_metrics() -> void:
 	viewer_label.text = "Viewer  %.1f, %.1f, %.1f\nRevision  %d" % [_viewer_position.x, _viewer_position.y, _viewer_position.z, _viewer_revision]
 	residency_label.text = "Resident  %d active / %d ready\nRender  %d    Collision  %d" % [int(_last_metrics.get("non_retiring_chunk_records", 0)), int(_last_metrics.get("non_retiring_fully_ready_chunk_records", 0)), int(_last_metrics.get("render_resources", 0)), int(_last_metrics.get("collision_resources", 0))]
 	var counts := _last_audit.get("lod_counts", {}) as Dictionary
-	lod_label.text = "LOD0  %d    LOD1  %d    LOD2  %d\nOverlap  %d    Generation errors  %d" % [int(counts.get("0", 0)), int(counts.get("1", 0)), int(counts.get("2", 0)), int(_last_audit.get("coverage_overlap_count", 0)), (_last_audit.get("visual_generation_mismatches", []) as Array).size() + (_last_audit.get("collision_generation_mismatches", []) as Array).size()]
+	lod_label.text = "LOD0  %d    LOD1  %d    LOD2  %d    LOD3  %d\nOverlap  %d    Pending readiness  %d" % [int(counts.get("0", 0)), int(counts.get("1", 0)), int(counts.get("2", 0)), int(counts.get("3", 0)), int(_last_audit.get("coverage_overlap_count", 0)), (_last_audit.get("visual_generation_mismatches", []) as Array).size() + (_last_audit.get("collision_generation_mismatches", []) as Array).size()]
 	pipeline_label.text = "Queues  %d jobs / %d storage\nRender  %d    Collision  %d" % [int(_last_metrics.get("scheduler_queued_jobs", 0)), int(_last_metrics.get("storage_queued_requests", 0)), int(_last_metrics.get("queued_render", 0)), int(_last_metrics.get("total_collision_backlog", 0))]
 
 

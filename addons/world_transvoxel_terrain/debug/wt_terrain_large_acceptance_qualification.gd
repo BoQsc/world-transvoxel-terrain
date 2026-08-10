@@ -17,16 +17,23 @@ func set_automatic_viewer_tracking(enabled: bool) -> void:
 
 func get_acceptance_profile() -> Dictionary:
 	return {
-		"schema": "world_transvoxel_terrain.tqp57_large_acceptance_profile.v1",
+		"schema": "world_transvoxel_terrain.cpu_global_terrain_acceptance_profile.v2",
 		"volume_cells": [WORLD_CELLS.x, WORLD_CELLS.y, WORLD_CELLS.z],
 		"volume_chunks": [WORLD_CHUNKS.x, WORLD_CHUNKS.y, WORLD_CHUNKS.z],
 		"vertical_chunk_origin": VERTICAL_ORIGIN_CHUNKS,
 		"source_revision": SOURCE_REVISION,
 		"preset": "rolling_hills_cave",
-		"viewer_radius_chunks": 2,
-		"collision_radius_chunks": 1,
-		"maximum_lod": 2,
+		"viewer_radius_chunks": VIEWER_RADIUS_CHUNKS,
+		"collision_radius_chunks": COLLISION_RADIUS_CHUNKS,
+		"maximum_lod": MAXIMUM_LOD,
+		"global_coarse_lod_coverage": true,
+		"global_coarse_root_count": GLOBAL_COARSE_ROOT_COUNT,
+		"full_world_lod0_coverage": FULL_WORLD_LOD0_COVERAGE,
 		"active_chunk_capacity": 2048,
+		"encoded_page_cache_entries": 3072,
+		"encoded_page_cache_mib": 128,
+		"decoded_page_cache_entries": 3072,
+		"decoded_page_cache_mib": 128,
 		"cpu_profile": OS.get_environment("WT_CPU_PROFILE") if OS.has_environment("WT_CPU_PROFILE") else "balanced",
 		"procedural_generation_worker_count": int(terrain_world.runtime_profile.procedural_generation_worker_count),
 		"meshing_worker_count": int(terrain_world.runtime_profile.meshing_worker_count),
@@ -49,6 +56,7 @@ func get_validation_snapshot() -> Dictionary:
 		"viewer_position": Support.vector_summary(_viewer_position),
 		"metrics": _last_metrics.duplicate(true),
 		"lod_audit": _last_audit.duplicate(true),
+		"global_coverage_bootstrap": get_global_coverage_bootstrap_summary(),
 	}
 
 
@@ -110,6 +118,29 @@ func wait_until_ready(
 	return {"status": "FAIL", "frames": maximum_frames, "snapshot": get_validation_snapshot()}
 
 
+func wait_until_global_coarse_ready(maximum_frames: int = 1800) -> Dictionary:
+	for frame in range(maximum_frames):
+		_refresh_metrics()
+		if _coarse_stage_ready and _runtime_is_settled():
+			var audit := collect_lod_audit()
+			return {
+				"status": "PASS" if int(audit.get("lod0_coverage_cells", 0)) == \
+						FULL_WORLD_LOD0_COVERAGE else "FAIL",
+				"frames": frame,
+				"audit": audit,
+				"snapshot": get_validation_snapshot(),
+				"bootstrap": get_global_coverage_bootstrap_summary(),
+			}
+		await get_tree().process_frame
+	return {
+		"status": "FAIL",
+		"error": "global coarse bootstrap timed out",
+		"frames": maximum_frames,
+		"snapshot": get_validation_snapshot(),
+		"unready_states": get_unready_chunk_states(),
+	}
+
+
 func get_unready_chunk_states(limit: int = 16) -> Array[Dictionary]:
 	var summaries: Array[Dictionary] = []
 	for value in terrain_world.call("query_active_chunk_states"):
@@ -140,6 +171,31 @@ func get_unready_chunk_states(limit: int = 16) -> Array[Dictionary]:
 
 func publish_view(position: Vector3, force: bool = true) -> bool:
 	return _request_viewer(_clamp_viewer_position(position), force)
+
+
+func publish_collision_only(position: Vector3) -> bool:
+	if not _world_started:
+		return false
+	_collision_revision += 1
+	return bool(terrain_world.call(
+		"update_collision_viewer",
+		COLLISION_VIEWER_ID,
+		_collision_revision,
+		_clamp_viewer_position(position),
+		COLLISION_RADIUS_CHUNKS
+	))
+
+
+func release_primary_visual_viewer() -> bool:
+	if not _world_started:
+		return false
+	_viewer_revision += 1
+	var accepted := bool(terrain_world.call(
+		"remove_viewer", VIEWER_ID, _viewer_revision
+	))
+	if accepted:
+		_published_viewer_position = Vector3(INF, INF, INF)
+	return accepted
 
 
 func move_viewer_and_wait(position: Vector3, maximum_frames: int = 1800) -> Dictionary:
@@ -219,7 +275,13 @@ func restart_preserving_storage(maximum_frames: int = 1800) -> Dictionary:
 		if str(terrain_world.call("get_world_state_name")) == "running":
 			_world_started = true; break
 		await get_tree().process_frame
-	if not _world_started or not _request_viewer(target, true):
+	_coarse_bootstrap_requested = true
+	_coarse_stage_ready = false
+	_refinement_requested = false
+	_bootstrap_started_usec = Time.get_ticks_usec()
+	_coarse_ready_latency_usec = 0
+	_refinement_request_viewer_updates = -1
+	if not _world_started or not _request_viewer(target, true, 0, MAXIMUM_LOD):
 		_fail_preview("preserving restart did not restore the viewer")
 		return {"status": "FAIL", "error": "restart viewer restoration failed"}
 	var settlement := await wait_until_ready(maximum_frames)

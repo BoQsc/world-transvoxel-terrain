@@ -7,11 +7,11 @@ possible terrain workload or machine is solved.
 ## Authoritative boundaries
 
 - `world-transvoxel` revision
-  `4f1fdb59e3c6200c8f823b99027b2d3f15563858` owns density samples, material
+  `d73fd37211797b043797d072020a48a2eaed7383` owns density samples, material
   samples, regular and transition topology, adaptive streaming, edit
   application, persistence, native queues, render resources, and collision
   resources.
-- `world-transvoxel-terrain` version `1.0.0` owns the stable Godot-facing
+- `world-transvoxel-terrain` version `1.1.0-rc1` owns the stable Godot-facing
   profiles, lifecycle, bounded viewer/edit/query requests, readiness,
   diagnostics, authoring drafts, and deterministic package.
 - Terrain Lab owns qualification evidence. Integration games own presentation
@@ -57,6 +57,11 @@ Rendering terrain does not imply that every rendered chunk needs collision.
 Production consumers should request collision near actors and interactions,
 then release it when no longer needed.
 
+The standard terrain profile therefore sets
+`collision_from_visual_viewers=false`. Look-ahead visual viewers can prefetch a
+future working set without speculative physics. The authoritative collision
+viewer is moved only when the actor or interaction site actually needs it.
+
 ## Performance evidence
 
 The release matrix is Windows 10 x86-64, Godot 4.7, Forward+, and the pinned
@@ -68,14 +73,23 @@ recovery, and shutdown evidence. TQP-56 adds 60 seconds through the production
 wrapper with repeated edits, queries, restarts, origin shifts, and queue/memory
 checks.
 
-TQP-57 additionally assembles the standalone addon into a 2048 x 256 x 2048
-rolling-hills/cave world and directly exercises LOD0/1/2 traversal, flight,
+The TQP-R01 through TQP-R06 correction sequence additionally assembles the
+standalone addon into a 2048 x 256 x 2048 rolling-hills/cave world and directly
+exercises LOD0/1/2/3 traversal, flight,
 vertical movement, cold teleport, digging, construction, far-return replay,
 targeted collision, and restart persistence. It locates a live LOD0/1 boundary
 from authoritative chunk states and retains a direct mesh audit with zero
-boundary, nonmanifold, same-direction shared, or zero-area edges. Four rendered
-captures and frame, queue, memory, edit-latency, and residency evidence are
-retained with the release gate.
+boundary, nonmanifold, same-direction shared, or zero-area edges. The retained
+evidence includes global coarse coverage, five broad acceptance captures,
+eleven temporal continuity captures, two prefetch/handoff captures, process CPU
+time, affinity, peak RSS, frame distributions, queues, memory, edit latency,
+construction material ownership, topology, and residency. The release-candidate
+archive contains both required addons and both Windows x86-64 debug/release
+authority binaries; a clean extracted project must import and run without a
+sibling repository.
+
+The exact current values and reproduction commands are recorded in
+`docs/CPU_PRODUCTION_BASELINE.md` after the closure gate runs.
 
 These values are comparison baselines and regression ceilings on one reference
 machine. They are not universal frame-rate, wattage, view-distance, or latency
@@ -89,7 +103,8 @@ guarantees.
 - multiplayer authority, navigation, gameplay, water, vegetation, structural
   stability, destruction simulation, and other game systems;
 - unbounded terrain, queues, collision, memory, view distance, or edit history;
-- multi-day operation and a universal 16 W at 60 FPS claim.
+- multi-day operation and a universal 16 W at 60 FPS claim;
+- CPU-package or whole-system watts without a trusted energy provider.
 
 Any expansion of this standard requires new pinned evidence and a versioned
 qualification decision. A visual workaround or downstream game success does
