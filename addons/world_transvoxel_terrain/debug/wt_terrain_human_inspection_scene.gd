@@ -121,8 +121,10 @@ func _update_fly_camera(delta: float) -> void:
 	if Input.is_key_pressed(KEY_S): direction += camera.global_basis.z
 	if Input.is_key_pressed(KEY_A): direction -= camera.global_basis.x
 	if Input.is_key_pressed(KEY_D): direction += camera.global_basis.x
-	if Input.is_key_pressed(KEY_Q): direction -= Vector3.UP
-	if Input.is_key_pressed(KEY_E): direction += Vector3.UP
+	if Input.is_key_pressed(KEY_C) or Input.is_key_pressed(KEY_CTRL):
+		direction -= Vector3.UP
+	if Input.is_key_pressed(KEY_SPACE):
+		direction += Vector3.UP
 	if direction.length_squared() > 0.0:
 		var speed := 180.0 if Input.is_key_pressed(KEY_SHIFT) else 54.0
 		camera.global_position += direction.normalized() * speed * delta

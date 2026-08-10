@@ -30,10 +30,10 @@ most three logical CPUs.
 | --- | --- |
 | Right mouse | Capture or release mouse look |
 | Mouse | Look while captured |
-| W / A / S / D | Fly |
-| Q / E | Descend / ascend |
+| W / A / S / D | Move in fly or walk mode |
+| Space | Ascend in fly mode; jump in walk mode |
+| C / Ctrl | Descend in fly mode |
 | Shift | Fast flight |
-| Space | Jump in walk mode |
 | Escape | Release mouse look |
 | Carve / Construct or 1 / 2 | Select the authoritative sphere edit mode |
 | Apply, Enter, or left mouse | Apply the selected edit at the crosshair target |
