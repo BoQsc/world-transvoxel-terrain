@@ -18,21 +18,50 @@ func _collect_live_lod_counts() -> Dictionary:
 	var counts := {}
 	var visual_errors := 0
 	var collision_errors := 0
+	var visual_chunks: Array[Vector4i] = []
+	var visual_chunk_set := {}
 	for value in terrain_world.call("query_active_chunk_states"):
 		var state := value as RefCounted
 		if state == null or not bool(state.call("is_present")): continue
-		var lod := str(int(state.call("get_lod")))
-		counts[lod] = int(counts.get(lod, 0)) + 1
+		var lod := int(state.call("get_lod"))
+		var lod_text := str(lod)
+		counts[lod_text] = int(counts.get(lod_text, 0)) + 1
 		var generation := int(state.call("get_generation"))
-		if bool(state.call("is_visual_required")) and (not bool(state.call("is_visual_ready")) or int(state.call("get_render_generation")) not in [0, generation]): visual_errors += 1
+		if bool(state.call("is_visual_required")):
+			var coordinate: Vector3i = state.call("get_chunk_coordinate")
+			var key := Vector4i(coordinate.x, coordinate.y, coordinate.z, lod)
+			visual_chunks.append(key)
+			visual_chunk_set[key] = true
+			if not bool(state.call("is_visual_ready")) or int(state.call("get_render_generation")) not in [0, generation]: visual_errors += 1
 		if bool(state.call("is_collision_required")) and (not bool(state.call("is_collision_ready")) or int(state.call("get_collision_generation")) not in [0, generation]): collision_errors += 1
+	var overlap_count := _count_visual_ancestor_overlaps(visual_chunks, visual_chunk_set)
 	return {
-		"status": "PASS" if visual_errors == 0 and collision_errors == 0 else "STREAMING",
-		"lod_counts": counts, "coverage_overlap_count": 0,
+		"status": "PASS" if visual_errors == 0 and collision_errors == 0 and overlap_count == 0 else "STREAMING",
+		"lod_counts": counts, "coverage_overlap_count": overlap_count,
 		"visual_generation_mismatches": range(visual_errors),
 		"collision_generation_mismatches": range(collision_errors),
-		"implementation": "production_addon_live_lod_counts_v1",
+		"implementation": "production_addon_live_lod_counts_v2",
 	}
+
+
+func _count_visual_ancestor_overlaps(
+	visual_chunks: Array[Vector4i],
+	visual_chunk_set: Dictionary
+) -> int:
+	var overlap_count := 0
+	for key in visual_chunks:
+		var parent := key
+		while parent.w < MAXIMUM_LOD:
+			parent = Vector4i(
+				floori(float(parent.x) / 2.0),
+				floori(float(parent.y) / 2.0),
+				floori(float(parent.z) / 2.0),
+				parent.w + 1
+			)
+			if visual_chunk_set.has(parent):
+				overlap_count += 1
+				break
+	return overlap_count
 
 
 func _refresh_resident_bounds(force: bool = false) -> void:

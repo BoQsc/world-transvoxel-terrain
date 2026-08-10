@@ -5,7 +5,7 @@
   "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
   "authority": {
     "repository": "world-transvoxel",
-    "revision": "d73fd37211797b043797d072020a48a2eaed7383",
+    "revision": "2bd562a2aa13c5628b588a13afdf0bbb35e2d4ba",
     "fallback_mesher": false,
     "fallback_field": false
   },

@@ -45,7 +45,7 @@ func _run() -> void:
 	print("WT_PREFETCH_STAGE coarse_bootstrap")
 	var coarse: Dictionary = await scene.call("wait_until_global_coarse_ready", 900)
 	if str(coarse.get("status", "")) != "PASS":
-		_finish_now(result_path, contract, "global coarse bootstrap failed")
+		_finish_now(result_path, contract, "global coarse bootstrap failed", coarse)
 		return
 	if not bool(scene.call("release_local_refinement")):
 		_finish_now(result_path, contract, "initial local refinement was rejected")
@@ -365,13 +365,19 @@ func _capture(id: String) -> Dictionary:
 	}
 
 
-func _finish_now(result_path: String, contract: Dictionary, error: String) -> void:
+func _finish_now(
+	result_path: String,
+	contract: Dictionary,
+	error: String,
+	details: Dictionary = {}
+) -> void:
 	failures.append(error)
 	_write_json(result_path, {
 		"schema": "world_transvoxel_terrain.cpu_prefetch_readiness_evidence.v1",
 		"milestone": str(contract.get("milestone", "TQP-R04")),
 		"status": "FAIL",
 		"failures": failures,
+		"details": details,
 	})
 	push_error(error)
 	finished.emit(1)

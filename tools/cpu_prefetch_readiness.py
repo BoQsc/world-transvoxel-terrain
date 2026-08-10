@@ -95,9 +95,17 @@ def main() -> None:
         raise RuntimeError("Godot CPU prefetch readiness exceeded 180 seconds") from error
     log_path.write_text(output, encoding="utf-8")
     print(output, end="", flush=True)
-    if result.returncode != 0 or MARKER not in output or harness.has_godot_error(output):
-        raise RuntimeError("Godot CPU prefetch readiness workload failed")
     result_path = FIXTURE_ROOT / "cpu_prefetch_readiness_result.json"
+    if result.returncode != 0 or MARKER not in output or harness.has_godot_error(output):
+        (ARTIFACT_ROOT / f"godot-{version}-prefetch-readiness-last-failure.log").write_text(
+            output, encoding="utf-8"
+        )
+        if result_path.is_file():
+            shutil.copy2(
+                result_path,
+                ARTIFACT_ROOT / "cpu_prefetch_readiness_last_failure_report.json",
+            )
+        raise RuntimeError("Godot CPU prefetch readiness workload failed")
     if not result_path.is_file():
         raise RuntimeError("CPU prefetch readiness result is missing")
     report = load_json(result_path)
