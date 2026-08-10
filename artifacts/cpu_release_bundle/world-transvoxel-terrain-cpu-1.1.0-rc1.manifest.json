@@ -1,0 +1,586 @@
+{
+  "schema": "world_transvoxel_terrain.cpu_release_bundle_manifest.v1",
+  "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
+  "version": "1.1.0-rc1",
+  "terrain_revision": "81cb3302b134098786aa988d0a69f8c7353ec4cb",
+  "authority_revision": "d73fd37211797b043797d072020a48a2eaed7383",
+  "package": {
+    "path": "artifacts/cpu_release_bundle/world-transvoxel-terrain-cpu-1.1.0-rc1.zip",
+    "files": 114,
+    "package_digest_sha256": "9727ce496a1fdddb3912ef8dde8af2dd587a675a762258c11b11625abc64e402",
+    "zip_sha256": "8dc0482fe55b3765ed0bdf376141af2cf6d6f07ff78e855942a731b4d4250f57",
+    "zip_bytes": 1872479
+  },
+  "files": [
+    {
+      "path": "addons/world_transvoxel/LICENSE_SCOPE.md",
+      "bytes": 563,
+      "sha256": "11f8fcff254eb168cf438597185961d181b1b017c59933f0119ab804442f1043"
+    },
+    {
+      "path": "addons/world_transvoxel/OPERATING_LIMITS.md",
+      "bytes": 13420,
+      "sha256": "5b11214e400488df1231fc7529091c7e1202076d18612355b45fa1bf82eb8474"
+    },
+    {
+      "path": "addons/world_transvoxel/PUBLIC_API.md",
+      "bytes": 11034,
+      "sha256": "c36e8c4a5da22478f7b509a235f84a78ebe65be5b02d1ab8dc84d55397ca25a6"
+    },
+    {
+      "path": "addons/world_transvoxel/README.md",
+      "bytes": 5787,
+      "sha256": "c17e50d76cbf5265794d04e9b51599309b045b51b4e59a640fb8d4323c107b2d"
+    },
+    {
+      "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
+      "bytes": 2394624,
+      "sha256": "2143951dde3288c8bf3f0e842fef22c757bc6352e4fafbf536eff12e6e34f543"
+    },
+    {
+      "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
+      "bytes": 2280960,
+      "sha256": "822811e85e53174fcc66cb0ab2f3b95a4100635a0bb05aa39aa55ec50b9e4bf0"
+    },
+    {
+      "path": "addons/world_transvoxel/editor/world_transvoxel_bake_command.gd",
+      "bytes": 2353,
+      "sha256": "5eb943bf98fd6b29a36dae0e7fff3ef1251b2ee394c235ce9ac9d0afb53f6f01"
+    },
+    {
+      "path": "addons/world_transvoxel/editor/world_transvoxel_bake_command.gd.uid",
+      "bytes": 19,
+      "sha256": "62dabffe2ca3add6368eee01861dca2e5d501bd40cd67c41824ab1a0674f1d4b"
+    },
+    {
+      "path": "addons/world_transvoxel/editor/world_transvoxel_plugin.gd",
+      "bytes": 2767,
+      "sha256": "004909590869b67af84c03a7a25ed630888b892b116977c382a45f025808044f"
+    },
+    {
+      "path": "addons/world_transvoxel/editor/world_transvoxel_plugin.gd.uid",
+      "bytes": 20,
+      "sha256": "26735d3bc5c105e94b80eb2dffd1852acc3c1184681510191bd285795c18f47b"
+    },
+    {
+      "path": "addons/world_transvoxel/plugin.cfg",
+      "bytes": 188,
+      "sha256": "b6e2158eecf2cee3fc27e132f7e9fe1ef1ed4a7851d9bec59126d3a3b9e4257e"
+    },
+    {
+      "path": "addons/world_transvoxel/thirdparty/transvoxel_mit/LICENSE",
+      "bytes": 1090,
+      "sha256": "83e1991655f02148e22ef93de107f45fac4ffea573ce59df154a1546333fab39"
+    },
+    {
+      "path": "addons/world_transvoxel/world_transvoxel.gdextension",
+      "bytes": 1454,
+      "sha256": "7f6b737d653ef4b5806cd46500b4137784fc1badf93a023b9ed4dd8629dc8e3d"
+    },
+    {
+      "path": "addons/world_transvoxel/world_transvoxel.gdextension.uid",
+      "bytes": 20,
+      "sha256": "35c658ddd3a5cf33a8564b286d776f024fa7626729469849430a2a78b944565e"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/BOUNDARY_CONTRACT.json",
+      "bytes": 3273,
+      "sha256": "9b22a83fd446eb9e3416787a29232a7acdaedb9f63d584d4a0a973f86dc303c6"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/LICENSE_SCOPE.md",
+      "bytes": 465,
+      "sha256": "7d7ffcd66cd4b39e03aab144496d4882a261decd0698a5c82caa382fa990d2d0"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/README.md",
+      "bytes": 2451,
+      "sha256": "1722eba6de331bf0f201e8946bc45fe0d203687210025f8a8891a0a8414e9ead"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/README.md",
+      "bytes": 606,
+      "sha256": "eda9f94ba272a06bf0645e45b693bc52aed16e2ca08edacb58a152ca51045a74"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd",
+      "bytes": 1197,
+      "sha256": "8ff455bb3563761fe7c78f4e1c92460f0cf42d7f061ddd7b1e6ff190e49dc184"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd.uid",
+      "bytes": 19,
+      "sha256": "3fb566f2fd4d892be957ff73890e2ca6f180c4c17055863e92d60ef303311a47"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/wt_terrain_profile.gd",
+      "bytes": 678,
+      "sha256": "ed28779da2970ceaeaebe75435b311336146158d376fad09fa12a639ce169eae"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/wt_terrain_profile.gd.uid",
+      "bytes": 20,
+      "sha256": "19577afc463185c0f222ab693f1e6349404bebe4a4942ff9b485b7952a8f5205"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/wt_terrain_runtime_profile.gd",
+      "bytes": 8338,
+      "sha256": "f9124f8c6fd0b89dc145cec6e488a1e24aacd3319f4b7be06bb8207d970b7396"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/api/wt_terrain_runtime_profile.gd.uid",
+      "bytes": 20,
+      "sha256": "55dd8b7dd10e04a8eaea91382fd32bf0af1303d635255db9b3fe664e6db67191"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/collision/README.md",
+      "bytes": 213,
+      "sha256": "f978ddd3000960ce4fc0ba6482ac8831a45e2e9dcc5bf15047f874b24e6d71c5"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/README.md",
+      "bytes": 1601,
+      "sha256": "9861f6f786b81fba7e2eda6a94be7db40794309adae9485b9fd1fd04c6248390"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_debug_overlay_formatter.gd",
+      "bytes": 2812,
+      "sha256": "1f929b9920f48ebc8452063ee64299905619bf3b5261f26a95b24482024bc96d"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_debug_overlay_formatter.gd.uid",
+      "bytes": 20,
+      "sha256": "cbb752a347fe46b3eb118175641efbf3ac5440a5c6d8851504e33c0ed06f27ac"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd",
+      "bytes": 5195,
+      "sha256": "2887f55940828ec04b61ca8ea3582233d9cd798feedc9fab1b9b7fe39ed7d818"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_debug_snapshot.gd.uid",
+      "bytes": 20,
+      "sha256": "b784962be781ab8d7ca316c5056dd35f8eb49fc9734d947191c3e16e77315cbf"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_presentation.gd",
+      "bytes": 7019,
+      "sha256": "c1b94a91a689816c6ac36d9a33ef298f8137d8c0ee516cae75a4c2df2f928622"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_presentation.gd.uid",
+      "bytes": 19,
+      "sha256": "f007200d3b7a33c20e59d3be6d5fdddad701e5876f56ea4ade9119f91a5daece"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_qualification.gd",
+      "bytes": 13488,
+      "sha256": "8d7085391e4d54f75115d17a21cfb31c641ebc7ffa06b74bd00c4b7feabd521e"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_qualification.gd.uid",
+      "bytes": 20,
+      "sha256": "0742a5aa844ee16830bb6b728d70fe989bd564a98585b083ebdf920762f50e15"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_runtime.gd",
+      "bytes": 15361,
+      "sha256": "cef09448d62cfb6963747a74d2cfce7295d21ea8a868a3eb5c8afc2b95b0ccd4"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_runtime.gd.uid",
+      "bytes": 20,
+      "sha256": "0835acb99a9327b1a2aff612185f9070925df513a82648c617aaa039ae91ebc6"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_scene.gd",
+      "bytes": 1722,
+      "sha256": "5ff6f472e4394542ddd1a1f35b80565459459d1af154536f8c326b546ff2b3d8"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_scene.gd.uid",
+      "bytes": 20,
+      "sha256": "5ae708285d2555b7427614d7240e800e24a07de8f71773b340fbe3de3547233f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_scene.tscn",
+      "bytes": 9052,
+      "sha256": "1c1310b1f09ba50ab1471e94d5d2ea25581ba979436dfca54952298a4ad49bbe"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_support.gd",
+      "bytes": 2032,
+      "sha256": "694b544a9d46e8972b2b1e46275621dfe028014e6630f5f70d62c4a2c2bbfddc"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_support.gd.uid",
+      "bytes": 19,
+      "sha256": "62d7e855529f3ff852ac04b77434c69e909f60c837c013265cbd4256ed59b746"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_lod_audit.gd",
+      "bytes": 5588,
+      "sha256": "916e783ef2f809980b5fde977b36a0f81d950c91ee054a3f47cdc2bbaafd5975"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_lod_audit.gd.uid",
+      "bytes": 19,
+      "sha256": "b001a08bd9649235fef9127f198af27838ba92f754ccaeaa5d3e5a43ca2d1205"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_mesh_stats.gd",
+      "bytes": 1413,
+      "sha256": "47000fe1a0e3ede250630c5d18b5f8ae424a3ca10c10a6da4f4796bd11600a5e"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_mesh_stats.gd.uid",
+      "bytes": 20,
+      "sha256": "77f967c8501df49249d1ca1d186e2ca33a2f0c9a871e4b62013cfbe23253cbd3"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.gd",
+      "bytes": 7503,
+      "sha256": "87aa880c026f21a672b1e84d4d9bb938454c500d0862a744db645407d9064996"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.gd.uid",
+      "bytes": 20,
+      "sha256": "59e84a73a7a0906f4cfd47149ffd6aa53544fa6c8673b8321fd6d1273b48af00"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_reference_scene.tscn",
+      "bytes": 760,
+      "sha256": "fea33d4553fab62f273cebdae494fa642d06fc4e71ac2064ba8f62608f353b44"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_watertightness_edges.gd",
+      "bytes": 2640,
+      "sha256": "c746269c85415b172b92baee0e3a4c80a28fe0aed38f168458eb87495be2fd7d"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_watertightness_edges.gd.uid",
+      "bytes": 20,
+      "sha256": "b5bbbcee517ad278f02fd94a9ffae0fe0020ea26b87851d5f6ac1df786099025"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_watertightness_probe.gd",
+      "bytes": 9054,
+      "sha256": "0bc96179adea686bedce854bea7a3ce53d0b0caf3ead312fadc65c18816276ef"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/debug/wt_terrain_watertightness_probe.gd.uid",
+      "bytes": 20,
+      "sha256": "4c0158ebac9302121f5494420ddb6e4ee9bf57d054a180852e9a785c55f1112f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/edit/README.md",
+      "bytes": 632,
+      "sha256": "b784c48d11fe1faca316fb1df8837cbca4ad1a14ce4111346508e09a96e889f8"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/edit/wt_terrain_edit_batch.gd",
+      "bytes": 1325,
+      "sha256": "faa94bd341ec6e33154fd899ac400a23ae6db9d28b5ec6361527b046e10546d9"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/edit/wt_terrain_edit_batch.gd.uid",
+      "bytes": 20,
+      "sha256": "bf6e383fede240a37ade64c816c605970c24487610d11ebd82a5fe37ba9539c6"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/edit/wt_terrain_edit_operation.gd",
+      "bytes": 4092,
+      "sha256": "50acd95dbb6e9709a76a47ace08618e59618652ecd055eff22a099f3f1c188d5"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/edit/wt_terrain_edit_operation.gd.uid",
+      "bytes": 20,
+      "sha256": "7e02b605dc92f19ef93d98cf30b399ef509241b6a70fbd1c36af2bc1efb80efc"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/world_transvoxel_terrain_plugin.gd",
+      "bytes": 877,
+      "sha256": "2a367becc8ec9b86d93d419770874bc5cd0fef95981719a58ba118add3589e70"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/world_transvoxel_terrain_plugin.gd.uid",
+      "bytes": 19,
+      "sha256": "450d84932d0fc04da587a70942f3fcae5d4ccecf7a1e040447a3c2d7813e441a"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_authoring_document.gd",
+      "bytes": 3883,
+      "sha256": "b383193be49c646499fe359c7e0855aa2cb7642f49e4ce08aa7b05b89df72e2f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_authoring_document.gd.uid",
+      "bytes": 20,
+      "sha256": "b6c79d12d3b3e8d620b0c29bb5d0c8c7269f5a5d13885cfc27ca75387e99dd9f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_brush_preview.gd",
+      "bytes": 1496,
+      "sha256": "ed54d3873b4761a7275e71b7b23be2b73ec4429826ec89af4bb3ca437f2de33b"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_brush_preview.gd.uid",
+      "bytes": 20,
+      "sha256": "329682ccc46bfda0f4ce5bd6086eb1425e1b02451586699ab35cf03a98376ff3"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_inspector_dock.gd",
+      "bytes": 9758,
+      "sha256": "7b7bc4030135b8c2c37996bdbbc0cb663e9ef378f30c6f79cb189581d3f200ec"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_inspector_dock.gd.uid",
+      "bytes": 20,
+      "sha256": "90725f63d86b8a2b0d01919a6b10ed234cbd5ae3b2601ad63d4030b83d88bae0"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_repro_exporter.gd",
+      "bytes": 2405,
+      "sha256": "db3970f319aa53819fdf1f47b86e96d4b6b068308490088335ccd74c64d4f8b0"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/editor/wt_terrain_repro_exporter.gd.uid",
+      "bytes": 20,
+      "sha256": "763298f390a80a938767f58c6d3035109866d47208ddd3e73afdf918e96ae859"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/generation/README.md",
+      "bytes": 1050,
+      "sha256": "1088dc77c7e212fc639b8341294ebd39bbf611f950c6a14a0c6c7c16c16bcc9c"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd",
+      "bytes": 2709,
+      "sha256": "51bf25eef2c83d76f2e74e0c8e5a7daf47eab86e9b64399667ab6ead462ea042"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd.uid",
+      "bytes": 20,
+      "sha256": "5f71ea6b1b2de0ac97276638b1014edde2c4274f0f0507c63613612ef1efde1b"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/README.md",
+      "bytes": 2849,
+      "sha256": "79d4beac2e1e7cd10e199d3b660d36f914117947efa622ca30f587c2ba2f076a"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_material_applicator.gd",
+      "bytes": 12998,
+      "sha256": "8110dbedb68754e768fd39fef89778a560fe27bc9d7aa46d9c3ddeb85bc24629"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_material_applicator.gd.uid",
+      "bytes": 20,
+      "sha256": "6059bfb3a8b126ecee9344aa8a2b478f8813f10554e149f813205e8312ca66aa"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_material_profile.gd",
+      "bytes": 3243,
+      "sha256": "b3debad4c155950955d5883f8dd6f3ed3cb0fe52641a4bdf4c7e9a694cfeb362"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_material_profile.gd.uid",
+      "bytes": 20,
+      "sha256": "585bf7d3d18451a7b64727ba089eb72af65e61564380f3d654388b153c9a34dc"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_material_texture_factory.gd",
+      "bytes": 3203,
+      "sha256": "6503c3e7234a471655edfabfafd6487738e82703b08b58664c149b505d27d442"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_material_texture_factory.gd.uid",
+      "bytes": 20,
+      "sha256": "fe32aee396f535b3c7a6bf97aaae20778a406a57d73416f6cf07e7a73898d833"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_palette.gdshader",
+      "bytes": 7075,
+      "sha256": "4a221b46fd776307fcd20567ce5cad711cbb877224b36fb3669e0ce4568c3076"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_palette.gdshader.uid",
+      "bytes": 20,
+      "sha256": "7a28718d53ee088f9d17aa0f85478582c8a55ece000bf5e90bbe74c587f766c1"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_weighted_palette.gdshader",
+      "bytes": 6560,
+      "sha256": "9d6ba6d054e9e024900679ff4a26eff0292f9d256a38c355a13e063e2c224394"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/material/wt_terrain_weighted_palette.gdshader.uid",
+      "bytes": 19,
+      "sha256": "087f0d09cc66dcae6987e7502e9f3a3f0c3fd082c3cb7aaaaf2f86006cd7b740"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/plugin.cfg",
+      "bytes": 225,
+      "sha256": "1f7760cb4ca24aebf8bd4e386b6402f67b955026ead0cc7691be9a4652087021"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/README.md",
+      "bytes": 2347,
+      "sha256": "40367be11786c8cab5154fcf689d60bc6f220f350dccab29c2e2cd9480228295"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_edit_bridge.gd",
+      "bytes": 8823,
+      "sha256": "884f1e9fb14f7d970f766481f0724284d047ca98981187fcf1006776e74067e6"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_edit_bridge.gd.uid",
+      "bytes": 20,
+      "sha256": "ad6c42ca6ab14120c90777f917986f59c64e4bf045d171391d0686ecfea804b0"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_edit_sdf_bridge.gd",
+      "bytes": 1345,
+      "sha256": "a068c054cb2bd96e0fb0b4d90fe4fb4604717f3a775223e743cfc943eacd997b"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_edit_sdf_bridge.gd.uid",
+      "bytes": 19,
+      "sha256": "69dfe2dcfbe6b70f211cd61c9cd0272741e01071a75385157a08042bd4acd43f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_edit_volume_bridge.gd",
+      "bytes": 675,
+      "sha256": "b193e1c831b6ba66d5cd5f14d7d0f860671be087fe03a9575943b75005d32d1f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_edit_volume_bridge.gd.uid",
+      "bytes": 20,
+      "sha256": "1d38ce1f70cfafd73f03ba575086a7ebebc4b8db2d5e97f2b03feb49d9e4ec2f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd",
+      "bytes": 4635,
+      "sha256": "4a4d4a693864553f23dca402450ef7336dbfe08a252bb866e6cf11931c365614"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_generation_backend.gd.uid",
+      "bytes": 20,
+      "sha256": "a72afc94482da3d07a1ff9cb83039946d49e30ed8842c4d949d0fc99591368a4"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_audit.gd",
+      "bytes": 1724,
+      "sha256": "ed689a4d765d798058f8ea14feaffddf106f9748f90bf4b39d2bc7276e0a8d9a"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_audit.gd.uid",
+      "bytes": 20,
+      "sha256": "6c23e3c7fea2ae1537e4e102db02ed40ce521762353dfb25d43ba4a256a8cd12"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_state.gd",
+      "bytes": 8603,
+      "sha256": "377f6e7d9bf193c0d8d19b6f40ce93a4eb9bb202239aa296f9042dcc642e4f9d"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_state.gd.uid",
+      "bytes": 20,
+      "sha256": "705b60d0a6f411c0076482b11f1e68a2bbd834f96628d540bc570e5aa010a080"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world.gd",
+      "bytes": 13100,
+      "sha256": "0a2f049a7be1ead4265813c0c0dd0eb2b328688df88e39f43a748db6ee0746be"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world.gd.uid",
+      "bytes": 20,
+      "sha256": "6d9291f3310f4852fe3f726a3fe4025fc0c7261c3acb66339360c9df688ac396"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world_backend_ops.gd",
+      "bytes": 12625,
+      "sha256": "223fddc6342213667eeec76a776d4a21e475f079d84ff87e0e73d71f485f31d0"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world_backend_ops.gd.uid",
+      "bytes": 20,
+      "sha256": "13f5b9bfab9a88c27280d65982087a82380b50f9dce94ae7b9e86cc240cc5b58"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world_contracts.gd",
+      "bytes": 6834,
+      "sha256": "ad2df50f5837a07dbb306235dd30ac814e40d3c061277acbf73f3de88a2e171a"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world_contracts.gd.uid",
+      "bytes": 20,
+      "sha256": "f3c128d9e9240512f17502cd8b3eef8512d12c5bdfa07ed70a00f7fadc24ce68"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world_runtime_events.gd",
+      "bytes": 2923,
+      "sha256": "3937d88d0696a5b0b5559c521dc64d300b83e60fb5d5f212586516753c8f9840"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_terrain_world_runtime_events.gd.uid",
+      "bytes": 20,
+      "sha256": "8b4a58529a1de18290905b679c6240c2233f544a007f4ee7a805422bf1b2120b"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_world_transvoxel_bridge.gd",
+      "bytes": 3417,
+      "sha256": "33704d99aed065d6a2197cde6395119ccb488f0fb91730d2dab683cd2807658a"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/runtime/wt_world_transvoxel_bridge.gd.uid",
+      "bytes": 20,
+      "sha256": "331d56f74c62fc6a0144a72cad3e232a0d7c258ec04c4b7f0c1cc31ed013e105"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/src/README.md",
+      "bytes": 720,
+      "sha256": "855a4c20878f73f2769f1bb2dbb13efd92d955e03e30e60413d412b2df1fcb2d"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/storage/README.md",
+      "bytes": 1100,
+      "sha256": "b64f86d1ab44962a2a06ad2de38d705e6ed65c0431a2484104e89d322e0d5ed4"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/storage/wt_terrain_recovery_policy.gd",
+      "bytes": 1751,
+      "sha256": "63313d3a8b483a5d5b1378b3c650760574204c1c9bd1f01c35c352143afff957"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/storage/wt_terrain_recovery_policy.gd.uid",
+      "bytes": 20,
+      "sha256": "e7b98d616718d2881edf9e53da803b5416e426f24ab2a9bb451778afc1520808"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd",
+      "bytes": 2806,
+      "sha256": "cbb669abf4b8651c7388340532def9170ce21ba59a85a9b19ae8744386fa102c"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd.uid",
+      "bytes": 20,
+      "sha256": "5a5494fcf05b8bc3d635baf2865e2caff00f65415bac31e0bd194d69b6e31b0f"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/streaming/README.md",
+      "bytes": 192,
+      "sha256": "b374e1eeebc23139e5276fff55379e4291c807f2f7f52599907d64640fac3a93"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/tests/README.md",
+      "bytes": 282,
+      "sha256": "a1978ede6b1c400c8531449d73fb973cfc512c7f8e51fe2c08af0147bd96fe46"
+    },
+    {
+      "path": "addons/world_transvoxel_terrain/visual/README.md",
+      "bytes": 437,
+      "sha256": "102627e2524558b4393d9cc29ffc9fefb5d6c8035d19d4565ed3bdfa0733fc3e"
+    }
+  ]
+}

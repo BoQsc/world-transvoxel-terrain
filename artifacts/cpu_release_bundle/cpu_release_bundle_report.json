@@ -1,0 +1,39 @@
+{
+  "schema": "world_transvoxel_terrain.cpu_release_bundle_evidence.v1",
+  "milestone": "TQP-R06",
+  "status": "PASS",
+  "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
+  "version": "1.1.0-rc1",
+  "engine": "4.7.stable.official.5b4e0cb0f",
+  "platform": "windows",
+  "architecture": "x86_64",
+  "terrain_revision": "81cb3302b134098786aa988d0a69f8c7353ec4cb",
+  "authority_revision": "d73fd37211797b043797d072020a48a2eaed7383",
+  "package": {
+    "path": "artifacts/cpu_release_bundle/world-transvoxel-terrain-cpu-1.1.0-rc1.zip",
+    "files": 114,
+    "package_digest_sha256": "9727ce496a1fdddb3912ef8dde8af2dd587a675a762258c11b11625abc64e402",
+    "zip_sha256": "8dc0482fe55b3765ed0bdf376141af2cf6d6f07ff78e855942a731b4d4250f57",
+    "zip_bytes": 1872479
+  },
+  "manifest": "artifacts/cpu_release_bundle/world-transvoxel-terrain-cpu-1.1.0-rc1.manifest.json",
+  "clean_install_smoke": {
+    "status": "PASS",
+    "marker": "WT_TERRAIN_CPU_RELEASE_BUNDLE_GODOT_PASS authority=1.0.16-dev backend=transvoxel_mit_official fallback=false",
+    "project": "artifacts/cpu_release_bundle/clean_project",
+    "sibling_repository_dependency": false
+  },
+  "qualified_scope": [
+    "self-contained Godot 4.7 Windows x86-64 addon installation",
+    "official world-transvoxel authority with no fallback",
+    "deterministic release archive and manifest",
+    "clean extracted-project import and runtime bridge smoke"
+  ],
+  "explicitly_unqualified_scope": [
+    "non-Windows platforms and non-x86-64 architectures",
+    "Godot versions older than 4.7",
+    "Asset Library moderation acceptance or public listing",
+    "GPU execution and universal performance claims"
+  ],
+  "failures": []
+}

@@ -1,0 +1,18 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+Vulkan 1.3.289 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1060 with Max-Q Design
+
+WT_PREFETCH_STAGE coarse_bootstrap
+WT_PREFETCH_STAGE initial_refinement
+TQP57_LARGE_WAIT frame=120 active=708 ready=495 jobs=0 storage=1043 render=0 collision=0 replacements=213 retirements=8
+TQP57_LARGE_WAIT frame=240 active=708 ready=498 jobs=0 storage=592 render=0 collision=0 replacements=210 retirements=8
+TQP57_LARGE_WAIT frame=360 active=708 ready=511 jobs=0 storage=592 render=0 collision=0 replacements=197 retirements=8
+TQP57_LARGE_WAIT frame=480 active=708 ready=596 jobs=0 storage=0 render=0 collision=0 replacements=112 retirements=8
+WT_PREFETCH_STAGE visual_prefetch
+TQP57_LARGE_WAIT frame=120 active=904 ready=684 jobs=176 storage=499 render=0 collision=0 replacements=220 retirements=8
+TQP57_LARGE_WAIT frame=240 active=904 ready=692 jobs=112 storage=481 render=0 collision=0 replacements=212 retirements=8
+TQP57_LARGE_WAIT frame=360 active=904 ready=692 jobs=112 storage=481 render=0 collision=0 replacements=212 retirements=8
+TQP57_LARGE_WAIT frame=480 active=904 ready=866 jobs=0 storage=0 render=0 collision=0 replacements=38 retirements=8
+WT_PREFETCH_STAGE authoritative_arrival
+WT_PREFETCH_STAGE visual_handoff
+WT_PREFETCH_STAGE shutdown
+WT_TERRAIN_CPU_PREFETCH_READINESS_GODOT_PASS visual=64 collision=7 storage=0 mesh=0

@@ -1,0 +1,62 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (43 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | WtTerrainDependencyStatus[39m[0m
+[   2% ] [90m[1mupdate_scripts_classes[22m | WtTerrainProfile[39m[0m
+[   4% ] [90m[1mupdate_scripts_classes[22m | WtTerrainRuntimeProfile[39m[0m
+[   6% ] [90m[1mupdate_scripts_classes[22m | WtTerrainDebugOverlayFormatter[39m[0m
+[   9% ] [90m[1mupdate_scripts_classes[22m | WtTerrainDebugSnapshot[39m[0m
+[  11% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  13% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  15% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  18% ] [90m[1mupdate_scripts_classes[22m | WtTerrainLargeAcceptanceScene[39m[0m
+[  20% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  22% ] [90m[1mupdate_scripts_classes[22m | WtTerrainLodAudit[39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | WtTerrainMeshStats[39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | WtTerrainReferenceScene[39m[0m
+[  29% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  31% ] [90m[1mupdate_scripts_classes[22m | WtTerrainWatertightnessProbe[39m[0m
+[  34% ] [90m[1mupdate_scripts_classes[22m | WtTerrainEditBatch[39m[0m
+[  36% ] [90m[1mupdate_scripts_classes[22m | WtTerrainEditOperation[39m[0m
+[  38% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | WtTerrainAuthoringDocument[39m[0m
+[  43% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  45% ] [90m[1mupdate_scripts_classes[22m | WtTerrainInspectorDock[39m[0m
+[  47% ] [90m[1mupdate_scripts_classes[22m | WtTerrainReproExporter[39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | WtTerrainGenerationProfile[39m[0m
+[  52% ] [90m[1mupdate_scripts_classes[22m | WtTerrainMaterialApplicator[39m[0m
+[  54% ] [90m[1mupdate_scripts_classes[22m | WtTerrainMaterialProfile[39m[0m
+[  56% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  59% ] [90m[1mupdate_scripts_classes[22m | WtTerrainEditBridge[39m[0m
+[  61% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  63% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  65% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  68% ] [90m[1mupdate_scripts_classes[22m | WtTerrainRuntimeAudit[39m[0m
+[  70% ] [90m[1mupdate_scripts_classes[22m | WtTerrainRuntimeState[39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | WtTerrainWorld[39m[0m
+[  75% ] [90m[1mupdate_scripts_classes[22m | WtTerrainWorldBackendOps[39m[0m
+[  77% ] [90m[1mupdate_scripts_classes[22m | WtTerrainWorldContracts[39m[0m
+[  79% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  81% ] [90m[1mupdate_scripts_classes[22m | WtWorldTransvoxelBridge[39m[0m
+[  84% ] [90m[1mupdate_scripts_classes[22m | WtTerrainRecoveryPolicy[39m[0m
+[  86% ] [90m[1mupdate_scripts_classes[22m | WtTerrainStorageProfile[39m[0m
+[  88% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  90% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  93% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  95% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
