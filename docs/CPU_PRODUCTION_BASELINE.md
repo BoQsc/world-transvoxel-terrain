@@ -14,15 +14,15 @@ This is the reproducible CPU reference baseline for the bounded production terra
 
 ## Measured baseline
 
-- Frame samples: 2700 across nine scenarios; p50 16.308 ms, p99 70.161 ms, worst 98.044 ms.
-- Process: 314.219 CPU-seconds over 191.405 s, 1.642 average occupied cores, 54.7% of the three-CPU affinity capacity.
-- Peak RSS: 1118.3 MiB; peak Godot video memory: 137.7 MiB.
-- Queue peaks: scheduler 236, storage 505, render 0, collision 3.
-- Coarse world became ready in 3.474 s with all 262,144 LOD0-equivalent cells covered.
-- Prefetched arrival: storage jobs 0, mesh jobs 0, first collision 23.588 ms.
-- Dig: visual 90.189 ms, collision 109.456 ms.
-- Construct: visual 75.786 ms, collision 96.567 ms; existing solid samples repainted: 0.
-- Temporal continuity: 2270 monitored frames, 78 topology samples, 0 visible ancestor overlaps, 0 topology failures.
+- Frame samples: 2700 across nine scenarios; p50 16.263 ms, p99 42.984 ms, worst 134.765 ms.
+- Process: 181.812 CPU-seconds over 127.439 s, 1.427 average occupied cores, 47.6% of the three-CPU affinity capacity.
+- Peak RSS: 1081.1 MiB; peak Godot video memory: 137.7 MiB.
+- Queue peaks: scheduler 169, storage 88, render 0, collision 8.
+- Coarse world became ready in 8.128 s with all 262,144 LOD0-equivalent cells covered.
+- Prefetched arrival: storage jobs 0, mesh jobs 0, first collision 29.577 ms.
+- Dig: visual 75.310 ms, collision 75.311 ms.
+- Construct: visual 72.885 ms, collision 89.466 ms; existing solid samples repainted: 0.
+- Temporal continuity: 616 monitored frames, 22 topology samples, 0 visible ancestor overlaps, 0 topology failures.
 
 ## Interpretation
 

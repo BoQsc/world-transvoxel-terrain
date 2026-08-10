@@ -4,17 +4,17 @@
   "status": "PASS",
   "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
   "version": "1.1.0-rc1",
-  "engine": "4.7.stable.official.5b4e0cb0f",
+  "engine": "4.7.1.stable.steam.a13da4feb",
   "platform": "windows",
   "architecture": "x86_64",
-  "terrain_revision": "81cb3302b134098786aa988d0a69f8c7353ec4cb",
-  "authority_revision": "d73fd37211797b043797d072020a48a2eaed7383",
+  "terrain_revision": "df936025086ee4e1141d4f4a3d4c9927db5db346",
+  "authority_revision": "269871299974c250379028d88b9a9c3086507f52",
   "package": {
     "path": "artifacts/cpu_release_bundle/world-transvoxel-terrain-cpu-1.1.0-rc1.zip",
     "files": 114,
-    "package_digest_sha256": "9727ce496a1fdddb3912ef8dde8af2dd587a675a762258c11b11625abc64e402",
-    "zip_sha256": "8dc0482fe55b3765ed0bdf376141af2cf6d6f07ff78e855942a731b4d4250f57",
-    "zip_bytes": 1872479
+    "package_digest_sha256": "ea4648934a4f1805d8eb3fca80d96994ed292c4f3e1346f11060a05a94b7ce5d",
+    "zip_sha256": "5d1a09814e0ecff5cee1f4eccfa542aa0519e9f7807a466c3a4fce610ee6a2ed",
+    "zip_bytes": 1873719
   },
   "manifest": "artifacts/cpu_release_bundle/world-transvoxel-terrain-cpu-1.1.0-rc1.manifest.json",
   "clean_install_smoke": {

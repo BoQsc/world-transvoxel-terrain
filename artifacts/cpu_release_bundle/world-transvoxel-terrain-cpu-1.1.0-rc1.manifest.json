@@ -2,14 +2,14 @@
   "schema": "world_transvoxel_terrain.cpu_release_bundle_manifest.v1",
   "release_id": "world-transvoxel-terrain-cpu-1.1.0-rc1",
   "version": "1.1.0-rc1",
-  "terrain_revision": "81cb3302b134098786aa988d0a69f8c7353ec4cb",
-  "authority_revision": "d73fd37211797b043797d072020a48a2eaed7383",
+  "terrain_revision": "df936025086ee4e1141d4f4a3d4c9927db5db346",
+  "authority_revision": "269871299974c250379028d88b9a9c3086507f52",
   "package": {
     "path": "artifacts/cpu_release_bundle/world-transvoxel-terrain-cpu-1.1.0-rc1.zip",
     "files": 114,
-    "package_digest_sha256": "9727ce496a1fdddb3912ef8dde8af2dd587a675a762258c11b11625abc64e402",
-    "zip_sha256": "8dc0482fe55b3765ed0bdf376141af2cf6d6f07ff78e855942a731b4d4250f57",
-    "zip_bytes": 1872479
+    "package_digest_sha256": "ea4648934a4f1805d8eb3fca80d96994ed292c4f3e1346f11060a05a94b7ce5d",
+    "zip_sha256": "5d1a09814e0ecff5cee1f4eccfa542aa0519e9f7807a466c3a4fce610ee6a2ed",
+    "zip_bytes": 1873719
   },
   "files": [
     {
@@ -19,8 +19,8 @@
     },
     {
       "path": "addons/world_transvoxel/OPERATING_LIMITS.md",
-      "bytes": 13420,
-      "sha256": "5b11214e400488df1231fc7529091c7e1202076d18612355b45fa1bf82eb8474"
+      "bytes": 14017,
+      "sha256": "91981ee600b9c85c52ad9c5fed916f6e14c40911d576a9f98526627710661f48"
     },
     {
       "path": "addons/world_transvoxel/PUBLIC_API.md",
@@ -34,13 +34,13 @@
     },
     {
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_debug.x86_64.dll",
-      "bytes": 2394624,
-      "sha256": "2143951dde3288c8bf3f0e842fef22c757bc6352e4fafbf536eff12e6e34f543"
+      "bytes": 2395136,
+      "sha256": "60057a1dbba79fe1ed1d59b10096fb9180a2674c0f09ed413e3b3fd2c10fccf2"
     },
     {
       "path": "addons/world_transvoxel/bin/world_transvoxel.windows.template_release.x86_64.dll",
-      "bytes": 2280960,
-      "sha256": "822811e85e53174fcc66cb0ab2f3b95a4100635a0bb05aa39aa55ec50b9e4bf0"
+      "bytes": 2281472,
+      "sha256": "c930b7c41705ccd03c6bc6f9e9422f554b9510fe16fcad493faf3f50c3115e5a"
     },
     {
       "path": "addons/world_transvoxel/editor/world_transvoxel_bake_command.gd",
@@ -85,7 +85,7 @@
     {
       "path": "addons/world_transvoxel_terrain/BOUNDARY_CONTRACT.json",
       "bytes": 3273,
-      "sha256": "9b22a83fd446eb9e3416787a29232a7acdaedb9f63d584d4a0a973f86dc303c6"
+      "sha256": "86e71c2f7f9840f89bcc5f55aa15059283b06986ee5f683fa72c8b9de21a4132"
     },
     {
       "path": "addons/world_transvoxel_terrain/LICENSE_SCOPE.md",
@@ -95,7 +95,7 @@
     {
       "path": "addons/world_transvoxel_terrain/README.md",
       "bytes": 2451,
-      "sha256": "1722eba6de331bf0f201e8946bc45fe0d203687210025f8a8891a0a8414e9ead"
+      "sha256": "a61e6903cab20dd02bd39d1cd85b9da0a42184d2b4c811717f55e36c4da4cb12"
     },
     {
       "path": "addons/world_transvoxel_terrain/api/README.md",
@@ -164,8 +164,8 @@
     },
     {
       "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_presentation.gd",
-      "bytes": 7019,
-      "sha256": "c1b94a91a689816c6ac36d9a33ef298f8137d8c0ee516cae75a4c2df2f928622"
+      "bytes": 7895,
+      "sha256": "ac9d4f8f79e7763fdd2811274ed11512bb86c3c0aea6f6522e18f3571d1469bc"
     },
     {
       "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_presentation.gd.uid",
@@ -174,8 +174,8 @@
     },
     {
       "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_qualification.gd",
-      "bytes": 13488,
-      "sha256": "8d7085391e4d54f75115d17a21cfb31c641ebc7ffa06b74bd00c4b7feabd521e"
+      "bytes": 14005,
+      "sha256": "ec7541340df3aa5ebb1bbe0f50aecb095c4f237db6405a994f2b100b189feb78"
     },
     {
       "path": "addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_qualification.gd.uid",
