@@ -6,8 +6,12 @@ const HUMAN_SURFACE_STREAMING_CEILING := 40.0
 const HUMAN_LOOK_AHEAD_DISTANCE := 32.0
 const HUMAN_VISUAL_UPDATE_DISTANCE := 16.0
 const HUMAN_COLLISION_UPDATE_DISTANCE := 4.0
+const HUMAN_VISUAL_RADIUS_CHUNKS := 1
 const HUMAN_COLLISION_RADIUS_CHUNKS := 2
 const HUMAN_EDIT_TIMEOUT_FRAMES := 1800
+const HUMAN_MAXIMUM_FPS := 60
+const HUMAN_ACTIVE_CHUNK_CAPACITY := 384
+const HUMAN_CACHE_ENTRY_CAPACITY := 768
 @onready var edit_target_marker: MeshInstance3D = %EditTargetMarker
 @onready var human_player: CharacterBody3D = %HumanPlayer
 @onready var human_player_shape: CollisionShape3D = %HumanPlayerShape
@@ -34,12 +38,93 @@ var _last_edit_timing: Dictionary = {}
 var _published_human_collision_position := Vector3(INF, INF, INF)
 var _brush_group: ButtonGroup
 var _movement_group: ButtonGroup
+var _previous_maximum_fps := 0
+
+
+func _configure_profiles() -> void:
+	super._configure_profiles()
+	var runtime = terrain_world.get("runtime_profile")
+	runtime.profile_id = &"human_inspection_bounded_cpu"
+	runtime.viewer_radius_chunks = HUMAN_VISUAL_RADIUS_CHUNKS
+	runtime.global_coarse_lod_coverage = false
+	runtime.active_chunk_capacity = HUMAN_ACTIVE_CHUNK_CAPACITY
+	runtime.maximum_async_requests = 16
+	runtime.demand_capacity_per_viewer = 2048
+	runtime.procedural_generation_worker_count = 1
+	runtime.meshing_worker_count = 1
+	runtime.storage_request_capacity = 2048
+	runtime.storage_completion_capacity = 2048
+	runtime.encoded_page_entry_capacity = HUMAN_CACHE_ENTRY_CAPACITY
+	runtime.decoded_page_entry_capacity = HUMAN_CACHE_ENTRY_CAPACITY
+	runtime.mesh_entry_capacity = HUMAN_ACTIVE_CHUNK_CAPACITY
+	runtime.render_entry_capacity = HUMAN_ACTIVE_CHUNK_CAPACITY
+	runtime.collision_entry_capacity = 128
+	runtime.render_apply_budget = 4
+	runtime.collision_apply_budget = 2
+	runtime.power_intent = &"bounded_human_inspection"
+
+
+func get_acceptance_profile() -> Dictionary:
+	var profile := super.get_acceptance_profile()
+	profile["schema"] = "world_transvoxel_terrain.human_inspection_profile.v1"
+	profile["active_chunk_capacity"] = HUMAN_ACTIVE_CHUNK_CAPACITY
+	profile["viewer_radius_chunks"] = HUMAN_VISUAL_RADIUS_CHUNKS
+	profile["encoded_page_cache_entries"] = HUMAN_CACHE_ENTRY_CAPACITY
+	profile["decoded_page_cache_entries"] = HUMAN_CACHE_ENTRY_CAPACITY
+	profile["global_coarse_lod_coverage"] = false
+	profile["global_coarse_root_count"] = 0
+	profile["full_world_lod0_coverage"] = 0
+	profile["cpu_profile"] = "bounded_human_inspection"
+	profile["procedural_generation_worker_count"] = 1
+	profile["meshing_worker_count"] = 1
+	return profile
+
+
+func get_global_coverage_bootstrap_summary() -> Dictionary:
+	var summary := super.get_global_coverage_bootstrap_summary()
+	summary["implementation"] = "bounded_local_coarse_then_refinement_v1"
+	summary["global_coarse_lod_coverage"] = false
+	summary["expected_coarse_roots"] = 0
+	summary["expected_lod0_coverage"] = 0
+	return summary
+
+
+func _request_viewer(
+	position: Vector3,
+	force: bool,
+	radius_chunks: int = HUMAN_VISUAL_RADIUS_CHUNKS,
+	maximum_lod: int = MAXIMUM_LOD,
+	collision_radius_chunks: int = HUMAN_COLLISION_RADIUS_CHUNKS
+) -> bool:
+	return super._request_viewer(
+		position, force, radius_chunks, maximum_lod, collision_radius_chunks
+	)
+
+
+func _advance_global_coarse_bootstrap() -> void:
+	if not _coarse_bootstrap_requested or _refinement_requested or not _runtime_is_settled():
+		return
+	if not _coarse_stage_ready:
+		_coarse_ready_latency_usec = Time.get_ticks_usec() - _bootstrap_started_usec
+		_coarse_stage_ready = true
+	if _hold_after_coarse:
+		return
+	_refinement_request_viewer_updates = int(_last_metrics.get("viewer_updates", 0))
+	_refinement_requested = true
+	if not _request_viewer(
+		_viewer_position, true, HUMAN_VISUAL_RADIUS_CHUNKS, MAXIMUM_LOD
+	):
+		_fail_preview("bounded local refinement request rejected")
+
 
 func _ready() -> void:
+	_previous_maximum_fps = Engine.max_fps
+	if not Engine.is_editor_hint() and (Engine.max_fps == 0 or Engine.max_fps > HUMAN_MAXIMUM_FPS):
+		Engine.max_fps = HUMAN_MAXIMUM_FPS
 	_viewer_position = TELEPORTS[0]
 	super._ready()
 	get_node("Interface/Dock/Content/Title").text = "Terrain Human Inspection"
-	get_node("Interface/Dock/Content/Subtitle").text = "authority-backed defect reproduction"
+	get_node("Interface/Dock/Content/Subtitle").text = "bounded authority-backed inspection"
 	get_node("Interface/Dock/Content").add_theme_constant_override("separation", 4)
 	profile_label.visible = false
 	track_toggle.visible = false
@@ -59,6 +144,8 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	issue_recorder.call("shutdown")
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if not Engine.is_editor_hint():
+		Engine.max_fps = _previous_maximum_fps
 	super._exit_tree()
 
 
@@ -131,7 +218,7 @@ func _publish_human_streaming_focus(position: Vector3) -> void:
 		_viewer_revision += 1
 		if bool(terrain_world.call(
 			"update_viewer", VIEWER_ID, _viewer_revision, position,
-			VIEWER_RADIUS_CHUNKS, MAXIMUM_LOD
+			HUMAN_VISUAL_RADIUS_CHUNKS, MAXIMUM_LOD
 		)):
 			_viewer_position = position
 			_published_viewer_position = position

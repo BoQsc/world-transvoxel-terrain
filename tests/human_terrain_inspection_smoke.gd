@@ -14,6 +14,20 @@ func _initialize() -> void:
 func _run() -> void:
 	var scene: Node = InspectionScene.instantiate()
 	root.add_child(scene)
+	var profile := scene.call("get_acceptance_profile") as Dictionary
+	if bool(profile.get("global_coarse_lod_coverage", true)):
+		_fail("human inspection unexpectedly enabled global coarse coverage")
+		return
+	if int(profile.get("active_chunk_capacity", 0)) != 384:
+		_fail("human inspection active chunk capacity drifted from 384")
+		return
+	if int(profile.get("viewer_radius_chunks", 0)) != 1:
+		_fail("human inspection visual radius drifted from one chunk")
+		return
+	if int(profile.get("procedural_generation_worker_count", 0)) != 1 or \
+			int(profile.get("meshing_worker_count", 0)) != 1:
+		_fail("human inspection must use one generation and one meshing worker")
+		return
 	if not await _wait_for(scene, "_human_walk_mode", true, 1800):
 		_fail("inspection did not enter walk mode")
 		return

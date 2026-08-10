@@ -22,6 +22,11 @@ MAIN_SCENE = (
 )
 SMOKE_SCRIPT = "res://tests/human_terrain_inspection_smoke.gd"
 SMOKE_MARKER = "WT_TERRAIN_HUMAN_INSPECTION_SMOKE_PASS"
+HUMAN_ENVIRONMENT = {
+    "WT_CPU_PROFILE": "low_power",
+    "WT_GENERATION_WORKERS": "1",
+    "WT_MESHING_WORKERS": "1",
+}
 STEAM_GODOT = Path(
     "C:/Program Files (x86)/Steam/steamapps/common/Godot Engine/"
     "godot.windows.opt.tools.64.exe"
@@ -79,6 +84,7 @@ def prepare_fixture() -> None:
                 "[application]",
                 'config/name="World Transvoxel Human Terrain Inspection"',
                 f'run/main_scene="{MAIN_SCENE}"',
+                "run/max_fps=60",
                 'config/features=PackedStringArray("4.7", "Forward Plus")',
                 "",
                 "[display]",
@@ -86,6 +92,7 @@ def prepare_fixture() -> None:
                 "window/size/viewport_height=720",
                 "window/size/mode=3",
                 "window/stretch/mode=\"canvas_items\"",
+                "window/vsync/vsync_mode=1",
                 "",
                 "[editor_plugins]",
                 'enabled=PackedStringArray("res://addons/world_transvoxel_terrain/plugin.cfg")',
@@ -98,7 +105,7 @@ def prepare_fixture() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Launch the authority-backed large-terrain human inspection fixture."
+        description="Launch the bounded authority-backed human inspection fixture."
     )
     parser.add_argument("--godot", type=Path, default=STEAM_GODOT)
     parser.add_argument("--editor", action="store_true")
@@ -126,7 +133,7 @@ def main() -> None:
         result = subprocess.run(
             [str(engine), "--headless", "--path", str(FIXTURE_ROOT), "--script", SMOKE_SCRIPT],
             cwd=FIXTURE_ROOT,
-            env={**os.environ, "WT_CPU_PROFILE": "balanced"},
+            env={**os.environ, **HUMAN_ENVIRONMENT},
             check=False,
             text=True,
             capture_output=True,
@@ -151,8 +158,7 @@ def main() -> None:
     ]
     if arguments.editor:
         command.append("--editor")
-    environment = os.environ.copy()
-    environment["WT_CPU_PROFILE"] = "balanced"
+    environment = {**os.environ, **HUMAN_ENVIRONMENT}
     process = subprocess.Popen(command, cwd=FIXTURE_ROOT, env=environment)
     print(
         "WT_TERRAIN_HUMAN_INSPECTION_LAUNCHED "
