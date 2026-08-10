@@ -7,7 +7,7 @@ possible terrain workload or machine is solved.
 ## Authoritative boundaries
 
 - `world-transvoxel` revision
-  `2bd562a2aa13c5628b588a13afdf0bbb35e2d4ba` owns density samples, material
+  `269871299974c250379028d88b9a9c3086507f52` owns density samples, material
   samples, regular and transition topology, adaptive streaming, edit
   application, persistence, native queues, render resources, and collision
   resources.

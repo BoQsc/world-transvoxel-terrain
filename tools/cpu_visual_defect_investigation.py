@@ -213,9 +213,17 @@ def main() -> None:
         output, encoding="utf-8"
     )
     print(output, end="" if output.endswith("\n") else "\n")
-    if result.returncode != 0 or MARKER not in output or harness.has_godot_error(output):
-        raise RuntimeError("Godot visual defect investigation failed")
     source_report = FIXTURE_ROOT / "cpu_visual_defect_investigation_result.json"
+    if result.returncode != 0 or MARKER not in output or harness.has_godot_error(output):
+        (ARTIFACT_ROOT / f"godot-{version}-visual-defect-last-failure.log").write_text(
+            output, encoding="utf-8"
+        )
+        if source_report.is_file():
+            shutil.copy2(
+                source_report,
+                ARTIFACT_ROOT / "cpu_visual_defect_investigation_last_failure_report.json",
+            )
+        raise RuntimeError("Godot visual defect investigation failed")
     report = load_json(source_report)
     captures_root = ARTIFACT_ROOT / "captures"
     captures_root.mkdir(parents=True, exist_ok=True)

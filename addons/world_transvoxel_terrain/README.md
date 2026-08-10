@@ -33,7 +33,7 @@ low-level addon code, binary tooling, shaders when justified, or Python offline
 tooling.
 
 The addon depends on exact `world-transvoxel` revision
-`2bd562a2aa13c5628b588a13afdf0bbb35e2d4ba` and provides no fallback. The
+`269871299974c250379028d88b9a9c3086507f52` and provides no fallback. The
 self-contained release archive bundles that dependency beside this addon; the
 source repository itself does not vendor it or provide a
 fallback. Install and enable that addon before this one.

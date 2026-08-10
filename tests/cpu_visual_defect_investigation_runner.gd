@@ -48,7 +48,7 @@ func _run() -> void:
 	print("WT_VISUAL_DEFECT_STAGE coarse_bootstrap")
 	var coarse: Dictionary = await scene.call("wait_until_global_coarse_ready", 2400)
 	if str(coarse.get("status", "")) != "PASS":
-		_finish_now(result_path, "global coarse bootstrap failed")
+		_finish_now(result_path, "global coarse bootstrap failed", coarse)
 		return
 	if not bool(scene.call("release_local_refinement")):
 		_finish_now(result_path, "initial local refinement was rejected")
@@ -375,13 +375,18 @@ static func _selected_metrics(metrics: Dictionary) -> Dictionary:
 	}
 
 
-func _finish_now(result_path: String, error: String) -> void:
+func _finish_now(
+	result_path: String,
+	error: String,
+	details: Dictionary = {}
+) -> void:
 	failures.append(error)
 	_write_json(result_path, {
 		"schema": "world_transvoxel_terrain.cpu_visual_defect_investigation.v1",
 		"status": "FAIL",
 		"captures": captures,
 		"failures": failures,
+		"details": details,
 	})
 	push_error(error)
 	finished.emit(1)

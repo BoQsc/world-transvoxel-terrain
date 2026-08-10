@@ -4,7 +4,7 @@
   "status": "qualification_contract",
   "engine": "4.7",
   "renderer": "forward_plus",
-  "authority_revision": "2bd562a2aa13c5628b588a13afdf0bbb35e2d4ba",
+  "authority_revision": "269871299974c250379028d88b9a9c3086507f52",
   "world": {
     "volume_cells": [2048, 256, 2048],
     "maximum_lod": 3,

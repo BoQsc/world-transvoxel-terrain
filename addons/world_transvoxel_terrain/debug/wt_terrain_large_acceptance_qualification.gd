@@ -131,6 +131,16 @@ func wait_until_global_coarse_ready(maximum_frames: int = 1800) -> Dictionary:
 				"snapshot": get_validation_snapshot(),
 				"bootstrap": get_global_coverage_bootstrap_summary(),
 			}
+		if frame > 0 and frame % 120 == 0:
+			print("TQP57_COARSE_WAIT frame=%d active=%d ready=%d jobs=%d storage=%d render=%d replacements=%d" % [
+				frame,
+				int(_last_metrics.get("non_retiring_chunk_records", 0)),
+				int(_last_metrics.get("non_retiring_fully_ready_chunk_records", 0)),
+				int(_last_metrics.get("scheduler_queued_jobs", 0)),
+				int(_last_metrics.get("storage_queued_requests", 0)),
+				int(_last_metrics.get("queued_render", 0)),
+				int(_last_metrics.get("pending_chunk_replacements", 0)),
+			])
 		await get_tree().process_frame
 	return {
 		"status": "FAIL",
