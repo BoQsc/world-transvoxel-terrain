@@ -246,7 +246,8 @@ func _request_viewer(
 	position: Vector3,
 	force: bool,
 	radius_chunks: int = VIEWER_RADIUS_CHUNKS,
-	maximum_lod: int = MAXIMUM_LOD
+	maximum_lod: int = MAXIMUM_LOD,
+	collision_radius_chunks: int = COLLISION_RADIUS_CHUNKS
 ) -> bool:
 	_viewer_position = position
 	viewer_marker.position = position
@@ -259,7 +260,7 @@ func _request_viewer(
 	))
 	accepted = accepted and bool(terrain_world.call(
 		"update_collision_viewer", COLLISION_VIEWER_ID, _collision_revision,
-		position, COLLISION_RADIUS_CHUNKS
+		position, collision_radius_chunks
 	))
 	if accepted: _published_viewer_position = position
 	else: status_label.text = "FAIL: viewer update"

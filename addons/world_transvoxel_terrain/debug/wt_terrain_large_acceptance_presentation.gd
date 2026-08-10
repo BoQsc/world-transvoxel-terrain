@@ -117,12 +117,16 @@ func _configure_interface() -> void:
 	%FarZButton.pressed.connect(_teleport_to.bind(TELEPORTS[3]))
 	%FarXButton.pressed.connect(_teleport_to.bind(TELEPORTS[4]))
 	%OverviewButton.pressed.connect(focus_world_overview)
-	%CarveButton.pressed.connect(func() -> void: submit_edit_and_wait(&"carve", EDIT_CENTER))
-	%ConstructButton.pressed.connect(func() -> void: submit_edit_and_wait(&"construct", CONSTRUCTION_CENTER))
+	_configure_edit_controls()
 	%RestartButton.pressed.connect(_restart_preview)
 	bounds_toggle.toggled.connect(func(value: bool) -> void: world_bounds.visible = value)
 	resident_toggle.toggled.connect(func(value: bool) -> void: resident_bounds.visible = value)
 	track_toggle.toggled.connect(func(value: bool) -> void: _runtime_follow_camera = value)
+
+
+func _configure_edit_controls() -> void:
+	%CarveButton.pressed.connect(func() -> void: submit_edit_and_wait(&"carve", EDIT_CENTER))
+	%ConstructButton.pressed.connect(func() -> void: submit_edit_and_wait(&"construct", CONSTRUCTION_CENTER))
 
 
 func _teleport_to(position: Vector3) -> void:

@@ -1,0 +1,145 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/world_transvoxel_terrain/debug/wt_terrain_large_acceptance_scene.tscn" id="1_base"]
+[ext_resource type="Script" path="res://addons/world_transvoxel_terrain/debug/wt_terrain_human_inspection_scene.gd" id="2_script"]
+[ext_resource type="Script" path="res://addons/world_transvoxel_terrain/debug/wt_terrain_human_issue_recorder.gd" id="3_recorder"]
+
+[sub_resource type="SphereMesh" id="EditTargetMesh"]
+radius = 0.7
+height = 1.4
+
+[sub_resource type="StandardMaterial3D" id="EditTargetMaterial"]
+shading_mode = 0
+albedo_color = Color(1, 0.86, 0.18, 1)
+emission_enabled = true
+emission = Color(1, 0.55, 0.04, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="CapsuleShape3D" id="PlayerShape"]
+radius = 0.42
+height = 1.8
+
+[sub_resource type="StyleBoxFlat" id="ReadoutStyle"]
+bg_color = Color(0.025, 0.04, 0.045, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.48, 0.4, 0.14, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[node name="WtTerrainHumanInspectionScene" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+
+[node name="EditTargetMarker" type="MeshInstance3D" parent="." index="10"]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("EditTargetMesh")
+material_override = SubResource("EditTargetMaterial")
+cast_shadow = 0
+
+[node name="HumanPlayer" type="CharacterBody3D" parent="." index="11"]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 0
+
+[node name="HumanPlayerShape" type="CollisionShape3D" parent="HumanPlayer"]
+unique_name_in_owner = true
+shape = SubResource("PlayerShape")
+disabled = true
+
+[node name="IssueRecorder" type="Node" parent="." index="12"]
+unique_name_in_owner = true
+script = ExtResource("3_recorder")
+
+[node name="HumanReadout" type="PanelContainer" parent="Interface" index="2"]
+offset_left = 410.0
+offset_top = 72.0
+offset_right = 790.0
+offset_bottom = 180.0
+mouse_filter = 1
+theme_override_styles/panel = SubResource("ReadoutStyle")
+
+[node name="Rows" type="VBoxContainer" parent="Interface/HumanReadout"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HumanStatusLabel" type="Label" parent="Interface/HumanReadout/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.76, 0.26, 1)
+text = "LOCAL COLLISION PENDING"
+horizontal_alignment = 2
+autowrap_mode = 2
+
+[node name="PerformanceLabel" type="Label" parent="Interface/HumanReadout/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.74, 0.72, 1)
+text = "FPS pending"
+horizontal_alignment = 2
+
+[node name="Commands" type="HBoxContainer" parent="Interface/HumanReadout/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="FlyButton" type="Button" parent="Interface/HumanReadout/Rows/Commands"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Fly"
+
+[node name="WalkButton" type="Button" parent="Interface/HumanReadout/Rows/Commands"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Walk"
+
+[node name="ApplyButton" type="Button" parent="Interface/HumanReadout/Rows/Commands"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Apply"
+
+[node name="Crosshair" type="Control" parent="Interface" index="3"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Horizontal" type="ColorRect" parent="Interface/Crosshair"]
+layout_mode = 0
+offset_top = 7.0
+offset_right = 16.0
+offset_bottom = 9.0
+mouse_filter = 2
+color = Color(1, 0.9, 0.45, 0.92)
+
+[node name="Vertical" type="ColorRect" parent="Interface/Crosshair"]
+layout_mode = 0
+offset_left = 7.0
+offset_right = 9.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(1, 0.9, 0.45, 0.92)
+
+[editable path="Interface"]

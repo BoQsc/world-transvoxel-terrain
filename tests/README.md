@@ -2,9 +2,11 @@
 
 Addon-local tests start in A2.
 
-They must prove local package behavior, dependency detection, API contracts, and
-smoke scenes. Final gameplay validation belongs in the later separate game
-repository, not in this addon repo and not in `world-transvoxel-sandbox`.
+They prove local package behavior, dependency detection, API contracts, smoke
+scenes, and bounded production-terrain qualification. Direct human inspection
+uses the generated composition fixture documented in
+`docs/HUMAN_TERRAIN_INSPECTION.md`; it does not require a separate validation
+game repository.
 
 A2 smoke entry point:
 
@@ -33,6 +35,7 @@ python tools/a5_phase4_debug_overlay_categories_smoke.py
 python tools/a5_phase5_exit_review.py
 python tools/a6_readiness_decision.py
 python -B tools/tqp57_large_terrain_acceptance.py
+python -B tools/launch_human_terrain_inspection.py
 ```
 
 The TQP-57 workload requires Godot 4.7 Forward+, runs nine bounded large-world

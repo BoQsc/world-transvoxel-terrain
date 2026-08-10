@@ -222,8 +222,9 @@ func move_viewer_and_wait(position: Vector3, maximum_frames: int = 1800) -> Dict
 	return await wait_until_ready(maximum_frames, before, started_usec)
 
 
-func submit_edit_and_wait(kind: StringName, center: Vector3, maximum_frames: int = 1800) -> Dictionary:
-	if not _world_started: return {"status": "FAIL", "error": "world is not running"}
+func submit_edit(kind: StringName, center: Vector3) -> Dictionary:
+	if not _world_started:
+		return {"status": "FAIL", "error": "world is not running"}
 	var operation = EditOperation.new()
 	operation.mode = EditOperation.Mode.CONSTRUCT if kind == &"construct" else EditOperation.Mode.CARVE
 	operation.brush_shape = EditOperation.BrushShape.SPHERE
@@ -237,10 +238,25 @@ func submit_edit_and_wait(kind: StringName, center: Vector3, maximum_frames: int
 	batch.batch_id = operation.command_id
 	batch.add_operation(operation)
 	var expected_revision := int(terrain_world.call("get_world_revision")) + 1
-	var before := terrain_world.call("get_runtime_metrics") as Dictionary
-	var started := Time.get_ticks_usec()
 	if not bool(terrain_world.call("submit_edit_batch", batch, 5700)):
 		return {"status": "FAIL", "error": terrain_world.call("get_last_error")}
+	return {
+		"status": "PASS",
+		"kind": str(kind),
+		"center": Support.vector_summary(center),
+		"expected_world_revision": expected_revision,
+	}
+
+
+func submit_edit_and_wait(kind: StringName, center: Vector3, maximum_frames: int = 1800) -> Dictionary:
+	if not _world_started:
+		return {"status": "FAIL", "error": "world is not running"}
+	var before := terrain_world.call("get_runtime_metrics") as Dictionary
+	var started := Time.get_ticks_usec()
+	var submission := submit_edit(kind, center)
+	if str(submission.get("status", "")) != "PASS":
+		return submission
+	var expected_revision := int(submission.get("expected_world_revision", 0))
 	for _frame in range(maximum_frames):
 		if int(terrain_world.call("get_world_revision")) >= expected_revision:
 			var commit_latency_usec := Time.get_ticks_usec() - started
