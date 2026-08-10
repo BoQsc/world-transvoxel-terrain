@@ -64,6 +64,7 @@ func _run() -> void:
 
 	var cases: Array[Dictionary] = []
 	var baseline := _viewer_updates(scene)
+	var case_start_metrics := _runtime_metrics(scene)
 	if not bool(scene.call("release_local_refinement")):
 		failures.append("initial refinement request was rejected")
 	else:
@@ -71,16 +72,20 @@ func _run() -> void:
 			scene,
 			contract.get("cases", [])[0],
 			baseline,
-			_camera_site(contract)
+			_camera_site(contract),
+			case_start_metrics
 		))
 	for case_index in range(1, (contract.get("cases", []) as Array).size()):
 		var case := (contract.get("cases", []) as Array)[case_index] as Dictionary
 		var position := _vector3(case.get("position", []))
 		baseline = _viewer_updates(scene)
+		case_start_metrics = _runtime_metrics(scene)
 		if not bool(scene.call("publish_view", position, true)):
 			failures.append("viewer request was rejected: %s" % str(case.get("id", "")))
 			continue
-		cases.append(await _monitor_case(scene, case, baseline, _camera_site(contract)))
+		cases.append(await _monitor_case(
+			scene, case, baseline, _camera_site(contract), case_start_metrics
+		))
 
 	await _capture_shadow_pair(scene)
 	var budgets := contract.get("budgets", {}) as Dictionary
@@ -135,12 +140,12 @@ func _monitor_case(
 	scene: Node,
 	case: Dictionary,
 	baseline_viewer_updates: int,
-	topology_center: Vector3
+	topology_center: Vector3,
+	start_metrics: Dictionary
 ) -> Dictionary:
 	var case_id := str(case.get("id", "unnamed"))
 	var maximum_frames := int(case.get("maximum_frames", 1200))
 	var started_usec := Time.get_ticks_usec()
-	var start_metrics := _runtime_metrics(scene)
 	var transition_captured := false
 	var settled := false
 	var maximum_overlaps := 0
