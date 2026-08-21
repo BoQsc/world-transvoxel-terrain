@@ -3,6 +3,11 @@
 Terrain root, profile binding, viewer binding, lifecycle, and high-level state
 coordination belong here.
 
+`wt_terrain_runtime_scene.tscn` is the production scene entrypoint. It owns a
+`WtTerrainWorld` child and default profile wiring without loading a debug UI or
+refreshing diagnostic snapshots during normal viewer updates. Reference and
+inspection scenes remain under `debug/` and are not production dependencies.
+
 Runtime code may coordinate subsystem calls. It must not become a monolithic
 chunk manager.
 

@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MARKER := "WT_TERRAIN_TQP52_GODOT_PASS"
+const RuntimeScene := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_runtime_scene.tscn")
 const TerrainWorld := preload("res://addons/world_transvoxel_terrain/runtime/wt_terrain_world.gd")
 const RuntimeProfile := preload("res://addons/world_transvoxel_terrain/api/wt_terrain_runtime_profile.gd")
 const StorageProfile := preload("res://addons/world_transvoxel_terrain/storage/wt_terrain_storage_profile.gd")
@@ -20,6 +21,15 @@ func _initialize() -> void:
 func _run_test() -> void:
 	if not _validate_builtin_profiles():
 		return
+	var runtime_scene = RuntimeScene.instantiate()
+	root.add_child(runtime_scene)
+	if not runtime_scene.call("ensure_runtime_defaults") or \
+			runtime_scene.call("get_terrain_world") == null or \
+			runtime_scene.find_child("DebugOverlay", true, false) != null:
+		_fail("production runtime scene boundary is invalid")
+		return
+	runtime_scene.queue_free()
+	await process_frame
 	var world = TerrainWorld.new()
 	var profile = RuntimeProfile.create_builtin(RuntimeProfile.Preset.REFERENCE)
 	profile.maximum_async_requests = 1
@@ -103,7 +113,7 @@ func _run_test() -> void:
 		return
 
 	_remove_fixture_journal()
-	print("%s profiles=4 generation=2 backpressure=1 stale_viewer=1 smooth_edit=1 cancellation=1" % MARKER)
+	print("%s profiles=4 runtime_scene=production generation=2 backpressure=1 stale_viewer=1 smooth_edit=1 cancellation=1" % MARKER)
 	world.queue_free()
 	await process_frame
 	quit(0)
