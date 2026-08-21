@@ -37,8 +37,9 @@ REQUIRED_PHRASES = {
     ),
     "addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd": (
         "class_name WtTerrainDependencyStatus",
-        "WORLD_TRANSVOXEL_PLUGIN_CFG",
-        "res://addons/world_transvoxel/plugin.cfg",
+        "WORLD_TRANSVOXEL_EXTENSION_DESCRIPTOR",
+        "res://addons/world_transvoxel/world_transvoxel.gdextension",
+        "ClassDB.class_exists",
         "installed",
     ),
     "addons/world_transvoxel_terrain/api/wt_terrain_profile.gd": (

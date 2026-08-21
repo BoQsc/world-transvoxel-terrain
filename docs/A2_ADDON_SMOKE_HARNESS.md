@@ -17,8 +17,8 @@ compute acceleration, or game validation.
 ## Added smoke assets
 
 - `addons/world_transvoxel_terrain/api/wt_terrain_dependency_status.gd`
-  detects whether `res://addons/world_transvoxel/plugin.cfg` exists and reports
-  a clear status dictionary.
+  detects the runtime `.gdextension` descriptor and registered native terrain
+  class without requiring the optional native editor plugin or native source.
 - `addons/world_transvoxel_terrain/api/wt_terrain_profile.gd` defines the
   placeholder 2048 x 2048 x 128 terrain profile resource.
 - `addons/world_transvoxel_terrain/generation/wt_terrain_generation_profile.gd`
