@@ -2,6 +2,7 @@ extends SceneTree
 
 const MARKER := "WT_TERRAIN_TQP53_GODOT_PASS"
 const Document := preload("res://addons/world_transvoxel_terrain/editor/wt_terrain_authoring_document.gd")
+const EditOperation := preload("res://addons/world_transvoxel_terrain/edit/wt_terrain_edit_operation.gd")
 const Exporter := preload("res://addons/world_transvoxel_terrain/editor/wt_terrain_repro_exporter.gd")
 const Preview := preload("res://addons/world_transvoxel_terrain/editor/wt_terrain_brush_preview.gd")
 
@@ -45,6 +46,17 @@ func _run_test() -> void:
 	var batch: Resource = document.create_batch(5301)
 	if not batch.call("is_valid") or int(batch.get("batch_id")) != 5301:
 		_fail("authoring document did not create a valid batch")
+		return
+	var water = EditOperation.new()
+	water.mode = EditOperation.Mode.PLACE_STATIC_WATER
+	water.material_id = 9
+	water.radius = 2.0
+	if not water.is_valid() or water.get_mode_name() != &"place_static_water":
+		_fail("authoritative static-water operation was rejected")
+		return
+	water.material_id = 8
+	if water.is_valid():
+		_fail("static-water operation accepted a non-water material")
 		return
 
 	_write_import_fixture()
