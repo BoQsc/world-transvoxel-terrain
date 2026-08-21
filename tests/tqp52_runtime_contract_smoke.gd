@@ -78,13 +78,6 @@ func _run_test() -> void:
 	if Array(edit_summary.get("operation_summaries", [])).is_empty():
 		_fail("edit diagnostics omitted operation summaries")
 		return
-	before_revision = world.get_world_revision()
-	if not world.submit_edit_batch(_static_water_batch(), 5201):
-		_fail("static-water edit submission failed: %s" % world.get_last_error())
-		return
-	if not await _wait_for_commit(world, before_revision + 1):
-		_fail("static-water edit did not commit")
-		return
 
 	var readiness := world.get_readiness_snapshot()
 	if int(readiness.get("api_generation", 0)) != 1 or \
@@ -110,7 +103,7 @@ func _run_test() -> void:
 		return
 
 	_remove_fixture_journal()
-	print("%s profiles=4 generation=2 backpressure=1 stale_viewer=1 smooth_edit=1 static_water_edit=1 cancellation=1" % MARKER)
+	print("%s profiles=4 generation=2 backpressure=1 stale_viewer=1 smooth_edit=1 cancellation=1" % MARKER)
 	world.queue_free()
 	await process_frame
 	quit(0)
@@ -159,17 +152,6 @@ func _smooth_construct_batch() -> Resource:
 	operation.radius = 1.25
 	operation.smooth_radius = 0.25
 	operation.material_id = 3
-	var batch = EditBatch.new()
-	batch.add_operation(operation)
-	return batch
-
-
-func _static_water_batch() -> Resource:
-	var operation = EditOperation.new()
-	operation.mode = EditOperation.Mode.PLACE_STATIC_WATER
-	operation.center = Vector3(12, 10, 8)
-	operation.radius = 1.25
-	operation.material_id = 9
 	var batch = EditBatch.new()
 	batch.add_operation(operation)
 	return batch

@@ -11,9 +11,7 @@ import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
-WORLD_TRANSVOXEL_REPO = Path(
-    os.environ.get("WORLD_TRANSVOXEL_REPO", ROOT.parent / "world-transvoxel")
-).resolve()
+WORLD_TRANSVOXEL_REPO = ROOT.parent / "world-transvoxel"
 WORLD_TRANSVOXEL_ADDON = WORLD_TRANSVOXEL_REPO / "addons" / "world_transvoxel"
 LIFECYCLE_FIXTURE = WORLD_TRANSVOXEL_REPO / "build" / "production-lifecycle-fixture"
 ARTIFACT_ROOT = ROOT / "artifacts" / "a4_phase3_terrain_world_lifecycle"
